@@ -13,8 +13,8 @@ namespace FlatFiles.Test
         public void ShouldRoundTripMaxValues()
         {
             var mapper = getWeirdMapper();
-            var thing = new WeirdThing()
-            {
+            var thing = new WeirdThing
+                        {
                 Small = SByte.MaxValue,
                 Big = UInt16.MaxValue,
                 Bigger = UInt32.MaxValue,
@@ -28,8 +28,8 @@ namespace FlatFiles.Test
         public void ShouldRoundTripMinValues()
         {
             var mapper = getWeirdMapper();
-            var thing = new WeirdThing()
-            {
+            var thing = new WeirdThing
+                        {
                 Small = SByte.MinValue,
                 Big = UInt16.MinValue,
                 Bigger = UInt32.MinValue,

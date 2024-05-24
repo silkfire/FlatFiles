@@ -9,7 +9,7 @@ namespace FlatFiles
     /// <summary>
     /// Extracts records from a file containing delimited values.
     /// </summary>
-    public sealed class DelimitedReader : IReader, IReaderWithMetadata
+    public sealed class DelimitedReader : IReaderWithMetadata
     {
         private readonly DelimitedRecordParser parser;
         private readonly DelimitedSchemaSelector? schemaSelector;

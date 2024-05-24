@@ -17,15 +17,15 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestReader_ReadThreeTypes()
         {
-            StringWriter stringWriter = new StringWriter();
+            var stringWriter = new StringWriter();
             var injector = getSchemaInjector();
-            var options = new FixedLengthOptions() { Alignment = FixedAlignment.RightAligned };
+            var options = new FixedLengthOptions { Alignment = FixedAlignment.RightAligned, RecordSeparator = "\n" };
             var writer = new FixedLengthWriter(stringWriter, injector, options);
             writer.Write(new object[] { "First Batch", 2 });
             writer.Write(new object[] { 1, "Bob Smith", new DateTime(2018, 06, 04), 12.34m });
             writer.Write(new object[] { 2, "Jane Doe", new DateTime(2018, 06, 05), 34.56m });
             writer.Write(new object[] { 46.9m, 23.45m, true });
-            string output = stringWriter.ToString();
+            var output = stringWriter.ToString();
             Assert.AreEqual(@"              First Batch  2
          1                Bob Smith  20180604     12.34
          2                 Jane Doe  20180605     34.56
@@ -108,15 +108,15 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestTypeMapper_ReadThreeTypes()
         {
-            StringWriter stringWriter = new StringWriter();
+            var stringWriter = new StringWriter();
             var injector = getTypeMapperInjector();
-            var options = new FixedLengthOptions() { Alignment = FixedAlignment.RightAligned };
+            var options = new FixedLengthOptions { Alignment = FixedAlignment.RightAligned, RecordSeparator = "\n" };
             var writer = injector.GetWriter(stringWriter, options);
-            writer.Write(new HeaderRecord() { BatchName = "First Batch", RecordCount = 2 });
-            writer.Write(new DataRecord() { Id = 1, Name = "Bob Smith", CreatedOn = new DateTime(2018, 06, 04), TotalAmount = 12.34m });
-            writer.Write(new DataRecord() { Id = 2, Name = "Jane Doe", CreatedOn = new DateTime(2018, 06, 05), TotalAmount = 34.56m });
-            writer.Write(new FooterRecord() { TotalAmount = 46.9m, AverageAmount = 23.45m, IsCriteriaMet = true });
-            string output = stringWriter.ToString();
+            writer.Write(new HeaderRecord { BatchName = "First Batch", RecordCount = 2 });
+            writer.Write(new DataRecord { Id = 1, Name = "Bob Smith", CreatedOn = new DateTime(2018, 06, 04), TotalAmount = 12.34m });
+            writer.Write(new DataRecord { Id = 2, Name = "Jane Doe", CreatedOn = new DateTime(2018, 06, 05), TotalAmount = 34.56m });
+            writer.Write(new FooterRecord { TotalAmount = 46.9m, AverageAmount = 23.45m, IsCriteriaMet = true });
+            var output = stringWriter.ToString();
             Assert.AreEqual(@"              First Batch  2
          1                Bob Smith  20180604     12.34
          2                 Jane Doe  20180605     34.56
@@ -246,31 +246,31 @@ namespace FlatFiles.Test
             selector.When(x => x is DetailRow).Use(detailMapping);
             selector.When(x => x is Trailer).Use(trailerMapping);
 
-            StringWriter stringWriter = new StringWriter();
-            ITypedWriter<object> writer = selector.GetWriter(stringWriter);
+            var stringWriter = new StringWriter();
+            var writer = selector.GetWriter(stringWriter, new FixedLengthOptions { RecordSeparator = "\n" });
 
             var now = new DateTime(2022, 12, 4, 14, 4, 00);
-            var header = new Header()
-            {
+            var header = new Header
+                         {
                 DateCreated = now,
                 Name = "File-2"
             };
-            var detail1 = new DetailRow()
-            {
+            var detail1 = new DetailRow
+                          {
                 CustomerId = 3333,
                 AverageSales = 12.32m,
                 Created = now,
                 Name2 = "Customer1"
             };
-            var detail2 = new DetailRow()
-            {
+            var detail2 = new DetailRow
+                          {
                 CustomerId = 9999,
                 AverageSales = 20.32m,
                 Created = now,
                 Name2 = "Customer2"
             };
-            var trailer = new Trailer()
-            {
+            var trailer = new Trailer
+                          {
                 RecordCount = 1
             };
 

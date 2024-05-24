@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 using FlatFiles.TypeMapping;
@@ -10,7 +10,7 @@ namespace FlatFiles.Benchmark
     public class AsyncVsSyncTest
     {
         [Benchmark]
-        public string SyncTest()
+        public async Task<string> SyncTest()
         {
             var mapper = DelimitedTypeMapper.Define(() => new SampleData());
             mapper.Property(x => x.YearStart).ColumnName("YearStart");
@@ -51,13 +51,16 @@ namespace FlatFiles.Benchmark
             mapper.Property(x => x.StratificationId3).ColumnName("StratificationID3");
 
             var textWriter = new StringWriter();
-            var http = WebRequest.CreateHttp("https://raw.githubusercontent.com/jehugaleahsa/FlatFiles/master/FlatFiles.Benchmark/TestFiles/SampleData.csv");
-            using (var response = http.GetResponse())
-            using (var textReader = new StreamReader(response.GetResponseStream()))
+
+            var httpClient = new HttpClient();
+            var stream = await httpClient.GetStreamAsync("https://raw.githubusercontent.com/jehugaleahsa/FlatFiles/master/FlatFiles.Benchmark/TestFiles/SampleData.csv");
+
+            using (var textReader = new StreamReader(stream))
             {
-                var entities = mapper.Read(textReader, new DelimitedOptions() { IsFirstRecordSchema = true });
-                mapper.Write(textWriter, entities, new DelimitedOptions() { IsFirstRecordSchema = true });
+                var entities = mapper.Read(textReader, new DelimitedOptions { IsFirstRecordSchema = true });
+                mapper.Write(textWriter, entities, new DelimitedOptions { IsFirstRecordSchema = true });
             }
+
             return textWriter.ToString();
         }
 
@@ -103,30 +106,17 @@ namespace FlatFiles.Benchmark
             mapper.Property(x => x.StratificationId3).ColumnName("StratificationID3");
 
             var textWriter = new StringWriter();
-            var http = WebRequest.CreateHttp("https://raw.githubusercontent.com/jehugaleahsa/FlatFiles/master/FlatFiles.Benchmark/TestFiles/SampleData.csv");
-            using (var response = await http.GetResponseAsync().ConfigureAwait(false))
-            using (var textReader = new StreamReader(response.GetResponseStream()))
-            {
-                var entities = mapper.ReadAsync(textReader, new DelimitedOptions() { IsFirstRecordSchema = true });
-                await mapper.WriteAsync(textWriter, entities, new DelimitedOptions() { IsFirstRecordSchema = true }).ConfigureAwait(false);
-            }
-            return textWriter.ToString();
 
-            //StringWriter textWriter = new StringWriter();
-            //string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            //string path = Path.Combine(directory, "TestFiles", "SampleData.csv");
-            //using (var stream = File.OpenRead(path))
-            //using (var textReader = new StreamReader(stream))
-            //{
-            //    var options = new DelimitedOptions() { IsFirstRecordSchema = true };
-            //    var reader = mapper.GetReader(textReader, options);
-            //    var writer = mapper.GetWriter(textWriter, options);
-            //    while (await reader.ReadAsync().ConfigureAwait(false))
-            //    {
-            //        await writer.WriteAsync(reader.Current).ConfigureAwait(false);
-            //    }
-            //}
-            //return textWriter.ToString();
+            var httpClient = new HttpClient();
+            var stream = await httpClient.GetStreamAsync("https://raw.githubusercontent.com/jehugaleahsa/FlatFiles/master/FlatFiles.Benchmark/TestFiles/SampleData.csv");
+
+            using (var textReader = new StreamReader(stream))
+            {
+                var entities = mapper.ReadAsync(textReader, new DelimitedOptions { IsFirstRecordSchema = true });
+                await mapper.WriteAsync(textWriter, entities, new DelimitedOptions { IsFirstRecordSchema = true });
+            }
+
+            return textWriter.ToString();
         }
 
         public class SampleData
@@ -206,16 +196,12 @@ namespace FlatFiles.Benchmark
 
             public decimal Longitude { get; set; }
 
-            public override string ToString()
-            {
-                return "(" + Latitude + ", " + Longitude + ")";
-            }
+            public override string ToString() => $"({Latitude}, {Longitude})";
         }
 
         public class GeoLocationColumn : ColumnDefinition<GeoLocation>
         {
-            public GeoLocationColumn(string columnName)
-                : base(columnName)
+            public GeoLocationColumn(string columnName) : base(columnName)
             {
             }
 
@@ -226,12 +212,13 @@ namespace FlatFiles.Benchmark
 
             protected override GeoLocation OnParse(IColumnContext context, string value)
             {
-                string[] parts = value.Substring(1, value.Length - 2).Split(',', 2);
-                var result = new GeoLocation()
-                {
-                    Latitude = Convert.ToDecimal(parts[0].Trim()),
-                    Longitude = Convert.ToDecimal(parts[1].Trim())
-                };
+                var parts = value.Substring(1, value.Length - 2).Split(',', 2);
+                var result = new GeoLocation
+                             {
+                                 Latitude = Convert.ToDecimal(parts[0].Trim()),
+                                 Longitude = Convert.ToDecimal(parts[1].Trim())
+                             };
+
                 return result;
             }
         }

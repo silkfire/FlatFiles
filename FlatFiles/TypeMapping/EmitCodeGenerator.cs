@@ -8,9 +8,8 @@ namespace FlatFiles.TypeMapping
 {
     internal sealed class EmitCodeGenerator : ICodeGenerator
     {
-        private readonly ConcurrentDictionary<string, int> nameLookup = new();
-        private readonly AssemblyBuilder assemblyBuilder;
-        private readonly ModuleBuilder moduleBuilder;
+        private readonly ConcurrentDictionary<string, int> _nameLookup = new();
+        private readonly ModuleBuilder _moduleBuilder;
 
         public EmitCodeGenerator()
         {
@@ -21,13 +20,13 @@ namespace FlatFiles.TypeMapping
             assemblyName.SetPublicKey(publicKey);
             var publicKeyToken = flatFilesAssemblyName.GetPublicKeyToken();
             assemblyName.SetPublicKeyToken(publicKeyToken);
-            assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.RunAndCollect);
-            moduleBuilder = assemblyBuilder.DefineDynamicModule("FlatFiles_DynamicModule");
+            var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.RunAndCollect);
+            _moduleBuilder = assemblyBuilder.DefineDynamicModule("FlatFiles_DynamicModule");
         }
 
         private string GetUniqueTypeName(string name)
         {
-            int id = nameLookup.AddOrUpdate(name, 0, (_, old) => old + 1);
+            int id = _nameLookup.AddOrUpdate(name, 0, (_, old) => old + 1);
             return $"{name}_{id}";
         }
 
@@ -40,7 +39,7 @@ namespace FlatFiles.TypeMapping
                 throw new FlatFileException(Resources.NoDefaultConstructor);
             }
             var typeName = GetUniqueTypeName($"{entityType.Name}Factory");
-            var typeBuilder = moduleBuilder.DefineType(typeName, TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed);
+            var typeBuilder = _moduleBuilder.DefineType(typeName, TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed);
             var methodBuilder = typeBuilder.DefineMethod("Create", MethodAttributes.Public | MethodAttributes.Static, entityType, Type.EmptyTypes);
             var generator = methodBuilder.GetILGenerator();
             generator.Emit(OpCodes.Newobj, constructorInfo);
@@ -54,7 +53,7 @@ namespace FlatFiles.TypeMapping
         {
             var entityType = typeof(TEntity);
             var typeName = GetUniqueTypeName($"{entityType.Name}Reader");
-            var typeBuilder = moduleBuilder.DefineType(typeName, TypeAttributes.Public | TypeAttributes.Sealed);
+            var typeBuilder = _moduleBuilder.DefineType(typeName, TypeAttributes.Public | TypeAttributes.Sealed);
             var fieldBuilder = typeBuilder.DefineField("mappings", typeof(IMemberMapping[]), FieldAttributes.Private);
             var ctorBuilder = typeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, new[] { typeof(IMemberMapping[]) });
             var ctorGenerator = ctorBuilder.GetILGenerator();
@@ -170,7 +169,7 @@ namespace FlatFiles.TypeMapping
         {
             var entityType = typeof(TEntity);
             var typeName = GetUniqueTypeName($"{entityType.Name}Writer");
-            var typeBuilder = moduleBuilder.DefineType(typeName, TypeAttributes.Public | TypeAttributes.Sealed);
+            var typeBuilder = _moduleBuilder.DefineType(typeName, TypeAttributes.Public | TypeAttributes.Sealed);
             var fieldBuilder = typeBuilder.DefineField("mappings", typeof(IMemberMapping[]), FieldAttributes.Private);
             var ctorBuilder = typeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, new[] { typeof(IMemberMapping[]) });
             var ctorGenerator = ctorBuilder.GetILGenerator();

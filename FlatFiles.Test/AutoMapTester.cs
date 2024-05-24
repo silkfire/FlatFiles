@@ -18,9 +18,9 @@ namespace FlatFiles.Test
             var writer = DelimitedTypeMapper.GetAutoMappedWriter<Person>(stringWriter);
             var expected = new[]
             {
-                new Person() { Id = 1, Name = "Bob", CreatedOn = new DateTime(2018, 07, 01), IsActive = true, VisitCount = 1 },
-                new Person() { Id = 2, Name = "John", CreatedOn = new DateTime(2018, 07, 02), IsActive = false, VisitCount = null },
-                new Person() { Id = 3, Name = "Susan", CreatedOn = new DateTime(2018, 07, 03), IsActive = false, VisitCount = 10 }
+                new Person { Id = 1, Name = "Bob", CreatedOn = new DateTime(2018, 07, 01), IsActive = true, VisitCount = 1 },
+                new Person { Id = 2, Name = "John", CreatedOn = new DateTime(2018, 07, 02), IsActive = false, VisitCount = null },
+                new Person { Id = 3, Name = "Susan", CreatedOn = new DateTime(2018, 07, 03), IsActive = false, VisitCount = 10 }
             };
             writer.WriteAll(expected);
             string output = stringWriter.ToString();
@@ -42,9 +42,9 @@ namespace FlatFiles.Test
             var writer = DelimitedTypeMapper.GetAutoMappedWriter<Person>(stringWriter);
             var expected = new[]
             {
-                new Person() { Id = 1, Name = "Bob", CreatedOn = new DateTime(2018, 07, 01), IsActive = true, VisitCount = 1 },
-                new Person() { Id = 2, Name = "John", CreatedOn = new DateTime(2018, 07, 02), IsActive = false, VisitCount = null },
-                new Person() { Id = 3, Name = "Susan", CreatedOn = new DateTime(2018, 07, 03), IsActive = false, VisitCount = 10 }
+                new Person { Id = 1, Name = "Bob", CreatedOn = new DateTime(2018, 07, 01), IsActive = true, VisitCount = 1 },
+                new Person { Id = 2, Name = "John", CreatedOn = new DateTime(2018, 07, 02), IsActive = false, VisitCount = null },
+                new Person { Id = 3, Name = "Susan", CreatedOn = new DateTime(2018, 07, 03), IsActive = false, VisitCount = 10 }
             };
             await writer.WriteAllAsync(expected);
             string output = stringWriter.ToString();
@@ -71,9 +71,9 @@ namespace FlatFiles.Test
             var writer = DelimitedTypeMapper.GetAutoMappedWriter<Person>(stringWriter, null, nameResolver);
             var expected = new[]
             {
-                new Person() { Id = 1, Name = "Bob", CreatedOn = new DateTime(2018, 07, 01), IsActive = true, VisitCount = 1 },
-                new Person() { Id = 2, Name = "John", CreatedOn = new DateTime(2018, 07, 02), IsActive = false, VisitCount = null },
-                new Person() { Id = 3, Name = "Susan", CreatedOn = new DateTime(2018, 07, 03), IsActive = false, VisitCount = 10 }
+                new Person { Id = 1, Name = "Bob", CreatedOn = new DateTime(2018, 07, 01), IsActive = true, VisitCount = 1 },
+                new Person { Id = 2, Name = "John", CreatedOn = new DateTime(2018, 07, 02), IsActive = false, VisitCount = null },
+                new Person { Id = 3, Name = "Susan", CreatedOn = new DateTime(2018, 07, 03), IsActive = false, VisitCount = 10 }
             };
             writer.WriteAll(expected);
             string output = stringWriter.ToString();
@@ -97,8 +97,8 @@ namespace FlatFiles.Test
             mapper.Property(x => x.CreatedOn);
             mapper.Property(x => x.IsActive);
             var stringWriter = new StringWriter();
-            var options = new DelimitedOptions()
-            {
+            var options = new DelimitedOptions
+                          {
                 IsFirstRecordSchema = true
             };
             var writer = mapper.GetWriter(stringWriter, options);
@@ -126,8 +126,8 @@ namespace FlatFiles.Test
             mapper.Property(x => x.CreatedOn);
             mapper.Property(x => x.IsActive);
             var stringWriter = new StringWriter();
-            var options = new DelimitedOptions()
-            {
+            var options = new DelimitedOptions
+                          {
                 IsFirstRecordSchema = true
             };
             mapper.Write(stringWriter, new Person[0], options);
@@ -153,13 +153,13 @@ namespace FlatFiles.Test
             mapper.Property(x => x.CreatedOn);
             mapper.Property(x => x.IsActive);
             var stringWriter = new StringWriter();
-            var options = new DelimitedOptions()
-            {
+            var options = new DelimitedOptions
+                          {
                 IsFirstRecordSchema = false
             };
             var people = new Person[]
             {
-                new Person()
+                new Person
                 {
                     Id = 1,
                     Name = "Tom",
