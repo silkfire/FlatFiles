@@ -64,7 +64,7 @@ namespace FlatFiles.TypeMapping
                 {
                     return Expression.Property(entityParameter, propertyInfo);
                 }
-                var nestedMember = GetMemberExpression(entityParameter, memberExpression.Expression);
+                var nestedMember = GetMemberExpression(entityParameter, memberExpression.Expression!);
                 return Expression.Property(nestedMember, propertyInfo);
             }
             if (memberInfo is FieldInfo fieldInfo)
@@ -73,7 +73,7 @@ namespace FlatFiles.TypeMapping
                 {
                     return Expression.Field(entityParameter, fieldInfo);
                 }
-                var nestedMember = GetMemberExpression(entityParameter, memberExpression.Expression);
+                var nestedMember = GetMemberExpression(entityParameter, memberExpression.Expression!);
                 return Expression.Field(nestedMember, fieldInfo);
             }
             throw new FlatFileException(Resources.BadPropertySelector);

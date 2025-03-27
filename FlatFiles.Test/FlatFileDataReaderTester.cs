@@ -61,7 +61,7 @@ namespace FlatFiles.Test
 2,Susan,2018-07-04,false,,{24C250EB-87C9-45DE-B01F-71A7754C6AAD},5
 ";
             var reader = new StringReader(data);
-            var csvReader = new DelimitedReader(reader, new DelimitedOptions() { IsFirstRecordSchema = true });
+            var csvReader = new DelimitedReader(reader, new DelimitedOptions { IsFirstRecordSchema = true });
             var dataReader = new FlatFileDataReader(csvReader);
             return dataReader;
         }
@@ -159,8 +159,8 @@ namespace FlatFiles.Test
             schema.AddColumn(new IgnoredColumn("Ignored"));
             schema.AddColumn(new StringColumn("C"));
 
-            var options = new DelimitedOptions()
-            {
+            var options = new DelimitedOptions
+                          {
                 IsFirstRecordSchema = true
             };
 

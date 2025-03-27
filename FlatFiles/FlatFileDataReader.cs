@@ -1,6 +1,4 @@
-﻿#if NET451 || NETSTANDARD2_0 || NETCOREAPP
-
-using System;
+﻿using System;
 using System.Data;
 using System.Data.Common;
 using System.Globalization;
@@ -12,9 +10,9 @@ namespace FlatFiles
     /// </summary>
     public sealed class FlatFileDataReader : IDataReader, IFlatFileDataRecord
     {
-        private ISchema? schema;  // cached
-        private ColumnCollection? columns; // cached
-        private object?[]? values; // cached
+        private ISchema? _schema;  // cached
+        private ColumnCollection? _columns; // cached
+        private object?[]? _values; // cached
 
         /// <summary>
         /// Initializes a new instance of a FlatFileParser.
@@ -79,6 +77,7 @@ namespace FlatFiles
             var schema = GetSchema();
             var schemaTable = GetEmptySchemaDataTable(schema);
             var rows = schemaTable.Rows;
+
             var values = new object?[]
             {
                 true,  // AllowDBNull
@@ -107,7 +106,9 @@ namespace FlatFiles
                 255,  // NumericScale
                 null  // ProviderType
             };
+
             var columns = GetColumns(schema);
+
             for (int index = 0, count = columns.Count; index != count; ++index)
             {
                 var column = columns[index];
@@ -119,45 +120,48 @@ namespace FlatFiles
                 values[24] = column.ColumnType; // ProviderType
                 rows.Add(values);
             }
+
             schemaTable.AcceptChanges();
+
             return schemaTable;
         }
 
         private static DataTable GetEmptySchemaDataTable(ISchema schema)
         {
-            var schemaTable = new DataTable()
-            {
-                Locale = CultureInfo.InvariantCulture,
-                MinimumCapacity = schema.ColumnDefinitions.PhysicalCount
-            };
-            schemaTable.Columns.AddRange(new[]
-            {
-                new DataColumn(SchemaTableColumn.AllowDBNull, typeof(bool)),
-                new DataColumn(SchemaTableOptionalColumn.BaseCatalogName, typeof(string)),
-                new DataColumn(SchemaTableColumn.BaseColumnName, typeof(string)),
-                new DataColumn(SchemaTableColumn.BaseSchemaName, typeof(string)),
-                new DataColumn(SchemaTableOptionalColumn.BaseServerName, typeof(string)),
-                new DataColumn(SchemaTableColumn.BaseTableName, typeof(string)),
-                new DataColumn(SchemaTableColumn.ColumnName, typeof(string)),
-                new DataColumn(SchemaTableColumn.ColumnOrdinal, typeof(int)),
-                new DataColumn(SchemaTableColumn.ColumnSize, typeof(int)),
-                new DataColumn(SchemaTableColumn.DataType, typeof(Type)),
-                new DataColumn("DataTypeName", typeof(string)),
-                new DataColumn(SchemaTableColumn.IsAliased, typeof(bool)),
-                new DataColumn(SchemaTableOptionalColumn.IsAutoIncrement, typeof(bool)),
-                new DataColumn("IsColumnSet", typeof(bool)),
-                new DataColumn(SchemaTableColumn.IsExpression, typeof(bool)),
-                new DataColumn(SchemaTableOptionalColumn.IsHidden, typeof(bool)),
-                new DataColumn("IsIdentity", typeof(bool)),
-                new DataColumn(SchemaTableColumn.IsKey, typeof(bool)),
-                new DataColumn(SchemaTableColumn.IsLong, typeof(bool)),
-                new DataColumn(SchemaTableOptionalColumn.IsReadOnly, typeof(bool)),
-                new DataColumn(SchemaTableOptionalColumn.IsRowVersion, typeof(bool)),
-                new DataColumn(SchemaTableColumn.IsUnique, typeof(bool)),
-                new DataColumn(SchemaTableColumn.NumericPrecision, typeof(int)),
-                new DataColumn(SchemaTableColumn.NumericScale, typeof(int)),
-                new DataColumn(SchemaTableColumn.ProviderType, typeof(Type))
-            });
+            var schemaTable = new DataTable
+                              {
+                                  Locale = CultureInfo.InvariantCulture,
+                                  MinimumCapacity = schema.ColumnDefinitions.PhysicalCount
+                              };
+
+            schemaTable.Columns.AddRange([
+                                            new DataColumn(SchemaTableColumn.AllowDBNull, typeof(bool)),
+                                            new DataColumn(SchemaTableOptionalColumn.BaseCatalogName, typeof(string)),
+                                            new DataColumn(SchemaTableColumn.BaseColumnName, typeof(string)),
+                                            new DataColumn(SchemaTableColumn.BaseSchemaName, typeof(string)),
+                                            new DataColumn(SchemaTableOptionalColumn.BaseServerName, typeof(string)),
+                                            new DataColumn(SchemaTableColumn.BaseTableName, typeof(string)),
+                                            new DataColumn(SchemaTableColumn.ColumnName, typeof(string)),
+                                            new DataColumn(SchemaTableColumn.ColumnOrdinal, typeof(int)),
+                                            new DataColumn(SchemaTableColumn.ColumnSize, typeof(int)),
+                                            new DataColumn(SchemaTableColumn.DataType, typeof(Type)),
+                                            new DataColumn("DataTypeName", typeof(string)),
+                                            new DataColumn(SchemaTableColumn.IsAliased, typeof(bool)),
+                                            new DataColumn(SchemaTableOptionalColumn.IsAutoIncrement, typeof(bool)),
+                                            new DataColumn("IsColumnSet", typeof(bool)),
+                                            new DataColumn(SchemaTableColumn.IsExpression, typeof(bool)),
+                                            new DataColumn(SchemaTableOptionalColumn.IsHidden, typeof(bool)),
+                                            new DataColumn("IsIdentity", typeof(bool)),
+                                            new DataColumn(SchemaTableColumn.IsKey, typeof(bool)),
+                                            new DataColumn(SchemaTableColumn.IsLong, typeof(bool)),
+                                            new DataColumn(SchemaTableOptionalColumn.IsReadOnly, typeof(bool)),
+                                            new DataColumn(SchemaTableOptionalColumn.IsRowVersion, typeof(bool)),
+                                            new DataColumn(SchemaTableColumn.IsUnique, typeof(bool)),
+                                            new DataColumn(SchemaTableColumn.NumericPrecision, typeof(int)),
+                                            new DataColumn(SchemaTableColumn.NumericScale, typeof(int)),
+                                            new DataColumn(SchemaTableColumn.ProviderType, typeof(Type))
+                                         ]);
+
             return schemaTable;
         }
 
@@ -179,13 +183,12 @@ namespace FlatFiles
         {
             if (Reader.Read())
             {
-                values = null;  // reset cache
+                _values = null;  // reset cache
+
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         int IDataReader.RecordsAffected => 0;
@@ -203,6 +206,7 @@ namespace FlatFiles
         public bool GetBoolean(int i)
         {
             var values = GetValues();
+
             return (bool)values[i]!;
         }
 
@@ -214,6 +218,7 @@ namespace FlatFiles
         public byte GetByte(int i)
         {
             var values = GetValues();
+
             return (byte)values[i]!;
         }
 
@@ -226,15 +231,18 @@ namespace FlatFiles
         /// <param name="bufferoffset">The offset into the given buffer to start copying.</param>
         /// <param name="length">The maximum number of items to copy into the given buffer.</param>
         /// <returns>The number of bytes copied to the buffer.</returns>
-        public long GetBytes(int i, long fieldOffset, byte[] buffer, int bufferoffset, int length)
+        public long GetBytes(int i, long fieldOffset, byte[]? buffer, int bufferoffset, int length)
         {
             var values = GetValues();
             var bytes = (byte[])values[i]!;
-#if NET451
-            Array.Copy(bytes, fieldOffset, buffer, bufferoffset, length);
-#else
+
+            if (buffer == null)
+            {
+                return bytes.Length;
+            }
+
             Array.Copy(bytes, (int)fieldOffset, buffer, bufferoffset, length);
-#endif
+
             return Math.Min(bytes.Length - fieldOffset, length);
         }
 
@@ -246,6 +254,7 @@ namespace FlatFiles
         public char GetChar(int i)
         {
             var values = GetValues();
+
             return (char)values[i]!;
         }
 
@@ -258,19 +267,17 @@ namespace FlatFiles
         /// <param name="bufferoffset">The offset into the given buffer to start copying.</param>
         /// <param name="length">The maximum number of items to copy into the given buffer.</param>
         /// <returns>The number of chars copied to the buffer.</returns>
-        public long GetChars(int i, long fieldoffset, char[] buffer, int bufferoffset, int length)
+        public long GetChars(int i, long fieldoffset, char[]? buffer, int bufferoffset, int length)
         {
             if (buffer == null)
             {
                 throw new ArgumentNullException(nameof(buffer));
             }
+
             var values = GetValues();
             var chars = (char[])values[i]!;
-#if NET451
-            Array.Copy(chars, fieldoffset, buffer, bufferoffset, length);
-#else
             Array.Copy(chars, (int)fieldoffset, buffer, bufferoffset, length);
-#endif
+
             return Math.Min(chars.Length - fieldoffset, length);
         }
 
@@ -297,6 +304,7 @@ namespace FlatFiles
         public DateTime GetDateTime(int i)
         {
             var values = GetValues();
+
             return (DateTime)values[i]!;
         }
 
@@ -308,6 +316,7 @@ namespace FlatFiles
         public DateTimeOffset GetDateTimeOffset(int i)
         {
             var values = GetValues();
+
             return (DateTimeOffset)values[i]!;
         }
 
@@ -319,6 +328,7 @@ namespace FlatFiles
         public decimal GetDecimal(int i)
         {
             var values = GetValues();
+
             return (decimal)values[i]!;
         }
 
@@ -330,6 +340,7 @@ namespace FlatFiles
         public double GetDouble(int i)
         {
             var values = GetValues();
+
             return (double)values[i]!;
         }
 
@@ -351,6 +362,7 @@ namespace FlatFiles
         public float GetFloat(int i)
         {
             var values = GetValues();
+
             return (float)values[i]!;
         }
 
@@ -362,6 +374,7 @@ namespace FlatFiles
         public Guid GetGuid(int i)
         {
             var values = GetValues();
+
             return (Guid)values[i]!;
         }
 
@@ -373,6 +386,7 @@ namespace FlatFiles
         public short GetInt16(int i)
         {
             var values = GetValues();
+
             return (short)values[i]!;
         }
 
@@ -384,6 +398,7 @@ namespace FlatFiles
         public int GetInt32(int i)
         {
             var values = GetValues();
+
             return (int)values[i]!;
         }
 
@@ -395,6 +410,7 @@ namespace FlatFiles
         public long GetInt64(int i)
         {
             var values = GetValues();
+
             return (long)values[i]!;
         }
 
@@ -403,9 +419,9 @@ namespace FlatFiles
         /// </summary>
         /// <param name="i">The index of the column.</param>
         /// <returns>The name of the column at the given index.</returns>
-        public string? GetName(int i)
+        public string GetName(int i)
         {
-            return GetColumns()[i].ColumnName;
+            return GetColumns()[i].ColumnName!;
         }
 
         /// <summary>
@@ -426,6 +442,7 @@ namespace FlatFiles
         public sbyte GetSByte(int i)
         {
             var values = GetValues();
+
             return (sbyte)values[i]!;
         }
 
@@ -434,15 +451,17 @@ namespace FlatFiles
         /// </summary>
         /// <param name="i">The index of the value.</param>
         /// <returns>The string at the given index.</returns>
-        public string? GetString(int i)
+        public string GetString(int i)
         {
             var values = GetValues();
             var value = (string?)values[i];
+
             if (value == null && !Options.IsNullStringAllowed)
             {
                 throw new InvalidCastException();
             }
-            return value;
+
+            return value!;
         }
 
         /// <summary>
@@ -453,6 +472,7 @@ namespace FlatFiles
         public TimeSpan GetTimeSpan(int i)
         {
             var values = GetValues();
+
             return (TimeSpan)values[i]!;
         }
 
@@ -464,6 +484,7 @@ namespace FlatFiles
         public ushort GetUInt16(int i)
         {
             var values = GetValues();
+
             return (ushort)values[i]!;
         }
 
@@ -475,6 +496,7 @@ namespace FlatFiles
         public uint GetUInt32(int i)
         {
             var values = GetValues();
+
             return (uint)values[i]!;
         }
 
@@ -486,6 +508,7 @@ namespace FlatFiles
         public ulong GetUInt64(int i)
         {
             var values = GetValues();
+
             return (ulong)values[i]!;
         }
 
@@ -494,15 +517,17 @@ namespace FlatFiles
         /// </summary>
         /// <param name="i">The index of the value.</param>
         /// <returns>The value as an object at the given index.</returns>
-        public object? GetValue(int i)
+        public object GetValue(int i)
         {
             var values = GetValues();
             var value = values[i];
+
             if (value == null && Options.IsDBNullReturned)
             {
                 value = DBNull.Value;
             }
-            return value;
+
+            return value!;
         }
 
         /// <summary>
@@ -544,11 +569,12 @@ namespace FlatFiles
         /// </summary>
         /// <param name="name">The name of the column.</param>
         /// <returns>The value in the column with the given name.</returns>
-        public object? this[string name]
+        public object this[string name]
         {
             get 
             {
                 var index = GetColumns().GetOrdinal(name);
+
                 return GetValue(index);
             }
         }
@@ -558,22 +584,20 @@ namespace FlatFiles
         /// </summary>
         /// <param name="i">The index of the value.</param>
         /// <returns>The value at the given index.</returns>
-        public object? this[int i]
-        {
-            get { return GetValue(i); }
-        }
+        public object this[int i] => GetValue(i);
 
         private ISchema GetSchema()
         {
-            if (schema == null)
+            if (_schema == null)
             {
-                schema = Reader.GetSchema();
-                if (schema == null)
+                _schema = Reader.GetSchema();
+                if (_schema == null)
                 {
                     throw new NullReferenceException();
                 }
             }
-            return schema;
+
+            return _schema;
         }
 
         private ColumnCollection GetColumns()
@@ -583,33 +607,33 @@ namespace FlatFiles
 
         private ColumnCollection GetColumns(ISchema schema)
         {
-            if (columns == null)
+            if (_columns == null)
             {
-                columns = new ColumnCollection();
-                foreach (ColumnDefinition column in schema.ColumnDefinitions)
+                _columns = new ColumnCollection();
+                foreach (var column in schema.ColumnDefinitions)
                 {
                     if (!column.IsIgnored)
                     {
-                        columns.AddColumn(column);
+                        _columns.AddColumn(column);
                     }
                 }
             }
-            return columns;
+
+            return _columns;
         }
 
         private object?[] GetValues()
         {
-            if (values == null)
+            if (_values == null)
             {
-                values = Reader.GetValues();
-                if (values == null)
+                _values = Reader.GetValues();
+                if (_values == null)
                 {
                     throw new NullReferenceException();
                 }
             }
-            return values;
+
+            return _values;
         }
     }
 }
-
-#endif

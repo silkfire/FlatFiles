@@ -79,22 +79,17 @@ namespace FlatFiles.TypeMapping
         }
     }
 
-    internal sealed class FixedLengthTypeMapper<TEntity> 
-        : IFixedLengthTypeMapper<TEntity>, 
-        IDynamicFixedLengthTypeMapper,
-        IMapperSource<TEntity>
+    internal sealed class FixedLengthTypeMapper<TEntity> : IFixedLengthTypeMapper<TEntity>, IDynamicFixedLengthTypeMapper, IMapperSource<TEntity>
     {
-        private readonly MemberLookup lookup = new();
-        private readonly Dictionary<IMemberMapping, Window> windowLookup = new();
-        private bool isOptimized = true;
+        private readonly MemberLookup _lookup = new();
+        private readonly Dictionary<IMemberMapping, Window> _windowLookup = new();
+        private bool _isOptimized = true;
 
-        public FixedLengthTypeMapper()
-            : this(null)
+        public FixedLengthTypeMapper() : this(null)
         {
         }
 
-        public FixedLengthTypeMapper(Func<object> factory)
-            : this(() => (TEntity)factory())
+        public FixedLengthTypeMapper(Func<object> factory) : this(() => (TEntity)factory())
         {
         }
 
@@ -102,7 +97,7 @@ namespace FlatFiles.TypeMapping
         {
             if (factory != null)
             {
-                lookup.SetFactory(factory);
+                _lookup.SetFactory(factory);
             }
         }
 
@@ -120,12 +115,12 @@ namespace FlatFiles.TypeMapping
 
         private IBooleanPropertyMapping GetBooleanMapping(IMemberAccessor member, Window window, bool isNullable)
         {
-            var mapping = lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
+            var mapping = _lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
             {
                 var column = new BooleanColumn(member.Name) { IsNullable = isNullable };
                 return new BooleanPropertyMapping(column, member, physicalIndex, logicalIndex);
             });
-            windowLookup[mapping] = window;
+            _windowLookup[mapping] = window;
             return mapping;
         }
 
@@ -137,12 +132,12 @@ namespace FlatFiles.TypeMapping
 
         private IByteArrayPropertyMapping GetByteArrayMapping(IMemberAccessor member, Window window)
         {
-            var mapping = lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
+            var mapping = _lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
             {
                 var column = new ByteArrayColumn(member.Name);
                 return new ByteArrayPropertyMapping(column, member, physicalIndex, logicalIndex);
             });
-            windowLookup[mapping] = window;
+            _windowLookup[mapping] = window;
             return mapping;
         }
 
@@ -160,12 +155,12 @@ namespace FlatFiles.TypeMapping
 
         private IBytePropertyMapping GetByteMapping(IMemberAccessor member, Window window, bool isNullable)
         {
-            var mapping = lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
+            var mapping = _lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
             {
                 var column = new ByteColumn(member.Name) { IsNullable = isNullable };
                 return new BytePropertyMapping(column, member, physicalIndex, logicalIndex);
             });
-            windowLookup[mapping] = window;
+            _windowLookup[mapping] = window;
             return mapping;
         }
 
@@ -183,12 +178,12 @@ namespace FlatFiles.TypeMapping
 
         private ISBytePropertyMapping GetSByteMapping(IMemberAccessor member, Window window, bool isNullable)
         {
-            var mapping = lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
+            var mapping = _lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
             {
                 var column = new SByteColumn(member.Name) { IsNullable = isNullable };
                 return new SBytePropertyMapping(column, member, physicalIndex, logicalIndex);
             });
-            windowLookup[mapping] = window;
+            _windowLookup[mapping] = window;
             return mapping;
         }
 
@@ -200,12 +195,12 @@ namespace FlatFiles.TypeMapping
 
         private ICharArrayPropertyMapping GetCharArrayMapping(IMemberAccessor member, Window window)
         {
-            var mapping = lookup.GetOrAddMember(member, (physicaIndex, logicalIndex) =>
+            var mapping = _lookup.GetOrAddMember(member, (physicaIndex, logicalIndex) =>
             {
                 var column = new CharArrayColumn(member.Name);
                 return new CharArrayPropertyMapping(column, member, physicaIndex, logicalIndex);
             });
-            windowLookup[mapping] = window;
+            _windowLookup[mapping] = window;
             return mapping;
         }
 
@@ -223,12 +218,12 @@ namespace FlatFiles.TypeMapping
 
         private ICharPropertyMapping GetCharMapping(IMemberAccessor member, Window window, bool isNullable)
         {
-            var mapping = lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
+            var mapping = _lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
             {
                 var column = new CharColumn(member.Name) { IsNullable = isNullable };
                 return new CharPropertyMapping(column, member, physicalIndex, logicalIndex);
             });
-            windowLookup[mapping] = window;
+            _windowLookup[mapping] = window;
             return mapping;
         }
 
@@ -246,12 +241,12 @@ namespace FlatFiles.TypeMapping
 
         private IDateTimePropertyMapping GetDateTimeMapping(IMemberAccessor member, Window window, bool isNullable)
         {
-            var mapping = lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
+            var mapping = _lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
             {
                 var column = new DateTimeColumn(member.Name) { IsNullable = isNullable };
                 return new DateTimePropertyMapping(column, member, physicalIndex, logicalIndex);
             });
-            windowLookup[mapping] = window;
+            _windowLookup[mapping] = window;
             return mapping;
         }
 
@@ -269,12 +264,12 @@ namespace FlatFiles.TypeMapping
 
         private IDateTimeOffsetPropertyMapping GetDateTimeOffsetMapping(IMemberAccessor member, Window window, bool isNullable)
         {
-            var mapping = lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
+            var mapping = _lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
             {
                 var column = new DateTimeOffsetColumn(member.Name) { IsNullable = isNullable };
                 return new DateTimeOffsetPropertyMapping(column, member, physicalIndex, logicalIndex);
             });
-            windowLookup[mapping] = window;
+            _windowLookup[mapping] = window;
             return mapping;
         }
 
@@ -292,12 +287,12 @@ namespace FlatFiles.TypeMapping
 
         private IDecimalPropertyMapping GetDecimalMapping(IMemberAccessor member, Window window, bool isNullable)
         {
-            var mapping = lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
+            var mapping = _lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
             {
                 var column = new DecimalColumn(member.Name) { IsNullable = isNullable };
                 return new DecimalPropertyMapping(column, member, physicalIndex, logicalIndex);
             });
-            windowLookup[mapping] = window;
+            _windowLookup[mapping] = window;
             return mapping;
         }
 
@@ -315,12 +310,12 @@ namespace FlatFiles.TypeMapping
 
         private IDoublePropertyMapping GetDoubleMapping(IMemberAccessor member, Window window, bool isNullable)
         {
-            var mapping = lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
+            var mapping = _lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
             {
                 var column = new DoubleColumn(member.Name) { IsNullable = isNullable };
                 return new DoublePropertyMapping(column, member, physicalIndex, logicalIndex);
             });
-            windowLookup[mapping] = window;
+            _windowLookup[mapping] = window;
             return mapping;
         }
 
@@ -338,12 +333,12 @@ namespace FlatFiles.TypeMapping
 
         private IGuidPropertyMapping GetGuidMapping(IMemberAccessor member, Window window, bool isNullable)
         {
-            var mapping = lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
+            var mapping = _lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
             {
                 var column = new GuidColumn(member.Name) { IsNullable = isNullable };
                 return new GuidPropertyMapping(column, member, physicalIndex, logicalIndex);
             });
-            windowLookup[mapping] = window;
+            _windowLookup[mapping] = window;
             return mapping;
         }
 
@@ -361,12 +356,12 @@ namespace FlatFiles.TypeMapping
 
         private IInt16PropertyMapping GetInt16Mapping(IMemberAccessor member, Window window, bool isNullable)
         {
-            var mapping = lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
+            var mapping = _lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
             {
                 var column = new Int16Column(member.Name) { IsNullable = isNullable };
                 return new Int16PropertyMapping(column, member, physicalIndex, logicalIndex);
             });
-            windowLookup[mapping] = window;
+            _windowLookup[mapping] = window;
             return mapping;
         }
 
@@ -384,12 +379,12 @@ namespace FlatFiles.TypeMapping
 
         private ITimeSpanPropertyMapping GetTimeSpanMapping(IMemberAccessor member, Window window, bool isNullable)
         {
-            var mapping = lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
+            var mapping = _lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
             {
                 var column = new TimeSpanColumn(member.Name) { IsNullable = isNullable };
                 return new TimeSpanPropertyMapping(column, member, physicalIndex, logicalIndex);
             });
-            windowLookup[mapping] = window;
+            _windowLookup[mapping] = window;
             return mapping;
         }
 
@@ -407,12 +402,12 @@ namespace FlatFiles.TypeMapping
 
         private IUInt16PropertyMapping GetUInt16Mapping(IMemberAccessor member, Window window, bool isNullable)
         {
-            var mapping = lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
+            var mapping = _lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
             {
                 var column = new UInt16Column(member.Name) { IsNullable = isNullable };
                 return new UInt16PropertyMapping(column, member, physicalIndex, logicalIndex);
             });
-            windowLookup[mapping] = window;
+            _windowLookup[mapping] = window;
             return mapping;
         }
 
@@ -430,12 +425,12 @@ namespace FlatFiles.TypeMapping
 
         private IInt32PropertyMapping GetInt32Mapping(IMemberAccessor member, Window window, bool isNullable)
         {
-            var mapping = lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
+            var mapping = _lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
             {
                 var column = new Int32Column(member.Name) { IsNullable = isNullable };
                 return new Int32PropertyMapping(column, member, physicalIndex, logicalIndex);
             });
-            windowLookup[mapping] = window;
+            _windowLookup[mapping] = window;
             return mapping;
         }
 
@@ -453,12 +448,12 @@ namespace FlatFiles.TypeMapping
 
         private IUInt32PropertyMapping GetUInt32Mapping(IMemberAccessor member, Window window, bool isNullable)
         {
-            var mapping = lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
+            var mapping = _lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
             {
                 var column = new UInt32Column(member.Name) { IsNullable = isNullable };
                 return new UInt32PropertyMapping(column, member, physicalIndex, logicalIndex);
             });
-            windowLookup[mapping] = window;
+            _windowLookup[mapping] = window;
             return mapping;
         }
 
@@ -476,12 +471,12 @@ namespace FlatFiles.TypeMapping
 
         private IInt64PropertyMapping GetInt64Mapping(IMemberAccessor member, Window window, bool isNullable)
         {
-            var mapping = lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
+            var mapping = _lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
             {
                 var column = new Int64Column(member.Name) { IsNullable = isNullable };
                 return new Int64PropertyMapping(column, member, physicalIndex, logicalIndex);
             });
-            windowLookup[mapping] = window;
+            _windowLookup[mapping] = window;
             return mapping;
         }
 
@@ -499,12 +494,12 @@ namespace FlatFiles.TypeMapping
 
         private IUInt64PropertyMapping GetUInt64Mapping(IMemberAccessor member, Window window, bool isNullable)
         {
-            var mapping = lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
+            var mapping = _lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
             {
                 var column = new UInt64Column(member.Name) { IsNullable = isNullable };
                 return new UInt64PropertyMapping(column, member, physicalIndex, logicalIndex);
             });
-            windowLookup[mapping] = window;
+            _windowLookup[mapping] = window;
             return mapping;
         }
 
@@ -522,12 +517,12 @@ namespace FlatFiles.TypeMapping
 
         private ISinglePropertyMapping GetSingleMapping(IMemberAccessor member, Window window, bool isNullable)
         {
-            var mapping = lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
+            var mapping = _lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
             {
                 var column = new SingleColumn(member.Name) { IsNullable = isNullable };
                 return new SinglePropertyMapping(column, member, physicalIndex, logicalIndex);
             });
-            windowLookup[mapping] = window;
+            _windowLookup[mapping] = window;
             return mapping;
         }
 
@@ -539,12 +534,12 @@ namespace FlatFiles.TypeMapping
 
         private IStringPropertyMapping GetStringMapping(IMemberAccessor member, Window window)
         {
-            var mapping = lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
+            var mapping = _lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
             {
                 var column = new StringColumn(member.Name);
                 return new StringPropertyMapping(column, member, physicalIndex, logicalIndex);
             });
-            windowLookup[mapping] = window;
+            _windowLookup[mapping] = window;
             return mapping;
         }
 
@@ -556,11 +551,11 @@ namespace FlatFiles.TypeMapping
 
         private IDelimitedComplexPropertyMapping GetComplexMapping<TProp>(IMemberAccessor member, IDelimitedTypeMapper<TProp> mapper, Window window)
         {
-            var mapping = lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
+            var mapping = _lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
             {
                 return new DelimitedComplexPropertyMapping<TProp>(mapper, member, physicalIndex, logicalIndex);
             });
-            windowLookup[mapping] = window;
+            _windowLookup[mapping] = window;
             return mapping;
         }
 
@@ -572,11 +567,11 @@ namespace FlatFiles.TypeMapping
 
         private IFixedLengthComplexPropertyMapping GetComplexMapping<TProp>(IMemberAccessor member, IFixedLengthTypeMapper<TProp> mapper, Window window)
         {
-            var mapping = lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
+            var mapping = _lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
             {
                 return new FixedLengthComplexPropertyMapping<TProp>(mapper, member, physicalIndex, logicalIndex);
             });
-            windowLookup[mapping] = window;
+            _windowLookup[mapping] = window;
             return mapping;
         }
 
@@ -597,19 +592,19 @@ namespace FlatFiles.TypeMapping
         private IEnumPropertyMapping<TEnum> GetEnumMapping<TEnum>(IMemberAccessor member, Window window, bool isNullable)
             where TEnum : Enum
         {
-            var mapping = lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
+            var mapping = _lookup.GetOrAddMember(member, (physicalIndex, logicalIndex) =>
             {
                 var column = new EnumColumn<TEnum>(member.Name) { IsNullable = isNullable };
                 return new EnumPropertyMapping<TEnum>(column, member, physicalIndex, logicalIndex);
             });
-            windowLookup[mapping] = window;
+            _windowLookup[mapping] = window;
             return mapping;
         }
 
         public IIgnoredMapping Ignored(Window window)
         {
-            var mapping = lookup.AddIgnored();
-            windowLookup[mapping] = window;
+            var mapping = _lookup.AddIgnored();
+            _windowLookup[mapping] = window;
             return mapping;
         }
 
@@ -620,11 +615,11 @@ namespace FlatFiles.TypeMapping
             {
                 throw new ArgumentException(Resources.BlankColumnName, nameof(column));
             }
-            var mapping = lookup.GetOrAddCustomMapping(columnName, (physicalIndex, logicalIndex) =>
+            var mapping = _lookup.GetOrAddCustomMapping(columnName, (physicalIndex, logicalIndex) =>
             {
                 return new CustomMapping<TEntity>(column, physicalIndex, logicalIndex);
             });
-            windowLookup[mapping] = window;
+            _windowLookup[mapping] = window;
             return mapping;
         }
 
@@ -639,13 +634,11 @@ namespace FlatFiles.TypeMapping
             return typedReader.ReadAll();
         }
 
-#if !NET451 && !NETSTANDARD1_6 && !NETSTANDARD2_0
         public IAsyncEnumerable<TEntity> ReadAsync(TextReader reader, FixedLengthOptions? options = null)
         {
             var typedReader = GetReader(reader, options);
             return typedReader.ReadAllAsync();
         }
-#endif
 
         public IFixedLengthTypedReader<TEntity> GetReader(TextReader reader, FixedLengthOptions? options = null)
         {
@@ -656,7 +649,7 @@ namespace FlatFiles.TypeMapping
 
         private FixedLengthTypedReader<TEntity> GetTypedReader(FixedLengthReader reader)
         {
-            var mapper = new Mapper<TEntity>(lookup, GetCodeGenerator());
+            var mapper = new Mapper<TEntity>(_lookup, GetCodeGenerator());
             return new FixedLengthTypedReader<TEntity>(reader, mapper);
         }
 
@@ -680,7 +673,6 @@ namespace FlatFiles.TypeMapping
             return typedWriter.WriteAllAsync(entities);
         }
 
-#if !NET451 && !NETSTANDARD1_6 && !NETSTANDARD2_0
         public Task WriteAsync(TextWriter writer, IAsyncEnumerable<TEntity> entities, FixedLengthOptions? options = null)
         {
             if (entities == null)
@@ -690,7 +682,6 @@ namespace FlatFiles.TypeMapping
             var typedWriter = GetWriter(writer, options);
             return typedWriter.WriteAllAsync(entities);
         }
-#endif
 
         public ITypedWriter<TEntity> GetWriter(TextWriter writer, FixedLengthOptions? options = null)
         {
@@ -701,7 +692,7 @@ namespace FlatFiles.TypeMapping
 
         private TypedWriter<TEntity> GetTypedWriter(IWriterWithMetadata writer)
         {
-            var mapper = new Mapper<TEntity>(lookup, GetCodeGenerator());
+            var mapper = new Mapper<TEntity>(_lookup, GetCodeGenerator());
             return new TypedWriter<TEntity>(writer, mapper);
         }
 
@@ -713,11 +704,11 @@ namespace FlatFiles.TypeMapping
         private FixedLengthSchema GetSchemaInternal()
         {
             var schema = new FixedLengthSchema();
-            var mappings = lookup.GetMappings();
+            var mappings = _lookup.GetMappings();
             foreach (IMemberMapping mapping in mappings)
             {
                 var column = mapping.ColumnDefinition;
-                var window = windowLookup[mapping];
+                var window = _windowLookup[mapping];
                 schema.AddColumn(column, window);
             }
             return schema;
@@ -902,14 +893,12 @@ namespace FlatFiles.TypeMapping
             return untypedReader.ReadAll();
         }
 
-#if !NET451 && !NETSTANDARD1_6 && !NETSTANDARD2_0
         IAsyncEnumerable<object> IDynamicFixedLengthTypeMapper.ReadAsync(TextReader reader, FixedLengthOptions? options)
         {
             IDynamicFixedLengthTypeMapper untypedMapper = this;
             var untypedReader = untypedMapper.GetReader(reader, options);
             return untypedReader.ReadAllAsync();
         }
-#endif
 
         IFixedLengthTypedReader<object> IDynamicFixedLengthTypeMapper.GetReader(TextReader reader, FixedLengthOptions? options)
         {
@@ -930,14 +919,12 @@ namespace FlatFiles.TypeMapping
             return untypedWriter.WriteAllAsync(entities);
         }
 
-#if !NET451 && !NETSTANDARD1_6 && !NETSTANDARD2_0
         Task IDynamicFixedLengthTypeMapper.WriteAsync(TextWriter writer, IAsyncEnumerable<object> entities, FixedLengthOptions? options)
         {
             IDynamicFixedLengthTypeMapper untypedMapper = this;
             var untypedWriter = untypedMapper.GetWriter(writer, options);
             return untypedWriter.WriteAllAsync(entities);
         }
-#endif
 
         ITypedWriter<object> IDynamicFixedLengthTypeMapper.GetWriter(TextWriter writer, FixedLengthOptions? options)
         {
@@ -946,7 +933,7 @@ namespace FlatFiles.TypeMapping
 
         public void OptimizeMapping(bool isOptimized = true)
         {
-            this.isOptimized = isOptimized;
+            _isOptimized = isOptimized;
         }
 
         void IDynamicFixedLengthTypeConfiguration.OptimizeMapping(bool isOptimized)
@@ -956,17 +943,17 @@ namespace FlatFiles.TypeMapping
 
         public void UseFactory<TOther>(Func<TOther> factory)
         {
-            lookup.SetFactory(factory);
+            _lookup.SetFactory(factory);
         }
 
         void IDynamicFixedLengthTypeConfiguration.UseFactory(Type entityType, Func<object> factory)
         {
-            lookup.SetFactory(entityType, factory);
+            _lookup.SetFactory(entityType, factory);
         }
 
         public IMapper<TEntity> GetMapper()
         {
-            return new Mapper<TEntity>(lookup, GetCodeGenerator());
+            return new Mapper<TEntity>(_lookup, GetCodeGenerator());
         }
 
         IMapper IMapperSource.GetMapper()
@@ -976,7 +963,7 @@ namespace FlatFiles.TypeMapping
 
         private ICodeGenerator GetCodeGenerator()
         {
-            return isOptimized 
+            return _isOptimized 
                 ? new EmitCodeGenerator() 
                 : new ReflectionCodeGenerator();
         }

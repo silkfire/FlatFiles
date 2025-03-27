@@ -29,10 +29,10 @@ namespace FlatFiles.Test
             var stringWriter = new StringWriter();
             var writer = injector.GetWriter(stringWriter);
 
-            var data = new List<Data>()
-            {
-                new Data() { Amount = 1M },
-                new Data() { Amount = 2M }
+            var data = new List<Data>
+                       {
+                new Data { Amount = 1M },
+                new Data { Amount = 2M }
             };
 
             writer.WriteAll(data);

@@ -14,35 +14,35 @@ namespace FlatFiles.Test
         {
             const string message = @"Tom,Hanselman,2016-06-0426         Walking Ice,Ace
 ";
-            StringReader stringReader = new StringReader(message);
-            DelimitedSchema outerSchema = new DelimitedSchema();
+            var stringReader = new StringReader(message);
+            var outerSchema = new DelimitedSchema();
             outerSchema.AddColumn(new StringColumn("FirstName"));
             outerSchema.AddColumn(new StringColumn("LastName"));
 
-            FixedLengthSchema innerSchema = new FixedLengthSchema();
+            var innerSchema = new FixedLengthSchema();
             innerSchema.AddColumn(new DateTimeColumn("StartDate") { InputFormat = "yyyy-MM-dd", OutputFormat = "yyyy-MM-dd" }, 10);
             innerSchema.AddColumn(new Int32Column("Age"), 2);
             innerSchema.AddColumn(new StringColumn("StageName"), new Window(20) { Alignment = FixedAlignment.RightAligned });
             outerSchema.AddColumn(new FixedLengthComplexColumn("PlayerStats", innerSchema));
             outerSchema.AddColumn(new StringColumn("Nickname"));
 
-            DelimitedReader reader = new DelimitedReader(stringReader, outerSchema);
+            var reader = new DelimitedReader(stringReader, outerSchema);
             Assert.IsTrue(reader.Read(), "A record should have been read.");
-            object[] values = reader.GetValues();
+            var values = reader.GetValues();
             Assert.AreEqual("Tom", values[0]);
             Assert.AreEqual("Hanselman", values[1]);
             Assert.IsInstanceOfType(values[2], typeof(object[]));
-            object[] playerValues = (object[])values[2];
+            var playerValues = (object[])values[2];
             Assert.AreEqual(new DateTime(2016, 06, 04), playerValues[0]);
             Assert.AreEqual(26, playerValues[1]);
             Assert.AreEqual("Walking Ice", playerValues[2]);
             Assert.AreEqual("Ace", values[3]);
 
-            StringWriter stringWriter = new StringWriter();
-            DelimitedWriter writer = new DelimitedWriter(stringWriter, outerSchema);
+            var stringWriter = new StringWriter();
+            var writer = new DelimitedWriter(stringWriter, outerSchema, new DelimitedOptions { RecordSeparator = "\n" });
             writer.Write(values);
 
-            string output = stringWriter.GetStringBuilder().ToString();
+            var output = stringWriter.GetStringBuilder().ToString();
             Assert.AreEqual(message, output);
         }
 
@@ -51,7 +51,7 @@ namespace FlatFiles.Test
         {
             const string message = @"Tom,Hanselman,2016-06-0426         Walking Ice,Ace
 ";
-            StringReader stringReader = new StringReader(message);
+            var stringReader = new StringReader(message);
 
             var nestedMapper = FixedLengthTypeMapper.Define<Stats>();
             nestedMapper.Property(s => s.StartDate, 10).InputFormat("yyyy-MM-dd").OutputFormat("yyyy-MM-dd");
@@ -70,17 +70,17 @@ namespace FlatFiles.Test
                 
             Assert.AreEqual("Tom", player.FirstName);
             Assert.AreEqual("Hanselman", player.LastName);
-            Stats statistics = player.Statistics;
+            var statistics = player.Statistics;
             Assert.IsNotNull(statistics);
             Assert.AreEqual(new DateTime(2016, 06, 04), statistics.StartDate);
             Assert.AreEqual(26, statistics.Age);
             Assert.AreEqual("Walking Ice", statistics.StageName);
             Assert.AreEqual("Ace", player.NickName);
 
-            StringWriter stringWriter = new StringWriter();
-            mapper.Write(stringWriter, new Player[] { player });
+            var stringWriter = new StringWriter();
+            mapper.Write(stringWriter, [ player ], new DelimitedOptions { RecordSeparator = "\n" });
             
-            string output = stringWriter.ToString();
+            var output = stringWriter.ToString();
             Assert.AreEqual(message, output);
         }
 
@@ -126,10 +126,10 @@ namespace FlatFiles.Test
             Assert.AreEqual(1, people.Count);
             var person = people[0];
             Assert.AreEqual("John", person.Name);
-            Pet pet1 = person.Pet1;
+            var pet1 = person.Pet1;
             Assert.AreEqual("Doggy", pet1.Name);
             Assert.AreEqual("dog01", pet1.UniversalPetIdentifier);
-            Pet pet2 = person.Pet2;
+            var pet2 = person.Pet2;
             Assert.AreEqual("Rain", pet2.Name);
             Assert.AreEqual("cat01", pet2.UniversalPetIdentifier);
         }
@@ -155,10 +155,10 @@ namespace FlatFiles.Test
             Assert.AreEqual(1, people.Count);
             var person = people[0];
             Assert.AreEqual("John", person.Name);
-            Pet pet1 = person.Pet1;
+            var pet1 = person.Pet1;
             Assert.AreEqual("Doggy", pet1.Name);
             Assert.AreEqual("dog01", pet1.UniversalPetIdentifier);
-            Pet pet2 = person.Pet2;
+            var pet2 = person.Pet2;
             Assert.AreEqual("Rain", pet2.Name);
             Assert.AreEqual("cat01", pet2.UniversalPetIdentifier);
         }

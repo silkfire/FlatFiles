@@ -19,11 +19,11 @@ namespace FlatFiles.Test
         {
             var stringWriter = new StringWriter();
             var injector = GetSchemaInjector();
-            var writer = new DelimitedWriter(stringWriter, injector);
-            writer.Write(new object[] { "First Batch", 2 });
-            writer.Write(new object[] { 1, "Bob Smith", new DateTime(2018, 06, 04), 12.34m });
-            writer.Write(new object[] { 2, "Jane Doe", new DateTime(2018, 06, 05), 34.56m });
-            writer.Write(new object[] { 46.9m, 23.45m, true });
+            var writer = new DelimitedWriter(stringWriter, injector, new DelimitedOptions { RecordSeparator = "\n" });
+            writer.Write(["First Batch", 2]);
+            writer.Write([1, "Bob Smith", new DateTime(2018, 06, 04), 12.34m]);
+            writer.Write([2, "Jane Doe", new DateTime(2018, 06, 05), 34.56m]);
+            writer.Write([46.9m, 23.45m, true]);
             string output = stringWriter.ToString();
             Assert.AreEqual(@"First Batch,2
 1,Bob Smith,20180604,12.34
@@ -108,7 +108,7 @@ namespace FlatFiles.Test
         {
             var stringWriter = new StringWriter();
             var injector = GetTypeMapperInjector();
-            var writer = injector.GetWriter(stringWriter);
+            var writer = injector.GetWriter(stringWriter, new DelimitedOptions { RecordSeparator = "\n" });
             writer.Write(new HeaderRecord { BatchName = "First Batch", RecordCount = 2 });
             writer.Write(new DataRecord { Id = 1, Name = "Bob Smith", CreatedOn = new DateTime(2018, 06, 04), TotalAmount = 12.34m });
             writer.Write(new DataRecord { Id = 2, Name = "Jane Doe", CreatedOn = new DateTime(2018, 06, 05), TotalAmount = 34.56m });
@@ -157,7 +157,7 @@ namespace FlatFiles.Test
         {
             var stringWriter = new StringWriter();
             var injector = GetTypeMapperInjector();
-            var writer = injector.GetWriter(stringWriter);
+            var writer = injector.GetWriter(stringWriter, new DelimitedOptions { RecordSeparator = "\n" });
             writer.Write(new HeaderRecord { BatchName = "First Batch", RecordCount = 2 });
             writer.Write(new DataRecord { Id = 1, Name = "Bob Smith", CreatedOn = new DateTime(2018, 06, 04), TotalAmount = 12.34m });
             writer.Write(new DataRecord { Id = 2, Name = "Jane Doe", CreatedOn = new DateTime(2018, 06, 05), TotalAmount = 34.56m });

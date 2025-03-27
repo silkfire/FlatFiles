@@ -8,20 +8,20 @@ namespace FlatFiles.Benchmark
 {
     public class EmitVsReflectionWriteTester
     {
-        private readonly IDelimitedTypeMapper<Person> mapper;
-        private readonly Person[] people;
+        private readonly IDelimitedTypeMapper<Person> _mapper;
+        private readonly Person[] _people;
 
         public EmitVsReflectionWriteTester()
         {
-            var mapper = DelimitedTypeMapper.Define<Person>(() => new Person());
+            var mapper = DelimitedTypeMapper.Define(() => new Person());
             mapper.Property(x => x.Name).ColumnName("Name");
             mapper.Property(x => x.IQ).ColumnName("IQ");
             mapper.Property(x => x.BirthDate).ColumnName("BirthDate");
             mapper.Property(x => x.TopSpeed).ColumnName("TopSpeed");
-            this.mapper = mapper;
+            _mapper = mapper;
 
-            people = Enumerable.Range(0, 10000).Select(i => new Person()
-            {
+            _people = Enumerable.Range(0, 10000).Select(i => new Person
+                                                            {
                 Name = "Susan",
                 IQ = 132,
                 BirthDate = new DateTime(1984, 3, 15),
@@ -32,18 +32,20 @@ namespace FlatFiles.Benchmark
         [Benchmark(Description = "SerializeEmit")]
         public string SerializeEmit()
         {
-            mapper.OptimizeMapping(true);
-            StringWriter writer = new StringWriter();
-            mapper.Write(writer, people);
+            _mapper.OptimizeMapping();
+            var writer = new StringWriter();
+            _mapper.Write(writer, _people);
+
             return writer.ToString();
         }
 
         [Benchmark(Description = "SerializeReflection")]
         public string SerializeReflection()
         {
-            mapper.OptimizeMapping(false);
-            StringWriter writer = new StringWriter();
-            mapper.Write(writer, people);
+            _mapper.OptimizeMapping(false);
+            var writer = new StringWriter();
+            _mapper.Write(writer, _people);
+
             return writer.ToString();
         }
 
