@@ -30,7 +30,7 @@ namespace FlatFiles
             {
                 return false;
             }
-            char current = queue.Peek();
+            var current = queue.Peek();
             Current = current;
             queue.Dequeue(1);
             record.Append(current);
@@ -49,7 +49,7 @@ namespace FlatFiles
                 return;
             }
             var segment = queue.PrepareBlock();
-            int length = reader.ReadBlock(segment.Array!, segment.Offset, segment.Count);
+            var length = reader.ReadBlock(segment.Array!, segment.Offset, segment.Count);
             if (length < segment.Count)
             {
                 isEndOfStreamFound = true;
@@ -64,7 +64,7 @@ namespace FlatFiles
                 return;
             }
             var segment = queue.PrepareBlock();
-            int length = await reader.ReadBlockAsync(segment.Array!, segment.Offset, segment.Count).ConfigureAwait(false);
+            var length = await reader.ReadBlockAsync(segment.Array!, segment.Offset, segment.Count).ConfigureAwait(false);
             if (length < segment.Count)
             {
                 isEndOfStreamFound = true;
@@ -74,7 +74,7 @@ namespace FlatFiles
 
         public bool IsWhitespace()
         {
-            if (queue.Count == 0 || !Char.IsWhiteSpace(queue.Peek()))
+            if (queue.Count == 0 || !char.IsWhiteSpace(queue.Peek()))
             {
                 return false;
             }
@@ -112,7 +112,7 @@ namespace FlatFiles
             {
                 return false;
             }
-            for (int position = 0; position != value.Length; ++position)
+            for (var position = 0; position != value.Length; ++position)
             {
                 if (queue.Peek(position) != value[position])
                 {
@@ -126,7 +126,7 @@ namespace FlatFiles
 
         public string GetRecord()
         {
-            string record = this.record.ToString();
+            var record = this.record.ToString();
             this.record.Clear();
             return record;
         }

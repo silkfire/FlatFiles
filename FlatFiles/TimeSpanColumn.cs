@@ -28,7 +28,7 @@ namespace FlatFiles
             {
                 throw new ArgumentNullException(nameof(column));
             }
-            return new ConversionColumn<double, TimeSpan>(column, TimeSpan.FromDays, ts => ts.TotalDays);
+            return new ConversionColumn<double, TimeSpan>(column, TimeSpan.FromDays, static ts => ts.TotalDays);
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace FlatFiles
             {
                 throw new ArgumentNullException(nameof(column));
             }
-            return new ConversionColumn<double, TimeSpan>(column, TimeSpan.FromHours, ts => ts.TotalHours);
+            return new ConversionColumn<double, TimeSpan>(column, TimeSpan.FromHours, static ts => ts.TotalHours);
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace FlatFiles
             {
                 throw new ArgumentNullException(nameof(column));
             }
-            return new ConversionColumn<double, TimeSpan>(column, TimeSpan.FromMilliseconds, ts => ts.TotalMilliseconds);
+            return new ConversionColumn<double, TimeSpan>(column, TimeSpan.FromMilliseconds, static ts => ts.TotalMilliseconds);
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace FlatFiles
             {
                 throw new ArgumentNullException(nameof(column));
             }
-            return new ConversionColumn<double, TimeSpan>(column, TimeSpan.FromMinutes, ts => ts.TotalMinutes);
+            return new ConversionColumn<double, TimeSpan>(column, TimeSpan.FromMinutes, static ts => ts.TotalMinutes);
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace FlatFiles
             {
                 throw new ArgumentNullException(nameof(column));
             }
-            return new ConversionColumn<double, TimeSpan>(column, TimeSpan.FromSeconds, ts => ts.TotalSeconds);
+            return new ConversionColumn<double, TimeSpan>(column, TimeSpan.FromSeconds, static ts => ts.TotalSeconds);
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace FlatFiles
             {
                 throw new ArgumentNullException(nameof(column));
             }
-            return new ConversionColumn<long, TimeSpan>(column, TimeSpan.FromTicks, ts => ts.Ticks);
+            return new ConversionColumn<long, TimeSpan>(column, TimeSpan.FromTicks, static ts => ts.Ticks);
         }
 
         /// <summary>

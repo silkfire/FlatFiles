@@ -20,7 +20,7 @@ namespace FlatFiles.Test
                     Alignment = FixedAlignment.RightAligned,
                     FillCharacter = '0'
                 })
-                .WithWriter((p, v) =>
+                .WithWriter(static (_, v) =>
                 {
                     return (long)Math.Floor(Math.Abs(v.Amount) * 100M);
                 });

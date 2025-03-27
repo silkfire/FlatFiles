@@ -11,8 +11,8 @@ namespace FlatFiles
         /// Creates a new <see cref="INullFormatter"/> that treats solid whitespace as null.
         /// </summary>
         public static readonly INullFormatter Default = new NullFormatter(
-            (ctx, v) => String.IsNullOrWhiteSpace(v), 
-            ctx => String.Empty
+            static (_, v) => string.IsNullOrWhiteSpace(v),
+            static _ => string.Empty
         );
 
         private readonly Func<IColumnContext?, string?, bool> isNullValue;
@@ -31,7 +31,7 @@ namespace FlatFiles
         /// <returns>An object for configuring how nulls are handled.</returns>
         public static NullFormatter ForValue(string? value)
         {
-            return new NullFormatter((ctx, v) => v == null || v == value, ctx => value);
+            return new NullFormatter((_, v) => v == null || v == value, _ => value);
         }
 
         /// <inheritdoc/>

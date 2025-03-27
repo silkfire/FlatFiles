@@ -16,7 +16,7 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestAddColumn_NullDefinition_Throws()
         {
-            FixedLengthSchema schema = new FixedLengthSchema();
+            var schema = new FixedLengthSchema();
             Assert.ThrowsException<ArgumentNullException>(() => schema.AddColumn(null, new Window(1)));
         }
 
@@ -26,7 +26,7 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestAddColumn_DuplicateColumnName_Throws()
         {
-            FixedLengthSchema schema = new FixedLengthSchema();
+            var schema = new FixedLengthSchema();
             schema.AddColumn(new StringColumn("Name"), new Window(1));
             Assert.ThrowsException<ArgumentException>(() => schema.AddColumn(new Int32Column("name"), new Window(1)));
         }
@@ -37,16 +37,16 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestParseValues_ParsesValues()
         {
-            FixedLengthSchema schema = new FixedLengthSchema();
+            var schema = new FixedLengthSchema();
             schema.AddColumn(new StringColumn("first_name"), new Window(10))
                   .AddColumn(new StringColumn("last_name"), new Window(10))
                   .AddColumn(new DateTimeColumn("birth_date") { InputFormat = "yyyyMMdd" }, new Window(8))
                   .AddColumn(new Int32Column("weight"), new Window(5));
-            string[] values = new string[] { "bob", "smith", "20120123", "185" };
+            string[] values = ["bob", "smith", "20120123", "185"];
             var executionContext = new FixedLengthExecutionContext(schema, new FixedLengthOptions());
             var recordContext = new FixedLengthRecordContext(executionContext);
-            object[] parsed = schema.ParseValues(recordContext, values);
-            object[] expected = new object[] { "bob", "smith", new DateTime(2012, 1, 23), 185 };
+            var parsed = schema.ParseValues(recordContext, values);
+            object[] expected = ["bob", "smith", new DateTime(2012, 1, 23), 185];
             CollectionAssert.AreEqual(expected, parsed);
         }
 
@@ -57,8 +57,8 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestColumnDefinitions_NoColumns_CountZero()
         {
-            FixedLengthSchema schema = new FixedLengthSchema();
-            ColumnCollection collection = schema.ColumnDefinitions;
+            var schema = new FixedLengthSchema();
+            var collection = schema.ColumnDefinitions;
             Assert.AreEqual(0, collection.Count);
         }
 
@@ -69,11 +69,11 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestColumnDefinitions_WithColumns_CountEqualsColumnCount()
         {
-            FixedLengthSchema schema = new FixedLengthSchema();
+            var schema = new FixedLengthSchema();
             schema.AddColumn(new Int32Column("id"), new Window(10))
                   .AddColumn(new StringColumn("name"), new Window(25))
                   .AddColumn(new DateTimeColumn("created"), new Window(10));
-            ColumnCollection collection = schema.ColumnDefinitions;
+            var collection = schema.ColumnDefinitions;
             Assert.AreEqual(3, collection.Count);
         }
 
@@ -83,14 +83,14 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestColumnDefinitions_FindByIndex()
         {
-            FixedLengthSchema schema = new FixedLengthSchema();
+            var schema = new FixedLengthSchema();
             IColumnDefinition id = new Int32Column("id");
             IColumnDefinition name = new StringColumn("name");
             IColumnDefinition created = new DateTimeColumn("created");
             schema.AddColumn(id, new Window(10))
                   .AddColumn(name, new Window(25))
                   .AddColumn(created, new Window(10));
-            ColumnCollection collection = schema.ColumnDefinitions;
+            var collection = schema.ColumnDefinitions;
             Assert.AreSame(id, collection[0]);
             Assert.AreSame(name, collection[1]);
             Assert.AreSame(created, collection[2]);
@@ -102,7 +102,7 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestColumnDefinitions_GetEnumerable_Explicit()
         {
-            FixedLengthSchema schema = new FixedLengthSchema();
+            var schema = new FixedLengthSchema();
             IColumnDefinition id = new Int32Column("id");
             IColumnDefinition name = new StringColumn("name");
             IColumnDefinition created = new DateTimeColumn("created");
@@ -110,7 +110,7 @@ namespace FlatFiles.Test
                 .AddColumn(name, new Window(25))
                 .AddColumn(created, new Window(10));
             IEnumerable collection = schema.ColumnDefinitions;
-            IEnumerator enumerator = collection.GetEnumerator();
+            var enumerator = collection.GetEnumerator();
         }
     }
 }

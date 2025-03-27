@@ -13,14 +13,14 @@ namespace FlatFiles.Benchmark
 
         public EmitVsReflectionWriteTester()
         {
-            var mapper = DelimitedTypeMapper.Define(() => new Person());
-            mapper.Property(x => x.Name).ColumnName("Name");
-            mapper.Property(x => x.IQ).ColumnName("IQ");
-            mapper.Property(x => x.BirthDate).ColumnName("BirthDate");
-            mapper.Property(x => x.TopSpeed).ColumnName("TopSpeed");
+            var mapper = DelimitedTypeMapper.Define(static () => new Person());
+            mapper.Property(static x => x.Name).ColumnName("Name");
+            mapper.Property(static x => x.IQ).ColumnName("IQ");
+            mapper.Property(static x => x.BirthDate).ColumnName("BirthDate");
+            mapper.Property(static x => x.TopSpeed).ColumnName("TopSpeed");
             _mapper = mapper;
 
-            _people = Enumerable.Range(0, 10000).Select(i => new Person
+            _people = Enumerable.Range(0, 10000).Select(static _ => new Person
                                                             {
                 Name = "Susan",
                 IQ = 132,

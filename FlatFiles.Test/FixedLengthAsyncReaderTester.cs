@@ -27,17 +27,17 @@ namespace FlatFiles.Test
         public async Task TestTypeMapper_Roundtrip()
         {
             var mapper = FixedLengthTypeMapper.Define<Person>();
-            mapper.Property(p => p.Id, new Window(25)).ColumnName("id");
-            mapper.Property(p => p.Name, new Window(100)).ColumnName("name");
-            mapper.Property(p => p.Created, new Window(8)).ColumnName("created").InputFormat("yyyyMMdd").OutputFormat("yyyyMMdd");
-            mapper.Property(p => p.IsActive, new Window(5)).ColumnName("active");
+            mapper.Property(static p => p.Id, new Window(25)).ColumnName("id");
+            mapper.Property(static p => p.Name, new Window(100)).ColumnName("name");
+            mapper.Property(static p => p.Created, new Window(8)).ColumnName("created").InputFormat("yyyyMMdd").OutputFormat("yyyyMMdd");
+            mapper.Property(static p => p.IsActive, new Window(5)).ColumnName("active");
 
             var bob = new Person { Id = 123, Name = "Bob", Created = new DateTime(2013, 1, 19), IsActive = true };
 
-            StringWriter stringWriter = new StringWriter();
-            await mapper.WriteAsync(stringWriter, new Person[] { bob }).ConfigureAwait(false);
+            var stringWriter = new StringWriter();
+            await mapper.WriteAsync(stringWriter, [bob]).ConfigureAwait(false);
 
-            StringReader stringReader = new StringReader(stringWriter.ToString());
+            var stringReader = new StringReader(stringWriter.ToString());
             var reader = mapper.GetReader(stringReader);
             var people = new List<Person>();
             while (await reader.ReadAsync().ConfigureAwait(false))
@@ -56,18 +56,18 @@ namespace FlatFiles.Test
         public async Task TestTypeMapper_Roundtrip_NoSeparator()
         {
             var mapper = FixedLengthTypeMapper.Define<Person>();
-            mapper.Property(p => p.Id, new Window(25)).ColumnName("id");
-            mapper.Property(p => p.Name, new Window(100)).ColumnName("name");
-            mapper.Property(p => p.Created, new Window(8)).ColumnName("created").InputFormat("yyyyMMdd").OutputFormat("yyyyMMdd");
-            mapper.Property(p => p.IsActive, new Window(5)).ColumnName("active");
+            mapper.Property(static p => p.Id, new Window(25)).ColumnName("id");
+            mapper.Property(static p => p.Name, new Window(100)).ColumnName("name");
+            mapper.Property(static p => p.Created, new Window(8)).ColumnName("created").InputFormat("yyyyMMdd").OutputFormat("yyyyMMdd");
+            mapper.Property(static p => p.IsActive, new Window(5)).ColumnName("active");
 
             var bob = new Person { Id = 123, Name = "Bob", Created = new DateTime(2013, 1, 19), IsActive = true };
             var options = new FixedLengthOptions { HasRecordSeparator = false };
 
-            StringWriter stringWriter = new StringWriter();
-            await mapper.WriteAsync(stringWriter, new Person[] { bob, bob }, options).ConfigureAwait(false);
+            var stringWriter = new StringWriter();
+            await mapper.WriteAsync(stringWriter, [bob, bob], options).ConfigureAwait(false);
 
-            StringReader stringReader = new StringReader(stringWriter.ToString());
+            var stringReader = new StringReader(stringWriter.ToString());
             var reader = mapper.GetReader(stringReader, options);
             var people = new List<Person>();
             while (await reader.ReadAsync().ConfigureAwait(false))

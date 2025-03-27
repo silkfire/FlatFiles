@@ -15,7 +15,7 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestCtor_NameBlank_Throws()
         {
-            Assert.ThrowsException<ArgumentException>(() => new StringColumn("    "));
+            Assert.ThrowsException<ArgumentException>(static () => new StringColumn("    "));
         }
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestCtor_SetsName_Trimmed()
         {
-            StringColumn column = new StringColumn(" Name   ");
+            var column = new StringColumn(" Name   ");
             Assert.AreEqual("Name", column.ColumnName);
         }
 
@@ -35,8 +35,8 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestParse_ValueBlank_ReturnsNull()
         {
-            StringColumn column = new StringColumn("name");
-            string actual = (string)column.Parse(null, "     ");
+            var column = new StringColumn("name");
+            var actual = (string)column.Parse(null, "     ");
             string expected = null;
             Assert.AreEqual(expected, actual);
         }
@@ -47,9 +47,9 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestParse_ValueTrimmed()
         {
-            StringColumn column = new StringColumn("name");
-            string actual = (string)column.Parse(null, "  abc 123 ");
-            string expected = "abc 123";
+            var column = new StringColumn("name");
+            var actual = (string)column.Parse(null, "  abc 123 ");
+            var expected = "abc 123";
             Assert.AreEqual(expected, actual);
         }
     }

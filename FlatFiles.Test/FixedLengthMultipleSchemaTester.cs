@@ -21,16 +21,18 @@ namespace FlatFiles.Test
             var injector = getSchemaInjector();
             var options = new FixedLengthOptions { Alignment = FixedAlignment.RightAligned, RecordSeparator = "\n" };
             var writer = new FixedLengthWriter(stringWriter, injector, options);
-            writer.Write(new object[] { "First Batch", 2 });
-            writer.Write(new object[] { 1, "Bob Smith", new DateTime(2018, 06, 04), 12.34m });
-            writer.Write(new object[] { 2, "Jane Doe", new DateTime(2018, 06, 05), 34.56m });
-            writer.Write(new object[] { 46.9m, 23.45m, true });
+            writer.Write(["First Batch", 2]);
+            writer.Write([1, "Bob Smith", new DateTime(2018, 06, 04), 12.34m]);
+            writer.Write([2, "Jane Doe", new DateTime(2018, 06, 05), 34.56m]);
+            writer.Write([46.9m, 23.45m, true]);
             var output = stringWriter.ToString();
-            Assert.AreEqual(@"              First Batch  2
-         1                Bob Smith  20180604     12.34
-         2                 Jane Doe  20180605     34.56
-      46.9     23.45 True
-", output);
+            Assert.AreEqual("""
+                                          First Batch  2
+                                     1                Bob Smith  20180604     12.34
+                                     2                 Jane Doe  20180605     34.56
+                                  46.9     23.45 True
+
+                            """, output);
 
 
             var stringReader = new StringReader(output);
@@ -72,8 +74,8 @@ namespace FlatFiles.Test
         private FixedLengthSchemaInjector getSchemaInjector()
         {
             var injector = new FixedLengthSchemaInjector();
-            injector.When(values => values.Length == 2).Use(getHeaderSchema());
-            injector.When(values => values.Length == 3).Use(getFooterSchema());
+            injector.When(static values => values.Length == 2).Use(getHeaderSchema());
+            injector.When(static values => values.Length == 3).Use(getFooterSchema());
             injector.WithDefault(getRecordSchema());
             return injector;
         }
@@ -81,8 +83,8 @@ namespace FlatFiles.Test
         private FixedLengthSchemaSelector getSchemaSelector()
         {
             var selector = new FixedLengthSchemaSelector();
-            selector.When(values => values.Length == 28).Use(getHeaderSchema());
-            selector.When(values => values.Length == 25).Use(getFooterSchema());
+            selector.When(static values => values.Length == 28).Use(getHeaderSchema());
+            selector.When(static values => values.Length == 25).Use(getFooterSchema());
             selector.WithDefault(getRecordSchema());
             return selector;
         }
@@ -117,11 +119,13 @@ namespace FlatFiles.Test
             writer.Write(new DataRecord { Id = 2, Name = "Jane Doe", CreatedOn = new DateTime(2018, 06, 05), TotalAmount = 34.56m });
             writer.Write(new FooterRecord { TotalAmount = 46.9m, AverageAmount = 23.45m, IsCriteriaMet = true });
             var output = stringWriter.ToString();
-            Assert.AreEqual(@"              First Batch  2
-         1                Bob Smith  20180604     12.34
-         2                 Jane Doe  20180605     34.56
-      46.9     23.45 True
-", output);
+            Assert.AreEqual("""
+                                          First Batch  2
+                                     1                Bob Smith  20180604     12.34
+                                     2                 Jane Doe  20180605     34.56
+                                  46.9     23.45 True
+
+                            """, output);
 
             var selector = getTypeMapperSelector();
             var stringReader = new StringReader(output);
@@ -172,7 +176,7 @@ namespace FlatFiles.Test
             var stringReader = new StringReader("What's this weird thing?");
             var selector = getSchemaSelector();
             var reader = new FixedLengthReader(stringReader, selector);
-            reader.RecordError += (o, e) => e.IsHandled = true;
+            reader.RecordError += static (_, e) => e.IsHandled = true;
             Assert.IsFalse(reader.Read());
         }
 
@@ -180,8 +184,8 @@ namespace FlatFiles.Test
         {
             var selector = new FixedLengthTypeMapperSelector();
             selector.WithDefault(getRecordTypeMapper());
-            selector.When(x => x.Length == 28).Use(getHeaderTypeMapper());
-            selector.When(x => x.Length == 25).Use(getFooterTypeMapper());
+            selector.When(static x => x.Length == 28).Use(getHeaderTypeMapper());
+            selector.When(static x => x.Length == 25).Use(getFooterTypeMapper());
             return selector;
         }
 
@@ -196,28 +200,28 @@ namespace FlatFiles.Test
 
         private static IFixedLengthTypeMapper<HeaderRecord> getHeaderTypeMapper()
         {
-            var mapper = FixedLengthTypeMapper.Define(() => new HeaderRecord());
-            mapper.Property(x => x.BatchName, 25);
-            mapper.Property(x => x.RecordCount, 3);
+            var mapper = FixedLengthTypeMapper.Define(static () => new HeaderRecord());
+            mapper.Property(static x => x.BatchName, 25);
+            mapper.Property(static x => x.RecordCount, 3);
             return mapper;
         }
 
         private static IFixedLengthTypeMapper<DataRecord> getRecordTypeMapper()
         {
-            var mapper = FixedLengthTypeMapper.Define(() => new DataRecord());
-            mapper.Property(x => x.Id, new Window(10) { Alignment = FixedAlignment.RightAligned });
-            mapper.Property(x => x.Name, 25);
-            mapper.Property(x => x.CreatedOn, 10).InputFormat("yyyyMMdd").OutputFormat("yyyyMMdd");
-            mapper.Property(x => x.TotalAmount, 10);
+            var mapper = FixedLengthTypeMapper.Define(static () => new DataRecord());
+            mapper.Property(static x => x.Id, new Window(10) { Alignment = FixedAlignment.RightAligned });
+            mapper.Property(static x => x.Name, 25);
+            mapper.Property(static x => x.CreatedOn, 10).InputFormat("yyyyMMdd").OutputFormat("yyyyMMdd");
+            mapper.Property(static x => x.TotalAmount, 10);
             return mapper;
         }
 
         private IFixedLengthTypeMapper<FooterRecord> getFooterTypeMapper()
         {
-            var mapper = FixedLengthTypeMapper.Define(() => new FooterRecord());
-            mapper.Property(x => x.TotalAmount, 10);
-            mapper.Property(x => x.AverageAmount, 10);
-            mapper.Property(x => x.IsCriteriaMet, 5);
+            var mapper = FixedLengthTypeMapper.Define(static () => new FooterRecord());
+            mapper.Property(static x => x.TotalAmount, 10);
+            mapper.Property(static x => x.AverageAmount, 10);
+            mapper.Property(static x => x.IsCriteriaMet, 5);
             return mapper;
         }
 
@@ -242,9 +246,9 @@ namespace FlatFiles.Test
             trailerMapping.CustomMapping(new Int64Column("RecordCount"), 10).WithWriter(writeProperty);
 
             var selector = new FixedLengthTypeMapperInjector();
-            selector.When(x => x is Header).Use(headerMapping);
-            selector.When(x => x is DetailRow).Use(detailMapping);
-            selector.When(x => x is Trailer).Use(trailerMapping);
+            selector.When(static x => x is Header).Use(headerMapping);
+            selector.When(static x => x is DetailRow).Use(detailMapping);
+            selector.When(static x => x is Trailer).Use(trailerMapping);
 
             var stringWriter = new StringWriter();
             var writer = selector.GetWriter(stringWriter, new FixedLengthOptions { RecordSeparator = "\n" });
@@ -279,11 +283,13 @@ namespace FlatFiles.Test
             writer.Write(detail2);
             writer.Write(trailer);
 
-            var expected = @"File-2    20221204  
-3333      Customer1           20221204  12.32     
-9999      Customer2           20221204  20.32     
-1         
-";
+            var expected = """
+                           File-2    20221204  
+                           3333      Customer1           20221204  12.32     
+                           9999      Customer2           20221204  20.32     
+                           1         
+
+                           """;
             Assert.AreEqual(expected, stringWriter.ToString());
         }
 

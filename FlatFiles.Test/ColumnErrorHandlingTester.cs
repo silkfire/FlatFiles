@@ -10,14 +10,14 @@ namespace FlatFiles.Test
         [TestMethod]
         public void ShouldSubstituteBadValues_CSV()
         {
-            const string data = @"ABC,2018-02-30,{1234-5678-9123-000000}";
+            const string data = "ABC,2018-02-30,{1234-5678-9123-000000}";
             var stringReader = new StringReader(data);
             var schema = new DelimitedSchema();
             schema.AddColumn(new Int32Column("Int32"));
             schema.AddColumn(new DateTimeColumn("DateTime"));
             schema.AddColumn(new GuidColumn("Guid"));
             var csvReader = new DelimitedReader(stringReader, schema);
-            csvReader.ColumnError += (sender, e) =>
+            csvReader.ColumnError += static (_, e) =>
             {
                 if (e.ColumnContext.ColumnDefinition.ColumnName == "Int32")
                 {
@@ -45,14 +45,14 @@ namespace FlatFiles.Test
         [TestMethod]
         public void ShouldSubstituteBadValues_FixedLength()
         {
-            const string data = @"ABC  2018-02-30{1234-5678-9123-000000}         ";
+            const string data = "ABC  2018-02-30{1234-5678-9123-000000}         ";
             var stringReader = new StringReader(data);
             var schema = new FixedLengthSchema();
             schema.AddColumn(new Int32Column("Int32"), 5);
             schema.AddColumn(new DateTimeColumn("DateTime"), 10);
             schema.AddColumn(new GuidColumn("Guid"), 32);
             var csvReader = new FixedLengthReader(stringReader, schema);
-            csvReader.ColumnError += (sender, e) =>
+            csvReader.ColumnError += static (_, e) =>
             {
                 if (e.ColumnContext.ColumnDefinition.ColumnName == "Int32")
                 {

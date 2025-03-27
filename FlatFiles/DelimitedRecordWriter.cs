@@ -31,7 +31,7 @@ namespace FlatFiles
 
         public DelimitedSchema? ActualSchema => schema;
 
-        public DelimitedSchema? Schema => GetSchema(new object[0]);
+        public DelimitedSchema? Schema => GetSchema([]);
 
         public DelimitedOptions Options { get; }
 
@@ -45,7 +45,7 @@ namespace FlatFiles
 
         public void WriteRecord(object?[] values)
         {
-            string joined = FormatAndJoinValues(values);
+            var joined = FormatAndJoinValues(values);
             writer.Write(joined);
         }
 
@@ -70,7 +70,7 @@ namespace FlatFiles
             }
             var formattedValues = FormatValues(recordContext, values);
             EscapeValues(formattedValues);
-            var joined = String.Join(Options.Separator, formattedValues);
+            var joined = string.Join(Options.Separator, formattedValues);
             return joined;
         }
 
@@ -99,7 +99,7 @@ namespace FlatFiles
             if (schema == null)
             {
                 string[] results = new string[values.Length];
-                for (int index = 0; index != results.Length; ++index)
+                for (var index = 0; index != results.Length; ++index)
                 {
                     results[index] = ToString(values[index]);
                 }
@@ -111,12 +111,12 @@ namespace FlatFiles
 
         private static string ToString(object? value)
         {
-            return value?.ToString() ?? String.Empty;
+            return value?.ToString() ?? string.Empty;
         }
 
         private void EscapeValues(string[] values)
         {
-            for (int index = 0; index != values.Length; ++index)
+            for (var index = 0; index != values.Length; ++index)
             {
                 values[index] = Escape(values[index]);
             }
@@ -126,7 +126,7 @@ namespace FlatFiles
         {
             if (value == null)
             {
-                return String.Empty;
+                return string.Empty;
             }
             if (NeedsEscaped(value))
             {
@@ -146,12 +146,12 @@ namespace FlatFiles
                 return false;
             }
             // Don't escape empty strings.
-            if (value == String.Empty)
+            if (value == string.Empty)
             {
                 return false;
             }
             // Escape strings beginning or ending in whitespace.
-            if (Char.IsWhiteSpace(value[0]) || Char.IsWhiteSpace(value[value.Length - 1]))
+            if (char.IsWhiteSpace(value[0]) || char.IsWhiteSpace(value[value.Length - 1]))
             {
                 return true;
             }
@@ -196,7 +196,7 @@ namespace FlatFiles
         private string JoinSchema(DelimitedSchema schema)
         {
             var names = GetColumnNames(schema);
-            var joined = String.Join(Options.Separator, names);
+            var joined = string.Join(Options.Separator, names);
             return joined;
         }
 
@@ -204,7 +204,7 @@ namespace FlatFiles
         {
             var definitions = schema.ColumnDefinitions;
             string[] columnNames = new string[schema.ColumnDefinitions.Count];
-            for (int columnIndex = 0; columnIndex != columnNames.Length; ++columnIndex)
+            for (var columnIndex = 0; columnIndex != columnNames.Length; ++columnIndex)
             {
                 var column = definitions[columnIndex];
                 var columnName = column.ColumnName;

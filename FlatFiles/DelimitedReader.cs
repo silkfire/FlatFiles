@@ -274,7 +274,7 @@ namespace FlatFiles
         private DelimitedSchema CreateSchemaFromHeader(string[] columnNames)
         {
             var schema = new DelimitedSchema();
-            foreach (string columnName in columnNames)
+            foreach (var columnName in columnNames)
             {
                 var column = new StringColumn(columnName)
                 {
@@ -418,7 +418,7 @@ namespace FlatFiles
                 throw new InvalidOperationException(Resources.ReadingWithErrors);
             }
             HandleSchema();
-            bool result = SkipInternal();
+            var result = SkipInternal();
             return result;
         }
 

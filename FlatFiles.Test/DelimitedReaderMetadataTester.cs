@@ -11,8 +11,8 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestReader_WithSchema_NoFilter_LogicalRecordsOnly()
         {
-            var mapper = DelimitedTypeMapper.Define(() => new Person());
-            mapper.Property(x => x.Name);
+            var mapper = DelimitedTypeMapper.Define(static () => new Person());
+            mapper.Property(static x => x.Name);
 
             var people = new[]
             {
@@ -21,14 +21,14 @@ namespace FlatFiles.Test
                 new Person { Name = "Jane" }
             };
 
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             mapper.Write(writer, people, new DelimitedOptions { IsFirstRecordSchema = true });
-            string output = writer.ToString();
+            var output = writer.ToString();
 
             mapper.CustomMapping(new RecordNumberColumn("RecordNumber"))
-                .WithReader((p, v) => p.RecordNumber = (int)v)
-                .WithWriter(p => p.RecordNumber);
-            StringReader reader = new StringReader(output);
+                .WithReader(static (p, v) => p.RecordNumber = (int)v)
+                .WithWriter(static p => p.RecordNumber);
+            var reader = new StringReader(output);
             var results = mapper.Read(reader, new DelimitedOptions { IsFirstRecordSchema = true }).ToArray();
             Assert.AreEqual(3, results.Length);
             Assert.AreEqual("Bob", results[0].Name);
@@ -42,8 +42,8 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestReader_WithSchema_WithFilter_LogicalRecordsOnly()
         {
-            var mapper = DelimitedTypeMapper.Define(() => new Person());
-            mapper.Property(x => x.Name);
+            var mapper = DelimitedTypeMapper.Define(static () => new Person());
+            mapper.Property(static x => x.Name);
 
             var people = new[]
             {
@@ -52,17 +52,17 @@ namespace FlatFiles.Test
                 new Person { Name = "Jane" }
             };
 
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             mapper.Write(writer, people, new DelimitedOptions { IsFirstRecordSchema = true });
-            string output = writer.ToString();
+            var output = writer.ToString();
 
             mapper.CustomMapping(new RecordNumberColumn("RecordNumber"))
-                .WithReader((p, v) => p.RecordNumber = (int)v)
-                .WithWriter(p => p.RecordNumber);
-            StringReader stringReader = new StringReader(output);
+                .WithReader(static (p, v) => p.RecordNumber = (int)v)
+                .WithWriter(static p => p.RecordNumber);
+            var stringReader = new StringReader(output);
             var options = new DelimitedOptions { IsFirstRecordSchema = true };
             var reader = mapper.GetReader(stringReader, options);
-            reader.RecordRead += (sender, e) =>
+            reader.RecordRead += static (_, e) =>
             {
                 e.IsSkipped = e.Values.Length == 1 && e.Values[0] == "Tom";
             };
@@ -77,8 +77,8 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestReader_WithSchema_WithFilter_LineCount()
         {
-            var mapper = DelimitedTypeMapper.Define(() => new Person());
-            mapper.Property(x => x.Name);
+            var mapper = DelimitedTypeMapper.Define(static () => new Person());
+            mapper.Property(static x => x.Name);
 
             var people = new[]
             {
@@ -87,17 +87,17 @@ namespace FlatFiles.Test
                 new Person { Name = "Jane" }
             };
 
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             mapper.Write(writer, people, new DelimitedOptions { IsFirstRecordSchema = true });
-            string output = writer.ToString();
+            var output = writer.ToString();
 
             mapper.CustomMapping(new RecordNumberColumn("RecordNumber") { IncludeSchema = true, IncludeSkippedRecords = true })
-                .WithReader((p, v) => p.RecordNumber = (int)v)
-                .WithWriter(p => p.RecordNumber);
-            StringReader stringReader = new StringReader(output);
+                .WithReader(static (p, v) => p.RecordNumber = (int)v)
+                .WithWriter(static p => p.RecordNumber);
+            var stringReader = new StringReader(output);
             var options = new DelimitedOptions { IsFirstRecordSchema = true };
             var reader = mapper.GetReader(stringReader, options);
-            reader.RecordRead += (sender, e) =>
+            reader.RecordRead += static (_, e) =>
             {
                 e.IsSkipped = e.Values.Length == 1 && e.Values[0] == "Tom";
             };
@@ -112,8 +112,8 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestReader_WithSchema_NoFilter_LineCount()
         {
-            var mapper = DelimitedTypeMapper.Define(() => new Person());
-            mapper.Property(x => x.Name);
+            var mapper = DelimitedTypeMapper.Define(static () => new Person());
+            mapper.Property(static x => x.Name);
 
             var people = new[]
             {
@@ -122,14 +122,14 @@ namespace FlatFiles.Test
                 new Person { Name = "Jane" }
             };
 
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             mapper.Write(writer, people, new DelimitedOptions { IsFirstRecordSchema = true });
-            string output = writer.ToString();
+            var output = writer.ToString();
 
             mapper.CustomMapping(new RecordNumberColumn("RecordNumber") { IncludeSchema = true, IncludeSkippedRecords = true })
-                .WithReader((p, v) => p.RecordNumber = (int)v)
-                .WithWriter(p => p.RecordNumber);
-            StringReader reader = new StringReader(output);
+                .WithReader(static (p, v) => p.RecordNumber = (int)v)
+                .WithWriter(static p => p.RecordNumber);
+            var reader = new StringReader(output);
             var results = mapper.Read(reader, new DelimitedOptions { IsFirstRecordSchema = true }).ToArray();
             Assert.AreEqual(3, results.Length);
             Assert.AreEqual("Bob", results[0].Name);
@@ -143,8 +143,8 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestReader_WithSchema_SchemaNotCounted_WithFilter_LineCount()
         {
-            var mapper = DelimitedTypeMapper.Define(() => new Person());
-            mapper.Property(x => x.Name);
+            var mapper = DelimitedTypeMapper.Define(static () => new Person());
+            mapper.Property(static x => x.Name);
 
             var people = new[]
             {
@@ -153,17 +153,17 @@ namespace FlatFiles.Test
                 new Person { Name = "Jane" }
             };
 
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             mapper.Write(writer, people, new DelimitedOptions { IsFirstRecordSchema = true });
-            string output = writer.ToString();
+            var output = writer.ToString();
 
             mapper.CustomMapping(new RecordNumberColumn("RecordNumber") { IncludeSchema = false, IncludeSkippedRecords = true })
-                .WithReader((p, v) => p.RecordNumber = (int)v)
-                .WithWriter(p => p.RecordNumber);
-            StringReader stringReader = new StringReader(output);
+                .WithReader(static (p, v) => p.RecordNumber = (int)v)
+                .WithWriter(static p => p.RecordNumber);
+            var stringReader = new StringReader(output);
             var options = new DelimitedOptions { IsFirstRecordSchema = true };
             var reader = mapper.GetReader(stringReader, options);
-            reader.RecordRead += (sender, e) =>
+            reader.RecordRead += static (_, e) =>
             {
                 e.IsSkipped = e.Values.Length == 1 && e.Values[0] == "Tom";
             };
@@ -178,8 +178,8 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestReader_WithSchema_SchemaNotCounted_NoFilter_LineCountMinusOne()
         {
-            var mapper = DelimitedTypeMapper.Define(() => new Person());
-            mapper.Property(x => x.Name);
+            var mapper = DelimitedTypeMapper.Define(static () => new Person());
+            mapper.Property(static x => x.Name);
 
             var people = new[]
             {
@@ -188,14 +188,14 @@ namespace FlatFiles.Test
                 new Person { Name = "Jane" }
             };
 
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             mapper.Write(writer, people, new DelimitedOptions { IsFirstRecordSchema = true });
-            string output = writer.ToString();
+            var output = writer.ToString();
 
             mapper.CustomMapping(new RecordNumberColumn("RecordNumber") { IncludeSchema = false, IncludeSkippedRecords = true })
-                .WithReader((p, v) => p.RecordNumber = (int)v)
-                .WithWriter(p => p.RecordNumber);
-            StringReader reader = new StringReader(output);
+                .WithReader(static (p, v) => p.RecordNumber = (int)v)
+                .WithWriter(static p => p.RecordNumber);
+            var reader = new StringReader(output);
             var results = mapper.Read(reader, new DelimitedOptions { IsFirstRecordSchema = true }).ToArray();
             Assert.AreEqual(3, results.Length);
             Assert.AreEqual("Bob", results[0].Name);
@@ -209,8 +209,8 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestReader_WithSchema_NoFilter_WithIgnoredColumn_LogicalRecordsOnly()
         {
-            var mapper = DelimitedTypeMapper.Define(() => new Person());
-            mapper.Property(x => x.Name);
+            var mapper = DelimitedTypeMapper.Define(static () => new Person());
+            mapper.Property(static x => x.Name);
             mapper.Ignored();
 
             var people = new[]
@@ -220,14 +220,14 @@ namespace FlatFiles.Test
                 new Person { Name = "Jane" }
             };
 
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             mapper.Write(writer, people, new DelimitedOptions { IsFirstRecordSchema = true });
-            string output = writer.ToString();
+            var output = writer.ToString();
 
             mapper.CustomMapping(new RecordNumberColumn("RecordNumber"))
-                .WithReader((p, v) => p.RecordNumber = (int)v)
-                .WithWriter(p => p.RecordNumber);
-            StringReader reader = new StringReader(output);
+                .WithReader(static (p, v) => p.RecordNumber = (int)v)
+                .WithWriter(static p => p.RecordNumber);
+            var reader = new StringReader(output);
             var results = mapper.Read(reader, new DelimitedOptions { IsFirstRecordSchema = true }).ToArray();
             Assert.AreEqual(3, results.Length);
             Assert.AreEqual("Bob", results[0].Name);
@@ -241,8 +241,8 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestReader_WithSchema_WithIgnoredColumn_WithFilter_LogicalRecordsOnly()
         {
-            var mapper = DelimitedTypeMapper.Define(() => new Person());
-            mapper.Property(x => x.Name);
+            var mapper = DelimitedTypeMapper.Define(static () => new Person());
+            mapper.Property(static x => x.Name);
             mapper.Ignored();
 
             var people = new[]
@@ -252,17 +252,17 @@ namespace FlatFiles.Test
                 new Person { Name = "Jane" }
             };
 
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             mapper.Write(writer, people, new DelimitedOptions { IsFirstRecordSchema = true });
-            string output = writer.ToString();
+            var output = writer.ToString();
 
             mapper.CustomMapping(new RecordNumberColumn("RecordNumber"))
-                .WithReader((p, v) => p.RecordNumber = (int)v)
-                .WithWriter(p => p.RecordNumber);
-            StringReader stringReader = new StringReader(output);
+                .WithReader(static (p, v) => p.RecordNumber = (int)v)
+                .WithWriter(static p => p.RecordNumber);
+            var stringReader = new StringReader(output);
             var options = new DelimitedOptions { IsFirstRecordSchema = true };
             var reader = mapper.GetReader(stringReader, options);
-            reader.RecordRead += (sender, e) =>
+            reader.RecordRead += static (_, e) =>
             {
                 e.IsSkipped = e.Values.Length >= 1 && e.Values[0] == "Tom";
             };

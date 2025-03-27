@@ -12,12 +12,12 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestWriter_WithSchema_SchemaNotCounted()
         {
-            var outputMapper = FixedLengthTypeMapper.Define(() => new Person());
-            outputMapper.Property(x => x.Name, 10);
+            var outputMapper = FixedLengthTypeMapper.Define(static () => new Person());
+            outputMapper.Property(static x => x.Name, 10);
             outputMapper.CustomMapping(new RecordNumberColumn("RecordNumber"), 10)
-                .WithReader((p, v) => p.RecordNumber = (int)v)
-                .WithWriter(p => p.RecordNumber);
-            outputMapper.Property(x => x.CreatedOn, 10).OutputFormat("MM/dd/yyyy");
+                .WithReader(static (p, v) => p.RecordNumber = (int)v)
+                .WithWriter(static p => p.RecordNumber);
+            outputMapper.Property(static x => x.CreatedOn, 10).OutputFormat("MM/dd/yyyy");
 
             var people = new[]
             {
@@ -26,16 +26,16 @@ namespace FlatFiles.Test
                 new Person { Name = "Jane", CreatedOn = new DateTime(2018, 04, 27) }
             };
 
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             outputMapper.Write(writer, people, new FixedLengthOptions { IsFirstRecordHeader = true });
-            string output = writer.ToString();
+            var output = writer.ToString();
 
-            var inputMapper = FixedLengthTypeMapper.Define(() => new Person());
-            inputMapper.Property(x => x.Name, 10);
-            inputMapper.Property(x => x.RecordNumber, 10);
-            inputMapper.Property(x => x.CreatedOn, 10).InputFormat("MM/dd/yyyy");
+            var inputMapper = FixedLengthTypeMapper.Define(static () => new Person());
+            inputMapper.Property(static x => x.Name, 10);
+            inputMapper.Property(static x => x.RecordNumber, 10);
+            inputMapper.Property(static x => x.CreatedOn, 10).InputFormat("MM/dd/yyyy");
 
-            StringReader reader = new StringReader(output);
+            var reader = new StringReader(output);
             var results = inputMapper.Read(reader, new FixedLengthOptions { IsFirstRecordHeader = true }).ToArray();
             Assert.AreEqual(3, results.Length);
             Assert.AreEqual("Bob", results[0].Name);
@@ -52,12 +52,12 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestWriter_WithSchema_SchemaCounted()
         {
-            var outputMapper = FixedLengthTypeMapper.Define(() => new Person());
-            outputMapper.Property(x => x.Name, 10);
+            var outputMapper = FixedLengthTypeMapper.Define(static () => new Person());
+            outputMapper.Property(static x => x.Name, 10);
             outputMapper.CustomMapping(new RecordNumberColumn("RecordNumber") { IncludeSchema = true }, 10)
-                .WithReader((p, v) => p.RecordNumber = (int)v)
-                .WithWriter(p => p.RecordNumber);
-            outputMapper.Property(x => x.CreatedOn, 10).OutputFormat("MM/dd/yyyy");
+                .WithReader(static (p, v) => p.RecordNumber = (int)v)
+                .WithWriter(static p => p.RecordNumber);
+            outputMapper.Property(static x => x.CreatedOn, 10).OutputFormat("MM/dd/yyyy");
 
             var people = new[]
             {
@@ -66,16 +66,16 @@ namespace FlatFiles.Test
                 new Person { Name = "Jane", CreatedOn = new DateTime(2018, 04, 27) }
             };
 
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             outputMapper.Write(writer, people, new FixedLengthOptions { IsFirstRecordHeader = true });
-            string output = writer.ToString();
+            var output = writer.ToString();
 
-            var inputMapper = FixedLengthTypeMapper.Define(() => new Person());
-            inputMapper.Property(x => x.Name, 10);
-            inputMapper.Property(x => x.RecordNumber, 10);
-            inputMapper.Property(x => x.CreatedOn, 10).InputFormat("MM/dd/yyyy");
+            var inputMapper = FixedLengthTypeMapper.Define(static () => new Person());
+            inputMapper.Property(static x => x.Name, 10);
+            inputMapper.Property(static x => x.RecordNumber, 10);
+            inputMapper.Property(static x => x.CreatedOn, 10).InputFormat("MM/dd/yyyy");
 
-            StringReader reader = new StringReader(output);
+            var reader = new StringReader(output);
             var results = inputMapper.Read(reader, new FixedLengthOptions { IsFirstRecordHeader = true }).ToArray();
             Assert.AreEqual(3, results.Length);
             Assert.AreEqual("Bob", results[0].Name);
@@ -92,12 +92,12 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestWriter_NoSchema_SchemaNotCounted()
         {
-            var outputMapper = FixedLengthTypeMapper.Define(() => new Person());
-            outputMapper.Property(x => x.Name, 10);
+            var outputMapper = FixedLengthTypeMapper.Define(static () => new Person());
+            outputMapper.Property(static x => x.Name, 10);
             outputMapper.CustomMapping(new RecordNumberColumn("RecordNumber") { IncludeSchema = false }, 10)
-                .WithReader((p, v) => p.RecordNumber = (int)v)
-                .WithWriter(p => p.RecordNumber);
-            outputMapper.Property(x => x.CreatedOn, 10).OutputFormat("MM/dd/yyyy");
+                .WithReader(static (p, v) => p.RecordNumber = (int)v)
+                .WithWriter(static p => p.RecordNumber);
+            outputMapper.Property(static x => x.CreatedOn, 10).OutputFormat("MM/dd/yyyy");
 
             var people = new[]
             {
@@ -106,16 +106,16 @@ namespace FlatFiles.Test
                 new Person { Name = "Jane", CreatedOn = new DateTime(2018, 04, 27) }
             };
 
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             outputMapper.Write(writer, people, new FixedLengthOptions { IsFirstRecordHeader = true });
-            string output = writer.ToString();
+            var output = writer.ToString();
 
-            var inputMapper = FixedLengthTypeMapper.Define(() => new Person());
-            inputMapper.Property(x => x.Name, 10);
-            inputMapper.Property(x => x.RecordNumber, 10);
-            inputMapper.Property(x => x.CreatedOn, 10).InputFormat("MM/dd/yyyy");
+            var inputMapper = FixedLengthTypeMapper.Define(static () => new Person());
+            inputMapper.Property(static x => x.Name, 10);
+            inputMapper.Property(static x => x.RecordNumber, 10);
+            inputMapper.Property(static x => x.CreatedOn, 10).InputFormat("MM/dd/yyyy");
 
-            StringReader reader = new StringReader(output);
+            var reader = new StringReader(output);
             var results = inputMapper.Read(reader, new FixedLengthOptions { IsFirstRecordHeader = true }).ToArray();
             Assert.AreEqual(3, results.Length);
             Assert.AreEqual("Bob", results[0].Name);
@@ -132,14 +132,14 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestWriter_WithSchema_WithIgnoredColumns()
         {
-            var outputMapper = FixedLengthTypeMapper.Define(() => new Person());
-            outputMapper.Property(x => x.Name, 10);
+            var outputMapper = FixedLengthTypeMapper.Define(static () => new Person());
+            outputMapper.Property(static x => x.Name, 10);
             outputMapper.Ignored(1);
             outputMapper.CustomMapping(new RecordNumberColumn("RecordNumber") { IncludeSchema = true }, 10)
-                .WithReader((p, v) => p.RecordNumber = (int)v)
-                .WithWriter(p => p.RecordNumber);
+                .WithReader(static (p, v) => p.RecordNumber = (int)v)
+                .WithWriter(static p => p.RecordNumber);
             outputMapper.Ignored(1);
-            outputMapper.Property(x => x.CreatedOn, 10).OutputFormat("MM/dd/yyyy");
+            outputMapper.Property(static x => x.CreatedOn, 10).OutputFormat("MM/dd/yyyy");
 
             var people = new[]
             {
@@ -148,18 +148,18 @@ namespace FlatFiles.Test
                 new Person { Name = "Jane", CreatedOn = new DateTime(2018, 04, 27) }
             };
 
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             outputMapper.Write(writer, people, new FixedLengthOptions { IsFirstRecordHeader = true });
-            string output = writer.ToString();
+            var output = writer.ToString();
 
-            var inputMapper = FixedLengthTypeMapper.Define(() => new Person());
-            inputMapper.Property(x => x.Name, 10);
+            var inputMapper = FixedLengthTypeMapper.Define(static () => new Person());
+            inputMapper.Property(static x => x.Name, 10);
             inputMapper.Ignored(1);
-            inputMapper.Property(x => x.RecordNumber, 10);
+            inputMapper.Property(static x => x.RecordNumber, 10);
             inputMapper.Ignored(1);
-            inputMapper.Property(x => x.CreatedOn, 10).InputFormat("MM/dd/yyyy");
+            inputMapper.Property(static x => x.CreatedOn, 10).InputFormat("MM/dd/yyyy");
 
-            StringReader reader = new StringReader(output);
+            var reader = new StringReader(output);
             var results = inputMapper.Read(reader, new FixedLengthOptions { IsFirstRecordHeader = true }).ToArray();
             Assert.AreEqual(3, results.Length);
             Assert.AreEqual("Bob", results[0].Name);
@@ -176,14 +176,14 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestWriter_NoRecordSeparator_ValidRecordCounts()
         {
-            var outputMapper = FixedLengthTypeMapper.Define(() => new Person());
-            outputMapper.Property(x => x.Name, 10);
+            var outputMapper = FixedLengthTypeMapper.Define(static () => new Person());
+            outputMapper.Property(static x => x.Name, 10);
             outputMapper.Ignored(1);
             outputMapper.CustomMapping(new RecordNumberColumn("RecordNumber") { IncludeSchema = true }, 10)
-                .WithReader((p, v) => p.RecordNumber = (int)v)
-                .WithWriter(p => p.RecordNumber);
+                .WithReader(static (p, v) => p.RecordNumber = (int)v)
+                .WithWriter(static p => p.RecordNumber);
             outputMapper.Ignored(1);
-            outputMapper.Property(x => x.CreatedOn, 10).OutputFormat("MM/dd/yyyy");
+            outputMapper.Property(static x => x.CreatedOn, 10).OutputFormat("MM/dd/yyyy");
 
             var people = new[]
             {
@@ -192,22 +192,22 @@ namespace FlatFiles.Test
                 new Person { Name = "Jane", CreatedOn = new DateTime(2018, 04, 27) }
             };
 
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             outputMapper.Write(writer, people, new FixedLengthOptions
                                                {
                 IsFirstRecordHeader = true,
                 HasRecordSeparator = false
             });
-            string output = writer.ToString();
+            var output = writer.ToString();
 
-            var inputMapper = FixedLengthTypeMapper.Define(() => new Person());
-            inputMapper.Property(x => x.Name, 10);
+            var inputMapper = FixedLengthTypeMapper.Define(static () => new Person());
+            inputMapper.Property(static x => x.Name, 10);
             inputMapper.Ignored(1);
-            inputMapper.Property(x => x.RecordNumber, 10);
+            inputMapper.Property(static x => x.RecordNumber, 10);
             inputMapper.Ignored(1);
-            inputMapper.Property(x => x.CreatedOn, 10).InputFormat("MM/dd/yyyy");
+            inputMapper.Property(static x => x.CreatedOn, 10).InputFormat("MM/dd/yyyy");
 
-            StringReader reader = new StringReader(output);
+            var reader = new StringReader(output);
             var results = inputMapper.Read(reader, new FixedLengthOptions
                                                    {
                 IsFirstRecordHeader = true,
@@ -228,12 +228,12 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestWriter_WriteOnlyColumn_WithIgnoredColumn()
         {
-            var outputMapper = FixedLengthTypeMapper.Define(() => new Person());
-            outputMapper.Property(x => x.Name, 10);
+            var outputMapper = FixedLengthTypeMapper.Define(static () => new Person());
+            outputMapper.Property(static x => x.Name, 10);
             outputMapper.Ignored(1);
-            outputMapper.CustomMapping(new RecordNumberColumn("RecordNumber") { IncludeSchema = true }, 10).WithWriter((ctx, p) => ctx.RecordContext.PhysicalRecordNumber);
+            outputMapper.CustomMapping(new RecordNumberColumn("RecordNumber") { IncludeSchema = true }, 10).WithWriter(static (ctx, _) => ctx.RecordContext.PhysicalRecordNumber);
             outputMapper.Ignored(1);
-            outputMapper.Property(x => x.CreatedOn, 10).OutputFormat("MM/dd/yyyy");
+            outputMapper.Property(static x => x.CreatedOn, 10).OutputFormat("MM/dd/yyyy");
 
             var people = new[]
             {
@@ -242,18 +242,18 @@ namespace FlatFiles.Test
                 new Person { Name = "Jane", CreatedOn = new DateTime(2018, 04, 27) }
             };
 
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             outputMapper.Write(writer, people, new FixedLengthOptions { IsFirstRecordHeader = true });
-            string output = writer.ToString();
+            var output = writer.ToString();
 
-            var inputMapper = FixedLengthTypeMapper.Define(() => new Person());
-            inputMapper.Property(x => x.Name, 10);
+            var inputMapper = FixedLengthTypeMapper.Define(static () => new Person());
+            inputMapper.Property(static x => x.Name, 10);
             inputMapper.Ignored(1);
-            inputMapper.Property(x => x.RecordNumber, 10);
+            inputMapper.Property(static x => x.RecordNumber, 10);
             inputMapper.Ignored(1);
-            inputMapper.Property(x => x.CreatedOn, 10).InputFormat("MM/dd/yyyy");
+            inputMapper.Property(static x => x.CreatedOn, 10).InputFormat("MM/dd/yyyy");
 
-            StringReader reader = new StringReader(output);
+            var reader = new StringReader(output);
             var results = inputMapper.Read(reader, new FixedLengthOptions { IsFirstRecordHeader = true }).ToArray();
             Assert.AreEqual(3, results.Length);
             Assert.AreEqual("Bob", results[0].Name);

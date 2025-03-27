@@ -10,15 +10,17 @@ namespace FlatFiles.Test
         [TestMethod]
         public void ShouldIgnoreBadRows()
         {
-            const string data = @"0,2018-02-30
-1,2018-10-02,{FC6AE158-F5E9-49CC-A76A-E48F3FBE6BC1}";
+            const string data = """
+                                0,2018-02-30
+                                1,2018-10-02,{FC6AE158-F5E9-49CC-A76A-E48F3FBE6BC1}
+                                """;
             var stringReader = new StringReader(data);
             var schema = new DelimitedSchema();
             schema.AddColumn(new Int32Column("Int32"));
             schema.AddColumn(new DateTimeColumn("DateTime"));
             schema.AddColumn(new GuidColumn("Guid"));
             var csvReader = new DelimitedReader(stringReader, schema);
-            csvReader.RecordError += (sender, e) =>
+            csvReader.RecordError += static (_, e) =>
             {
                 Assert.IsNotNull(e.RecordContext, "The record context was null");
                 Assert.AreEqual(e.RecordContext.PhysicalRecordNumber, 1);

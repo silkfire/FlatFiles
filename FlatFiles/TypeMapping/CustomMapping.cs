@@ -81,7 +81,7 @@ namespace FlatFiles.TypeMapping
 
         public ICustomMapping<TEntity> WithReader(Action<TEntity, object?>? reader)
         {
-            Reader = reader == null ? null : (ctx, e, v) => reader((TEntity)e!, v);
+            Reader = reader == null ? null : (_, e, v) => reader((TEntity)e!, v);
             return this;
         }
 
@@ -93,7 +93,7 @@ namespace FlatFiles.TypeMapping
 
         ICustomMapping ICustomMapping.WithReader(Action<object?, object?>? reader)
         {
-            Reader = reader == null ? null : (ctx, e, v) => reader(e, v);
+            Reader = reader == null ? null : (_, e, v) => reader(e, v);
             return this;
         }
 
@@ -105,7 +105,7 @@ namespace FlatFiles.TypeMapping
 
         public ICustomMapping<TEntity> WithWriter(Action<TEntity, object?[]>? writer)
         {
-            Writer = writer == null ? null : (ctx, e, v) => writer((TEntity)e!, v);
+            Writer = writer == null ? null : (_, e, v) => writer((TEntity)e!, v);
             return this;
         }
 
@@ -117,7 +117,7 @@ namespace FlatFiles.TypeMapping
 
         ICustomMapping ICustomMapping.WithWriter(Action<object?, object?[]>? writer)
         {
-            Writer = writer == null ? null : (ctx, e, v) => writer(e, v);
+            Writer = writer == null ? null : (_, e, v) => writer(e, v);
             return this;
         }
 
@@ -129,7 +129,7 @@ namespace FlatFiles.TypeMapping
 
         public ICustomMapping<TEntity> WithWriter<TProp>(Func<TEntity, TProp>? writer)
         {
-            Writer = writer == null ? null : (ctx, e, v) =>
+            Writer = writer == null ? null : (_, e, v) =>
             {
                 v[LogicalIndex] = writer((TEntity)e!);
             };
@@ -147,7 +147,7 @@ namespace FlatFiles.TypeMapping
 
         ICustomMapping ICustomMapping.WithWriter(Func<object?, object?>? writer)
         {
-            Writer = writer == null ? null : (ctx, e, v) =>
+            Writer = writer == null ? null : (_, e, v) =>
             {
                 v[LogicalIndex] = writer(e);
             };

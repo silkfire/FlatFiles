@@ -61,7 +61,7 @@ namespace FlatFiles.TypeMapping
         private void SetCurrent()
         {
             var values = Reader.GetValues();
-            IReaderWithMetadata metadataReader = (IReaderWithMetadata)Reader;
+            var metadataReader = (IReaderWithMetadata)Reader;
             var recordContext = metadataReader.GetMetadata();
             current = deserializer(recordContext, values); // Won't be null is Read returns true
         }

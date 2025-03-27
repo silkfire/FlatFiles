@@ -16,17 +16,17 @@ namespace FlatFiles.Test
         public void TestTypeMapper_Roundtrip()
         {
             var mapper = DelimitedTypeMapper.Define<Person>();
-            mapper.Property(p => p.Id).ColumnName("id");
-            mapper.Property(p => p.Name).ColumnName("name");
-            mapper.Property(p => p.Created).ColumnName("created").InputFormat("yyyyMMdd").OutputFormat("yyyyMMdd");
-            mapper.Property(p => p.IsActive).ColumnName("active");
+            mapper.Property(static p => p.Id).ColumnName("id");
+            mapper.Property(static p => p.Name).ColumnName("name");
+            mapper.Property(static p => p.Created).ColumnName("created").InputFormat("yyyyMMdd").OutputFormat("yyyyMMdd");
+            mapper.Property(static p => p.IsActive).ColumnName("active");
 
             var bob = new Person { Id = 123, Name = "Bob", Created = new DateTime(2013, 1, 19), IsActive = true };
 
-            StringWriter stringWriter = new StringWriter();
-            mapper.Write(stringWriter, new Person[] { bob });
+            var stringWriter = new StringWriter();
+            mapper.Write(stringWriter, [bob]);
 
-            StringReader stringReader = new StringReader(stringWriter.ToString());
+            var stringReader = new StringReader(stringWriter.ToString());
             var people = mapper.Read(stringReader).ToArray();
             Assert.AreEqual(1, people.Length);
             var person = people.SingleOrDefault();

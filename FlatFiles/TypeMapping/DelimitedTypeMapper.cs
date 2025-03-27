@@ -16,43 +16,43 @@ namespace FlatFiles.TypeMapping
     {
         private static readonly Dictionary<Type, Func<string, IColumnDefinition>> columnLookup = new()
         {
-            { typeof(bool), n => new BooleanColumn(n) },
-            { typeof(bool?), n => new BooleanColumn(n) },
-            { typeof(byte[]), n => new ByteArrayColumn(n) },
-            { typeof(byte), n => new ByteColumn(n) },
-            { typeof(byte?), n => new ByteColumn(n) },
-            { typeof(char[]), n => new CharArrayColumn(n) },
-            { typeof(char), n => new CharColumn(n) },
-            { typeof(char?), n => new CharColumn(n) },
-            { typeof(DateTime), n => new DateTimeColumn(n) },
-            { typeof(DateTime?), n => new DateTimeColumn(n) },
-            { typeof(DateTimeOffset), n => new DateTimeOffsetColumn(n) },
-            { typeof(DateTimeOffset?), n => new DateTimeOffsetColumn(n) },
-            { typeof(decimal), n => new DecimalColumn(n) },
-            { typeof(decimal?), n => new DecimalColumn(n) },
-            { typeof(double), n => new DoubleColumn(n) },
-            { typeof(double?), n => new DoubleColumn(n) },
-            { typeof(Guid), n => new GuidColumn(n) },
-            { typeof(Guid?), n => new GuidColumn(n) },
-            { typeof(short), n => new Int16Column(n) },
-            { typeof(short?), n => new Int16Column(n) },
-            { typeof(int), n => new Int32Column(n) },
-            { typeof(int?), n => new Int32Column(n) },
-            { typeof(long), n => new Int64Column(n) },
-            { typeof(long?), n => new Int64Column(n) },
-            { typeof(sbyte), n => new SByteColumn(n) },
-            { typeof(sbyte?), n => new SByteColumn(n) },
-            { typeof(float), n => new SingleColumn(n) },
-            { typeof(float?), n => new SingleColumn(n) },
-            { typeof(string), n => new StringColumn(n) },
-            { typeof(TimeSpan), n => new TimeSpanColumn(n) },
-            { typeof(TimeSpan?), n => new TimeSpanColumn(n) },
-            { typeof(ushort), n => new UInt16Column(n) },
-            { typeof(ushort?), n => new UInt16Column(n) },
-            { typeof(uint), n => new UInt32Column(n) },
-            { typeof(uint?), n => new UInt32Column(n) },
-            { typeof(ulong), n => new UInt64Column(n) },
-            { typeof(ulong?), n => new UInt64Column(n) }
+            { typeof(bool), static n => new BooleanColumn(n) },
+            { typeof(bool?), static n => new BooleanColumn(n) },
+            { typeof(byte[]), static n => new ByteArrayColumn(n) },
+            { typeof(byte), static n => new ByteColumn(n) },
+            { typeof(byte?), static n => new ByteColumn(n) },
+            { typeof(char[]), static n => new CharArrayColumn(n) },
+            { typeof(char), static n => new CharColumn(n) },
+            { typeof(char?), static n => new CharColumn(n) },
+            { typeof(DateTime), static n => new DateTimeColumn(n) },
+            { typeof(DateTime?), static n => new DateTimeColumn(n) },
+            { typeof(DateTimeOffset), static n => new DateTimeOffsetColumn(n) },
+            { typeof(DateTimeOffset?), static n => new DateTimeOffsetColumn(n) },
+            { typeof(decimal), static n => new DecimalColumn(n) },
+            { typeof(decimal?), static n => new DecimalColumn(n) },
+            { typeof(double), static n => new DoubleColumn(n) },
+            { typeof(double?), static n => new DoubleColumn(n) },
+            { typeof(Guid), static n => new GuidColumn(n) },
+            { typeof(Guid?), static n => new GuidColumn(n) },
+            { typeof(short), static n => new Int16Column(n) },
+            { typeof(short?), static n => new Int16Column(n) },
+            { typeof(int), static n => new Int32Column(n) },
+            { typeof(int?), static n => new Int32Column(n) },
+            { typeof(long), static n => new Int64Column(n) },
+            { typeof(long?), static n => new Int64Column(n) },
+            { typeof(sbyte), static n => new SByteColumn(n) },
+            { typeof(sbyte?), static n => new SByteColumn(n) },
+            { typeof(float), static n => new SingleColumn(n) },
+            { typeof(float?), static n => new SingleColumn(n) },
+            { typeof(string), static n => new StringColumn(n) },
+            { typeof(TimeSpan), static n => new TimeSpanColumn(n) },
+            { typeof(TimeSpan?), static n => new TimeSpanColumn(n) },
+            { typeof(ushort), static n => new UInt16Column(n) },
+            { typeof(ushort?), static n => new UInt16Column(n) },
+            { typeof(uint), static n => new UInt32Column(n) },
+            { typeof(uint?), static n => new UInt32Column(n) },
+            { typeof(ulong), static n => new UInt64Column(n) },
+            { typeof(ulong?), static n => new UInt64Column(n) }
         };
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace FlatFiles.TypeMapping
         public static IDelimitedTypeMapper<TEntity> Define<TEntity>()
             where TEntity : new()
         {
-            return new DelimitedTypeMapper<TEntity>(() => new TEntity());
+            return new DelimitedTypeMapper<TEntity>(static () => new TEntity());
         }
 
         /// <summary>
@@ -268,7 +268,7 @@ namespace FlatFiles.TypeMapping
                 ? new DelimitedOptions { IsFirstRecordSchema = true } 
                 : options.Clone();
             var entityType = typeof(TEntity);
-            var typedMapper = Define<TEntity>(() => throw new InvalidOperationException("Unexpected entity creation within autom-mapped writer."));
+            var typedMapper = Define<TEntity>(static () => throw new InvalidOperationException("Unexpected entity creation within autom-mapped writer."));
             var dynamicMapper = (IDynamicDelimitedTypeMapper)typedMapper;
             var nameResolver = resolver ?? AutoMapResolver.Default;
 
@@ -911,9 +911,9 @@ namespace FlatFiles.TypeMapping
         {
             var schema = new DelimitedSchema();
             var mappings = _lookup.GetMappings();
-            foreach (IMemberMapping mapping in mappings)
+            foreach (var mapping in mappings)
             {
-                IColumnDefinition column = mapping.ColumnDefinition;
+                var column = mapping.ColumnDefinition;
                 schema.AddColumn(column);
             }
             return schema;

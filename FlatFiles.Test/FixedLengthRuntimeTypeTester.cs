@@ -13,18 +13,17 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestAnonymousTypeDefinition()
         {
-            var mapper = FixedLengthTypeMapper.Define(() => new
+            var mapper = FixedLengthTypeMapper.Define(static () => new
             {
                 Name = (string)null
             });
-            mapper.Property(x => x.Name, 10).ColumnName("Name");
-            StringWriter writer = new StringWriter();
-            mapper.Write(writer, new[]
-            {
+            mapper.Property(static x => x.Name, 10).ColumnName("Name");
+            var writer = new StringWriter();
+            mapper.Write(writer, [
                 new { Name = "John" }, new { Name = "Sam" }
-            });
-            string result = writer.ToString();
-            string expected = $"John      {Environment.NewLine}Sam       {Environment.NewLine}";
+            ]);
+            var result = writer.ToString();
+            var expected = $"John      {Environment.NewLine}Sam       {Environment.NewLine}";
             Assert.AreEqual(expected, result);
         }
 
@@ -43,11 +42,11 @@ namespace FlatFiles.Test
                 new Person { Name = "Susan", IQ = 132, BirthDate = new DateTime(1984, 3, 15), TopSpeed = 10.1m }
             };
 
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             mapper.Write(writer, people);
-            string result = writer.ToString();
+            var result = writer.ToString();
 
-            StringReader reader = new StringReader(result);
+            var reader = new StringReader(result);
             var parsed = mapper.Read(reader).ToArray();
             Assert.AreEqual(2, parsed.Length);
             Assert.IsInstanceOfType(parsed[0], typeof(Person));
@@ -71,15 +70,15 @@ namespace FlatFiles.Test
                 new Person { Name = "Susan", IQ = 132, BirthDate = new DateTime(1984, 3, 15), TopSpeed = 10.1m }
             };
 
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             var entityWriter = mapper.GetWriter(writer);
             foreach (var person in people)
             {
                 entityWriter.Write(person);
             }
-            string result = writer.ToString();
+            var result = writer.ToString();
 
-            StringReader reader = new StringReader(result);
+            var reader = new StringReader(result);
             var entityReader = mapper.GetReader(reader);
             var parsed = new List<object>();
             while (entityReader.Read())

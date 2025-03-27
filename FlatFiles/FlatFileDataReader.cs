@@ -542,7 +542,7 @@ namespace FlatFiles
             Array.Copy(sources, values, length);
             if (Options.IsDBNullReturned)
             {
-                for (int index = 0; index != length; ++index)
+                for (var index = 0; index != length; ++index)
                 {
                     if (values[index] == null)
                     {

@@ -24,12 +24,14 @@ namespace FlatFiles.Test
             writer.Write([1, "Bob Smith", new DateTime(2018, 06, 04), 12.34m]);
             writer.Write([2, "Jane Doe", new DateTime(2018, 06, 05), 34.56m]);
             writer.Write([46.9m, 23.45m, true]);
-            string output = stringWriter.ToString();
-            Assert.AreEqual(@"First Batch,2
-1,Bob Smith,20180604,12.34
-2,Jane Doe,20180605,34.56
-46.9,23.45,True
-", output);
+            var output = stringWriter.ToString();
+            Assert.AreEqual("""
+                            First Batch,2
+                            1,Bob Smith,20180604,12.34
+                            2,Jane Doe,20180605,34.56
+                            46.9,23.45,True
+
+                            """, output);
 
             var stringReader = new StringReader(output);
             var selector = GetSchemaSelector();
@@ -70,8 +72,8 @@ namespace FlatFiles.Test
         private static DelimitedSchemaInjector GetSchemaInjector()
         {
             var injector = new DelimitedSchemaInjector();
-            injector.When(values => values.Length == 2).Use(GetHeaderSchema());
-            injector.When(values => values.Length == 3).Use(GetFooterSchema());
+            injector.When(static values => values.Length == 2).Use(GetHeaderSchema());
+            injector.When(static values => values.Length == 3).Use(GetFooterSchema());
             injector.WithDefault(GetRecordSchema());
             return injector;
         }
@@ -79,8 +81,8 @@ namespace FlatFiles.Test
         private static DelimitedSchemaSelector GetSchemaSelector()
         {
             var selector = new DelimitedSchemaSelector();
-            selector.When(values => values.Length == 2).Use(GetHeaderSchema());
-            selector.When(values => values.Length == 3).Use(GetFooterSchema());
+            selector.When(static values => values.Length == 2).Use(GetHeaderSchema());
+            selector.When(static values => values.Length == 3).Use(GetFooterSchema());
             selector.WithDefault(GetRecordSchema());
             return selector;
         }
@@ -113,12 +115,14 @@ namespace FlatFiles.Test
             writer.Write(new DataRecord { Id = 1, Name = "Bob Smith", CreatedOn = new DateTime(2018, 06, 04), TotalAmount = 12.34m });
             writer.Write(new DataRecord { Id = 2, Name = "Jane Doe", CreatedOn = new DateTime(2018, 06, 05), TotalAmount = 34.56m });
             writer.Write(new FooterRecord { TotalAmount = 46.9m, AverageAmount = 23.45m, IsCriteriaMet = true });
-            string output = stringWriter.ToString();
-            Assert.AreEqual(@"First Batch,2
-1,Bob Smith,20180604,12.34
-2,Jane Doe,20180605,34.56
-46.9,23.45,True
-", output);
+            var output = stringWriter.ToString();
+            Assert.AreEqual("""
+                            First Batch,2
+                            1,Bob Smith,20180604,12.34
+                            2,Jane Doe,20180605,34.56
+                            46.9,23.45,True
+
+                            """, output);
 
             var selector = GetTypeMapperSelector();
             var stringReader = new StringReader(output);
@@ -162,12 +166,14 @@ namespace FlatFiles.Test
             writer.Write(new DataRecord { Id = 1, Name = "Bob Smith", CreatedOn = new DateTime(2018, 06, 04), TotalAmount = 12.34m });
             writer.Write(new DataRecord { Id = 2, Name = "Jane Doe", CreatedOn = new DateTime(2018, 06, 05), TotalAmount = 34.56m });
             writer.Write(new FooterRecord { TotalAmount = 46.9m, AverageAmount = 23.45m, IsCriteriaMet = true });
-            string output = stringWriter.ToString();
-            Assert.AreEqual(@"First Batch,2
-1,Bob Smith,20180604,12.34
-2,Jane Doe,20180605,34.56
-46.9,23.45,True
-", output);
+            var output = stringWriter.ToString();
+            Assert.AreEqual("""
+                            First Batch,2
+                            1,Bob Smith,20180604,12.34
+                            2,Jane Doe,20180605,34.56
+                            46.9,23.45,True
+
+                            """, output);
 
             var selector = GetTypeMapperSelector(true);
             var stringReader = new StringReader(output);
@@ -218,7 +224,7 @@ namespace FlatFiles.Test
             var stringReader = new StringReader("What's this weird thing?");
             var selector = GetSchemaSelector();
             var reader = new DelimitedReader(stringReader, selector);
-            reader.RecordError += (o, e) => e.IsHandled = true;
+            reader.RecordError += static (_, e) => e.IsHandled = true;
             Assert.IsFalse(reader.Read());
         }
 
@@ -226,8 +232,8 @@ namespace FlatFiles.Test
         {
             var selector = new DelimitedTypeMapperSelector();
             selector.WithDefault(GetRecordTypeMapper(hasMetadata));
-            selector.When(x => x.Length == 2).Use(GetHeaderTypeMapper());
-            selector.When(x => x.Length == 3).Use(GetFooterTypeMapper());
+            selector.When(static x => x.Length == 2).Use(GetHeaderTypeMapper());
+            selector.When(static x => x.Length == 3).Use(GetFooterTypeMapper());
             return selector;
         }
 
@@ -242,36 +248,36 @@ namespace FlatFiles.Test
 
         private static IDelimitedTypeMapper<HeaderRecord> GetHeaderTypeMapper()
         {
-            var mapper = DelimitedTypeMapper.Define(() => new HeaderRecord());
-            mapper.Property(x => x.BatchName);
-            mapper.Property(x => x.RecordCount);
+            var mapper = DelimitedTypeMapper.Define(static () => new HeaderRecord());
+            mapper.Property(static x => x.BatchName);
+            mapper.Property(static x => x.RecordCount);
             return mapper;
         }
 
         private static IDelimitedTypeMapper<DataRecord> GetRecordTypeMapper(bool hasMetadata = false)
         {
-            var mapper = DelimitedTypeMapper.Define(() => new DataRecord());
-            mapper.Property(x => x.Id);
-            mapper.Property(x => x.Name);
-            mapper.Property(x => x.CreatedOn).InputFormat("yyyyMMdd").OutputFormat("yyyyMMdd");
-            mapper.Property(x => x.TotalAmount);
+            var mapper = DelimitedTypeMapper.Define(static () => new DataRecord());
+            mapper.Property(static x => x.Id);
+            mapper.Property(static x => x.Name);
+            mapper.Property(static x => x.CreatedOn).InputFormat("yyyyMMdd").OutputFormat("yyyyMMdd");
+            mapper.Property(static x => x.TotalAmount);
             if (hasMetadata)
             {
                 mapper.CustomMapping(new RecordNumberColumn("row_num")
                 {
                     IncludeSchema = true,
                     IncludeSkippedRecords = true
-                }).WithReader(r => r.RecordNumber);
+                }).WithReader(static r => r.RecordNumber);
             }
             return mapper;
         }
 
         private static IDelimitedTypeMapper<FooterRecord> GetFooterTypeMapper()
         {
-            var mapper = DelimitedTypeMapper.Define(() => new FooterRecord());
-            mapper.Property(x => x.TotalAmount);
-            mapper.Property(x => x.AverageAmount);
-            mapper.Property(x => x.IsCriteriaMet);
+            var mapper = DelimitedTypeMapper.Define(static () => new FooterRecord());
+            mapper.Property(static x => x.TotalAmount);
+            mapper.Property(static x => x.AverageAmount);
+            mapper.Property(static x => x.IsCriteriaMet);
             return mapper;
         }
 

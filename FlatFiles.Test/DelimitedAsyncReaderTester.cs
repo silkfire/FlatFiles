@@ -21,17 +21,17 @@ namespace FlatFiles.Test
         public async Task TestTypeMapper_Roundtrip()
         {
             var mapper = DelimitedTypeMapper.Define<Person>();
-            mapper.Property(p => p.Id).ColumnName("id");
-            mapper.Property(p => p.Name).ColumnName("name");
-            mapper.Property(p => p.Created).ColumnName("created").InputFormat("yyyyMMdd").OutputFormat("yyyyMMdd");
-            mapper.Property(p => p.IsActive).ColumnName("active");
+            mapper.Property(static p => p.Id).ColumnName("id");
+            mapper.Property(static p => p.Name).ColumnName("name");
+            mapper.Property(static p => p.Created).ColumnName("created").InputFormat("yyyyMMdd").OutputFormat("yyyyMMdd");
+            mapper.Property(static p => p.IsActive).ColumnName("active");
 
             var bob = new Person { Id = 123, Name = "Bob", Created = new DateTime(2013, 1, 19), IsActive = true };
 
-            StringWriter stringWriter = new StringWriter();
-            await mapper.WriteAsync(stringWriter, new Person[] { bob }).ConfigureAwait(false);
+            var stringWriter = new StringWriter();
+            await mapper.WriteAsync(stringWriter, [bob]).ConfigureAwait(false);
 
-            StringReader stringReader = new StringReader(stringWriter.ToString());
+            var stringReader = new StringReader(stringWriter.ToString());
             var reader = mapper.GetReader(stringReader);
             var people = new List<Person>();
             while (await reader.ReadAsync().ConfigureAwait(false))

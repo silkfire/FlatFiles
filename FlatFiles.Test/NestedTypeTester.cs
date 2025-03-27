@@ -13,18 +13,18 @@ namespace FlatFiles.Test
         public void TestMappingNestedMember()
         {
             var mapper = DelimitedTypeMapper.Define<Person>();
-            mapper.Property(x => x.Id).ColumnName("Id");
-            mapper.Property(x => x.Name).ColumnName("Name");
-            mapper.Property(x => x.Address1.Street).ColumnName("Street");
-            mapper.Property(x => x.Address1.City).ColumnName("City");
-            mapper.Property(x => x.Address1.State).ColumnName("State");
-            mapper.Property(x => x.Address1.Zip).ColumnName("Zip");
-            mapper.Property(x => x.IsActive).ColumnName("IsActive");
-            mapper.Property(x => x.CreatedOn).ColumnName("CreatedOn");
+            mapper.Property(static x => x.Id).ColumnName("Id");
+            mapper.Property(static x => x.Name).ColumnName("Name");
+            mapper.Property(static x => x.Address1.Street).ColumnName("Street");
+            mapper.Property(static x => x.Address1.City).ColumnName("City");
+            mapper.Property(static x => x.Address1.State).ColumnName("State");
+            mapper.Property(static x => x.Address1.Zip).ColumnName("Zip");
+            mapper.Property(static x => x.IsActive).ColumnName("IsActive");
+            mapper.Property(static x => x.CreatedOn).ColumnName("CreatedOn");
 
             var recordValues = new[] { "123", "Bob", "Test Street 1", "Test City", "PA", "55555", "true", "2017-11-05" };
-            var record = String.Join(",", recordValues);
-            StringReader reader = new StringReader(record);
+            var record = string.Join(",", recordValues);
+            var reader = new StringReader(record);
             var results = mapper.Read(reader).ToArray();
             Assert.AreEqual(1, results.Length);
             var result = results[0];
@@ -61,8 +61,8 @@ namespace FlatFiles.Test
             mapper.DateTimeProperty("CreatedOn").ColumnName("CreatedOn");
 
             var recordValues = new[] { "123", "Bob", "Test Street 1", "Test City", "PA", "55555", "true", "2017-11-05" };
-            var record = String.Join(",", recordValues);
-            StringReader reader = new StringReader(record);
+            var record = string.Join(",", recordValues);
+            var reader = new StringReader(record);
             var results = mapper.Read(reader).ToArray();
             Assert.AreEqual(1, results.Length);
             var result = results[0];
@@ -89,16 +89,16 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestRoundTrip_FixedLength()
         {
-            var mapper = FixedLengthTypeMapper.Define(() => new Person());
-            mapper.Property(x => x.Id, 10).ColumnName("Id");
-            mapper.Property(x => x.Name, 25).ColumnName("Name");
-            mapper.Property(x => x.Address1.Street, 50).ColumnName("Street");
-            mapper.Property(x => x.Address1.City, 50).ColumnName("City");
-            mapper.Property(x => x.Address1.State, 2).ColumnName("State");
-            mapper.Property(x => x.Address1.Zip, 5).ColumnName("Zip");
-            mapper.Property(x => x.IsActive, 5).ColumnName("IsActive");
-            mapper.Property(x => x.CreatedOn, 10).ColumnName("CreatedOn").InputFormat("yyyyMMdd").OutputFormat("yyyyMMdd");
-            mapper.UseFactory(() => new Address());
+            var mapper = FixedLengthTypeMapper.Define(static () => new Person());
+            mapper.Property(static x => x.Id, 10).ColumnName("Id");
+            mapper.Property(static x => x.Name, 25).ColumnName("Name");
+            mapper.Property(static x => x.Address1.Street, 50).ColumnName("Street");
+            mapper.Property(static x => x.Address1.City, 50).ColumnName("City");
+            mapper.Property(static x => x.Address1.State, 2).ColumnName("State");
+            mapper.Property(static x => x.Address1.Zip, 5).ColumnName("Zip");
+            mapper.Property(static x => x.IsActive, 5).ColumnName("IsActive");
+            mapper.Property(static x => x.CreatedOn, 10).ColumnName("CreatedOn").InputFormat("yyyyMMdd").OutputFormat("yyyyMMdd");
+            mapper.UseFactory(static () => new Address());
 
             var expected = new Person
                            {
@@ -115,10 +115,10 @@ namespace FlatFiles.Test
                 CreatedOn = new DateTime(2017, 11, 05)
             };
 
-            StringWriter writer = new StringWriter();
-            mapper.Write(writer, new[] { expected });
+            var writer = new StringWriter();
+            mapper.Write(writer, [expected]);
             
-            StringReader reader = new StringReader(writer.ToString());
+            var reader = new StringReader(writer.ToString());
             var results = mapper.Read(reader).ToArray();
             Assert.AreEqual(1, results.Length);
             var result = results[0];
@@ -130,7 +130,7 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestRoundTrip_FixedLength_Dynamic()
         {
-            var mapper = FixedLengthTypeMapper.DefineDynamic(typeof(Person), () => new Person());
+            var mapper = FixedLengthTypeMapper.DefineDynamic(typeof(Person), static () => new Person());
             mapper.Int32Property("Id", 10).ColumnName("Id");
             mapper.StringProperty("Name", 25).ColumnName("Name");
             mapper.StringProperty("Address1.Street", 50).ColumnName("Street");
@@ -139,7 +139,7 @@ namespace FlatFiles.Test
             mapper.StringProperty("Address1.Zip", 5).ColumnName("Zip");
             mapper.BooleanProperty("IsActive", 5).ColumnName("IsActive");
             mapper.DateTimeProperty("CreatedOn", 10).ColumnName("CreatedOn").InputFormat("yyyyMMdd").OutputFormat("yyyyMMdd");
-            mapper.UseFactory(typeof(Address), () => new Address());
+            mapper.UseFactory(typeof(Address), static () => new Address());
 
             var expected = new Person
                            {
@@ -156,10 +156,10 @@ namespace FlatFiles.Test
                 CreatedOn = new DateTime(2017, 11, 05)
             };
 
-            StringWriter writer = new StringWriter();
-            mapper.Write(writer, new[] { expected });
+            var writer = new StringWriter();
+            mapper.Write(writer, [expected]);
 
-            StringReader reader = new StringReader(writer.ToString());
+            var reader = new StringReader(writer.ToString());
             var results = mapper.Read(reader).ToArray();
             Assert.AreEqual(1, results.Length);
             var result = results[0];
@@ -173,18 +173,18 @@ namespace FlatFiles.Test
         public void TestMappingNestedMembers_MultipleSameType()
         {
             var mapper = DelimitedTypeMapper.Define<Person>();
-            mapper.Property(x => x.Id).ColumnName("Id");
-            mapper.Property(x => x.Name).ColumnName("Name");
-            mapper.Property(x => x.Address1.Street).ColumnName("Street1");
-            mapper.Property(x => x.Address1.City).ColumnName("City1");
-            mapper.Property(x => x.Address1.State).ColumnName("State1");
-            mapper.Property(x => x.Address1.Zip).ColumnName("Zip1");
-            mapper.Property(x => x.Address2.Street).ColumnName("Street2");
-            mapper.Property(x => x.Address2.City).ColumnName("City2");
-            mapper.Property(x => x.Address2.State).ColumnName("State2");
-            mapper.Property(x => x.Address2.Zip).ColumnName("Zip2");
-            mapper.Property(x => x.IsActive).ColumnName("IsActive");
-            mapper.Property(x => x.CreatedOn).ColumnName("CreatedOn");
+            mapper.Property(static x => x.Id).ColumnName("Id");
+            mapper.Property(static x => x.Name).ColumnName("Name");
+            mapper.Property(static x => x.Address1.Street).ColumnName("Street1");
+            mapper.Property(static x => x.Address1.City).ColumnName("City1");
+            mapper.Property(static x => x.Address1.State).ColumnName("State1");
+            mapper.Property(static x => x.Address1.Zip).ColumnName("Zip1");
+            mapper.Property(static x => x.Address2.Street).ColumnName("Street2");
+            mapper.Property(static x => x.Address2.City).ColumnName("City2");
+            mapper.Property(static x => x.Address2.State).ColumnName("State2");
+            mapper.Property(static x => x.Address2.Zip).ColumnName("Zip2");
+            mapper.Property(static x => x.IsActive).ColumnName("IsActive");
+            mapper.Property(static x => x.CreatedOn).ColumnName("CreatedOn");
 
             var expected = new Person
                            {
@@ -208,10 +208,10 @@ namespace FlatFiles.Test
                 CreatedOn = new DateTime(2017, 11, 05)
             };
 
-            StringWriter writer = new StringWriter();
-            mapper.Write(writer, new[] { expected });
+            var writer = new StringWriter();
+            mapper.Write(writer, [expected]);
 
-            StringReader reader = new StringReader(writer.ToString());
+            var reader = new StringReader(writer.ToString());
             var results = mapper.Read(reader).ToArray();
             Assert.AreEqual(1, results.Length);
             var result = results[0];
@@ -269,14 +269,14 @@ namespace FlatFiles.Test
         public void TestMappingNestedMembers_DeepNesting()
         {
             var mapper = DelimitedTypeMapper.Define<Level1>();
-            mapper.Property(x => x.Id).ColumnName("Id");
-            mapper.Property(x => x.Level2.Name).ColumnName("Name");
-            mapper.Property(x => x.Level2.Level3.Level4.Address.Street).ColumnName("Street1");
-            mapper.Property(x => x.Level2.Level3.Level4.Address.City).ColumnName("City1");
-            mapper.Property(x => x.Level2.Level3.Level4.Address.State).ColumnName("State1");
-            mapper.Property(x => x.Level2.Level3.Level4.Address.Zip).ColumnName("Zip1");
-            mapper.Property(x => x.Level2.Level3.Level4.IsActive).ColumnName("IsActive");
-            mapper.Property(x => x.Level2.Level3.CreatedOn).ColumnName("CreatedOn");
+            mapper.Property(static x => x.Id).ColumnName("Id");
+            mapper.Property(static x => x.Level2.Name).ColumnName("Name");
+            mapper.Property(static x => x.Level2.Level3.Level4.Address.Street).ColumnName("Street1");
+            mapper.Property(static x => x.Level2.Level3.Level4.Address.City).ColumnName("City1");
+            mapper.Property(static x => x.Level2.Level3.Level4.Address.State).ColumnName("State1");
+            mapper.Property(static x => x.Level2.Level3.Level4.Address.Zip).ColumnName("Zip1");
+            mapper.Property(static x => x.Level2.Level3.Level4.IsActive).ColumnName("IsActive");
+            mapper.Property(static x => x.Level2.Level3.CreatedOn).ColumnName("CreatedOn");
 
             var expected = new Level1
                            {
@@ -302,10 +302,10 @@ namespace FlatFiles.Test
                 }                
             };
 
-            StringWriter writer = new StringWriter();
-            mapper.Write(writer, new[] { expected });
+            var writer = new StringWriter();
+            mapper.Write(writer, [expected]);
 
-            StringReader reader = new StringReader(writer.ToString());
+            var reader = new StringReader(writer.ToString());
             var results = mapper.Read(reader).ToArray();
             Assert.AreEqual(1, results.Length);
             var result = results[0];
@@ -322,18 +322,18 @@ namespace FlatFiles.Test
         public void TestMappingNestedMembers_DeepNesting_RecurringMemberNames()
         {
             var mapper = DelimitedTypeMapper.Define<Level1>();
-            mapper.Property(x => x.Id).ColumnName("Id");
-            mapper.Property(x => x.Level2.Name).ColumnName("Name");
-            mapper.Property(x => x.Level2.Level3.Level4.Address.Street).ColumnName("Street1");
-            mapper.Property(x => x.Level2.Level3.Level4.Address.City).ColumnName("City1");
-            mapper.Property(x => x.Level2.Level3.Level4.Address.State).ColumnName("State1");
-            mapper.Property(x => x.Level2.Level3.Level4.Address.Zip).ColumnName("Zip1");
-            mapper.Property(x => x.Address.Street).ColumnName("Street2");
-            mapper.Property(x => x.Address.City).ColumnName("City2");
-            mapper.Property(x => x.Address.State).ColumnName("State2");
-            mapper.Property(x => x.Address.Zip).ColumnName("Zip2");
-            mapper.Property(x => x.Level2.Level3.Level4.IsActive).ColumnName("IsActive");
-            mapper.Property(x => x.Level2.Level3.CreatedOn).ColumnName("CreatedOn");
+            mapper.Property(static x => x.Id).ColumnName("Id");
+            mapper.Property(static x => x.Level2.Name).ColumnName("Name");
+            mapper.Property(static x => x.Level2.Level3.Level4.Address.Street).ColumnName("Street1");
+            mapper.Property(static x => x.Level2.Level3.Level4.Address.City).ColumnName("City1");
+            mapper.Property(static x => x.Level2.Level3.Level4.Address.State).ColumnName("State1");
+            mapper.Property(static x => x.Level2.Level3.Level4.Address.Zip).ColumnName("Zip1");
+            mapper.Property(static x => x.Address.Street).ColumnName("Street2");
+            mapper.Property(static x => x.Address.City).ColumnName("City2");
+            mapper.Property(static x => x.Address.State).ColumnName("State2");
+            mapper.Property(static x => x.Address.Zip).ColumnName("Zip2");
+            mapper.Property(static x => x.Level2.Level3.Level4.IsActive).ColumnName("IsActive");
+            mapper.Property(static x => x.Level2.Level3.CreatedOn).ColumnName("CreatedOn");
 
             var expected = new Level1
                            {
@@ -366,10 +366,10 @@ namespace FlatFiles.Test
                 }
             };
 
-            StringWriter writer = new StringWriter();
-            mapper.Write(writer, new[] { expected });
+            var writer = new StringWriter();
+            mapper.Write(writer, [expected]);
 
-            StringReader reader = new StringReader(writer.ToString());
+            var reader = new StringReader(writer.ToString());
             var results = mapper.Read(reader).ToArray();
             Assert.AreEqual(1, results.Length);
             var result = results[0];

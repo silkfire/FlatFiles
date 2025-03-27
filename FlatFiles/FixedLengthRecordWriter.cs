@@ -41,7 +41,7 @@ namespace FlatFiles
         {
             this.recordContext = null;
             var formattedColumns = FormatAndFitValues(values);
-            foreach (string column in formattedColumns)
+            foreach (var column in formattedColumns)
             {
                 writer.Write(column);
             }
@@ -51,7 +51,7 @@ namespace FlatFiles
         {
             this.recordContext = null;
             var formattedColumns = FormatAndFitValues(values);
-            foreach (string column in formattedColumns)
+            foreach (var column in formattedColumns)
             {
                 await writer.WriteAsync(column).ConfigureAwait(false);
             }
@@ -99,9 +99,9 @@ namespace FlatFiles
         private void FitWindows(FixedLengthSchema schema, string[] values)
         {
             var windows = schema.Windows;
-            for (int index = 0; index != values.Length; ++index)
+            for (var index = 0; index != values.Length; ++index)
             {
-                string value = values[index];
+                var value = values[index];
                 if (index < windows.Count)
                 {
                     var window = windows[index];
@@ -109,7 +109,7 @@ namespace FlatFiles
                 }
                 else
                 {
-                    values[index] = value ?? String.Empty;
+                    values[index] = value ?? string.Empty;
                 }
             }
         }
@@ -122,8 +122,8 @@ namespace FlatFiles
             }
             var definitions = schema.ColumnDefinitions;
             var windows = schema.Windows;
-            int columnCount = definitions.Count;
-            for (int columnIndex = 0; columnIndex != columnCount; ++columnIndex)
+            var columnCount = definitions.Count;
+            for (var columnIndex = 0; columnIndex != columnCount; ++columnIndex)
             {
                 var window = windows[columnIndex];
                 var column = definitions[columnIndex];
@@ -141,8 +141,8 @@ namespace FlatFiles
             }
             var definitions = schema.ColumnDefinitions;
             var windows = schema.Windows;
-            int columnCount = definitions.Count;
-            for (int columnIndex = 0; columnIndex != columnCount; ++columnIndex)
+            var columnCount = definitions.Count;
+            for (var columnIndex = 0; columnIndex != columnCount; ++columnIndex)
             {
                 var window = windows[columnIndex];
                 var column = definitions[columnIndex];
@@ -156,7 +156,7 @@ namespace FlatFiles
         {
             if (value == null)
             {
-                value = String.Empty;
+                value = string.Empty;
             }
             if (value.Length > window.Width)
             {
@@ -175,7 +175,7 @@ namespace FlatFiles
             switch (policy)
             {
                 case OverflowTruncationPolicy.TruncateLeading:
-                    int start = value.Length - window.Width;  // take characters on the end
+                    var start = value.Length - window.Width;  // take characters on the end
                     return value.Substring(start, window.Width);
                 case OverflowTruncationPolicy.TruncateTrailing:
                     return value.Substring(0, window.Width);

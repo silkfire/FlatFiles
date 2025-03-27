@@ -21,7 +21,7 @@ namespace FlatFiles.TypeMapping
         public static IFixedLengthTypeMapper<TEntity> Define<TEntity>()
             where TEntity : new()
         {
-            return new FixedLengthTypeMapper<TEntity>(() => new TEntity());
+            return new FixedLengthTypeMapper<TEntity>(static () => new TEntity());
         }
 
         /// <summary>
@@ -705,7 +705,7 @@ namespace FlatFiles.TypeMapping
         {
             var schema = new FixedLengthSchema();
             var mappings = _lookup.GetMappings();
-            foreach (IMemberMapping mapping in mappings)
+            foreach (var mapping in mappings)
             {
                 var column = mapping.ColumnDefinition;
                 var window = _windowLookup[mapping];

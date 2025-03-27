@@ -127,7 +127,7 @@ namespace FlatFiles.TypeMapping
 
         private static bool HaveMatchingTypes(Type[] expected, Type[] actual)
         {
-            for (int index = 0; index != expected.Length; ++index)
+            for (var index = 0; index != expected.Length; ++index)
             {
                 if (expected[index] != actual[index])
                 {

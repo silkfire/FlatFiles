@@ -62,9 +62,9 @@ namespace FlatFiles
             var values = new object?[columnIndexes.Length];
             foreach (DataRow? row in table.Rows)
             {
-                for (int index = 0; index != values.Length; ++index)
+                for (var index = 0; index != values.Length; ++index)
                 {
-                    int columnIndex = columnIndexes[index];
+                    var columnIndex = columnIndexes[index];
                     if (columnIndex != -1)
                     {
                         values[index] = row!.IsNull(columnIndex) ? null : row[columnIndex];

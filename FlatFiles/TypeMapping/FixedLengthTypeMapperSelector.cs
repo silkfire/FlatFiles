@@ -9,7 +9,7 @@ namespace FlatFiles.TypeMapping
     /// </summary>
     public sealed class FixedLengthTypeMapperSelector
     {
-        private readonly List<TypeMapperMatcher> matchers = new();
+        private readonly List<TypeMapperMatcher> matchers = [];
         private IDynamicFixedLengthTypeMapper? defaultMapper;
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace FlatFiles.TypeMapping
         {
             var source = (IMapperSource)defaultMapper;
             var reader = source.GetMapper();
-            return () => reader.GetReader();
+            return reader.GetReader;
         }
 
         internal void Add(IDynamicFixedLengthTypeMapper typeMapper, Func<string, bool> predicate)

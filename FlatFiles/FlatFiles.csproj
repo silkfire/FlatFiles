@@ -4,7 +4,7 @@
     <TargetFrameworks>net9.0</TargetFrameworks>
     <NeutralLanguage>en-US</NeutralLanguage>
     <Description>Reads and writes CSV, fixed-length and other flat file formats with a focus on schema definition, configuration and speed. Supports mapping directly between files and classes.</Description>
-    <Copyright>Copyright @ 2024</Copyright>
+    <Copyright>Copyright @ 2025</Copyright>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/jehugaleahsa/FlatFiles</PackageProjectUrl>
     <RepositoryUrl>https://github.com/jehugaleahsa/FlatFiles.git</RepositoryUrl>
@@ -13,7 +13,7 @@
     <PackageReleaseNotes>Support specifying nullability using type mappers, so DefaultValue works as expected.</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>FlatFiles.snk</AssemblyOriginatorKeyFile>
-    <Version>9.0.0</Version>
+    <Version>9.0.1</Version>
     <DocumentationFile>bin\Release\net9.0\FlatFiles.xml</DocumentationFile>
     <NoWarn>IDE0290</NoWarn>
   </PropertyGroup>

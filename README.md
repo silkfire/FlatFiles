@@ -267,7 +267,7 @@ The `FixedLengthReader` class provides the `RecordRead` event, which allows you 
 ```csharp
 reader.RecordRead += (sender, e) => 
 {
-    e.IsSkipped = e.Record.StartsWith("#");
+    e.IsSkipped = e.Record.StartsWith('#');
 };
 ```
 

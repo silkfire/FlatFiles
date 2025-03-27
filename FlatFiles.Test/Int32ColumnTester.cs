@@ -16,7 +16,7 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestCtor_NameBlank_Throws()
         {
-            Assert.ThrowsException<ArgumentException>(() => new Int32Column("    "));
+            Assert.ThrowsException<ArgumentException>(static () => new Int32Column("    "));
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestCtor_SetsName_Trimmed()
         {
-            Int32Column column = new Int32Column(" Name   ");
+            var column = new Int32Column(" Name   ");
             Assert.AreEqual("Name", column.ColumnName);
         }
 
@@ -36,9 +36,9 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestParse_ValueBlank_NullReturned()
         {
-            Int32Column column = new Int32Column("count");
-            Int32? actual = (Int32?)column.Parse(null, "    ");
-            Int32? expected = null;
+            var column = new Int32Column("count");
+            var actual = (int?)column.Parse(null, "    ");
+            int? expected = null;
             Assert.AreEqual(expected, actual);
         }
 
@@ -48,12 +48,12 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestParse_FormatProviderNull_UsesCurrentCulture()
         {
-            Int32Column column = new Int32Column("count")
-            {
-                FormatProvider = null
-            };
-            int actual = (int)column.Parse(null, "  -123 ");
-            int expected = -123;
+            var column = new Int32Column("count")
+                         {
+                             FormatProvider = null
+                         };
+            var actual = (int)column.Parse(null, "  -123 ");
+            var expected = -123;
             Assert.AreEqual(expected, actual);
         }
 
@@ -63,12 +63,12 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestParse_FormatProviderProvided_UsesProvider()
         {
-            Int32Column column = new Int32Column("count")
-            {
-                FormatProvider = CultureInfo.CurrentCulture
-            };
-            int actual = (int)column.Parse(null, "  -123 ");
-            int expected = -123;
+            var column = new Int32Column("count")
+                         {
+                             FormatProvider = CultureInfo.CurrentCulture
+                         };
+            var actual = (int)column.Parse(null, "  -123 ");
+            var expected = -123;
             Assert.AreEqual(expected, actual);
         }
 
@@ -78,12 +78,12 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestParse_NotNullable_NullValue_Throws()
         {
-            Int32Column column = new Int32Column("count")
-            {
-                IsNullable = false,
-                DefaultValue = DefaultValue.Disabled()
-            };
-            Assert.ThrowsException<InvalidCastException>(() => column.Parse(null, String.Empty));
+            var column = new Int32Column("count")
+                         {
+                             IsNullable = false,
+                             DefaultValue = DefaultValue.Disabled()
+                         };
+            Assert.ThrowsException<InvalidCastException>(() => column.Parse(null, string.Empty));
         }
 
         /// <summary>
@@ -92,12 +92,12 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestParse_NotNullable_NullValue_DefaultProvided()
         {
-            Int32Column column = new Int32Column("count")
-            {
-                IsNullable = false,
-                DefaultValue = DefaultValue.Use(0)
-            };
-            int value = (int)column.Parse(null, String.Empty);
+            var column = new Int32Column("count")
+                         {
+                             IsNullable = false,
+                             DefaultValue = DefaultValue.Use(0)
+                         };
+            var value = (int)column.Parse(null, string.Empty);
             Assert.AreEqual(0, value, "A default was not provided.");
         }
     }

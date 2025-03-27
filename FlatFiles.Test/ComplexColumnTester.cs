@@ -12,8 +12,10 @@ namespace FlatFiles.Test
         [TestMethod]
         public void ShouldRoundTrip()
         {
-            const string message = @"Tom,Hanselman,2016-06-0426         Walking Ice,Ace
-";
+            const string message = """
+                                   Tom,Hanselman,2016-06-0426         Walking Ice,Ace
+
+                                   """;
             var stringReader = new StringReader(message);
             var outerSchema = new DelimitedSchema();
             outerSchema.AddColumn(new StringColumn("FirstName"));
@@ -49,20 +51,22 @@ namespace FlatFiles.Test
         [TestMethod]
         public void ShouldRoundTrip_TypeMappers()
         {
-            const string message = @"Tom,Hanselman,2016-06-0426         Walking Ice,Ace
-";
+            const string message = """
+                                   Tom,Hanselman,2016-06-0426         Walking Ice,Ace
+
+                                   """;
             var stringReader = new StringReader(message);
 
             var nestedMapper = FixedLengthTypeMapper.Define<Stats>();
-            nestedMapper.Property(s => s.StartDate, 10).InputFormat("yyyy-MM-dd").OutputFormat("yyyy-MM-dd");
-            nestedMapper.Property(s => s.Age, 2);
-            nestedMapper.Property(s => s.StageName, new Window(20) { Alignment = FixedAlignment.RightAligned });
+            nestedMapper.Property(static s => s.StartDate, 10).InputFormat("yyyy-MM-dd").OutputFormat("yyyy-MM-dd");
+            nestedMapper.Property(static s => s.Age, 2);
+            nestedMapper.Property(static s => s.StageName, new Window(20) { Alignment = FixedAlignment.RightAligned });
 
             var mapper = DelimitedTypeMapper.Define<Player>();
-            mapper.Property(p => p.FirstName);
-            mapper.Property(p => p.LastName);
-            mapper.ComplexProperty(p => p.Statistics, nestedMapper);
-            mapper.Property(p => p.NickName);
+            mapper.Property(static p => p.FirstName);
+            mapper.Property(static p => p.LastName);
+            mapper.ComplexProperty(static p => p.Statistics, nestedMapper);
+            mapper.Property(static p => p.NickName);
 
             var players = mapper.Read(stringReader).ToArray();
             Assert.AreEqual(1, players.Length);
@@ -108,15 +112,15 @@ namespace FlatFiles.Test
         public void TestRead_FixedLengthColumn_InsideFixedLength_TrailingWhitespace_NoTrimmingPerformed()
         {
             var petMapper = FixedLengthTypeMapper.Define<Pet>();
-            petMapper.Property(x => x.Name, new Window(10));
-            petMapper.Property(x => x.UniversalPetIdentifier, new Window(5));
+            petMapper.Property(static x => x.Name, new Window(10));
+            petMapper.Property(static x => x.UniversalPetIdentifier, new Window(5));
             petMapper.Ignored(new Window(2));
 
             var personMapper = FixedLengthTypeMapper.Define<Person>();
-            personMapper.Property(x => x.Name, new Window(10));
+            personMapper.Property(static x => x.Name, new Window(10));
             personMapper.Ignored(new Window(1));
-            personMapper.ComplexProperty(x => x.Pet1, petMapper, new Window(17));
-            personMapper.ComplexProperty(x => x.Pet2, petMapper, new Window(17));
+            personMapper.ComplexProperty(static x => x.Pet1, petMapper, new Window(17));
+            personMapper.ComplexProperty(static x => x.Pet2, petMapper, new Window(17));
 
             var line = "John       Doggy     dog01  Rain      cat01  ";
 
@@ -138,14 +142,14 @@ namespace FlatFiles.Test
         public void TestRead_FixedLengthColumn_InsideDelimited_TrailingWhitespace_NoTrimmingPerformed()
         {
             var petMapper = FixedLengthTypeMapper.Define<Pet>();
-            petMapper.Property(x => x.Name, new Window(10));
-            petMapper.Property(x => x.UniversalPetIdentifier, new Window(5));
+            petMapper.Property(static x => x.Name, new Window(10));
+            petMapper.Property(static x => x.UniversalPetIdentifier, new Window(5));
             petMapper.Ignored(new Window(2));
 
             var personMapper = DelimitedTypeMapper.Define<Person>();
-            personMapper.Property(x => x.Name);
-            personMapper.ComplexProperty(x => x.Pet1, petMapper);
-            personMapper.ComplexProperty(x => x.Pet2, petMapper);
+            personMapper.Property(static x => x.Name);
+            personMapper.ComplexProperty(static x => x.Pet1, petMapper);
+            personMapper.ComplexProperty(static x => x.Pet2, petMapper);
 
             var line = "John,Doggy     dog01  ,Rain      cat01  ";
 

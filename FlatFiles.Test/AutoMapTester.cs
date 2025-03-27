@@ -23,7 +23,7 @@ namespace FlatFiles.Test
                 new Person { Id = 3, Name = "Susan", CreatedOn = new DateTime(2018, 07, 03), IsActive = false, VisitCount = 10 }
             };
             writer.WriteAll(expected);
-            string output = stringWriter.ToString();
+            var output = stringWriter.ToString();
 
             var stringReader = new StringReader(output);
             var reader = DelimitedTypeMapper.GetAutoMappedReader<Person>(stringReader);
@@ -47,7 +47,7 @@ namespace FlatFiles.Test
                 new Person { Id = 3, Name = "Susan", CreatedOn = new DateTime(2018, 07, 03), IsActive = false, VisitCount = 10 }
             };
             await writer.WriteAllAsync(expected);
-            string output = stringWriter.ToString();
+            var output = stringWriter.ToString();
 
             var stringReader = new StringReader(output);
             var reader = await DelimitedTypeMapper.GetAutoMappedReaderAsync<Person>(stringReader);
@@ -67,7 +67,7 @@ namespace FlatFiles.Test
         public void ShouldDeduceSchemaForType_ColumnNameCustomization()
         {
             var stringWriter = new StringWriter();
-            var nameResolver = AutoMapResolver.For(m => $"Prefix_{m.Name}_Postfix");
+            var nameResolver = AutoMapResolver.For(static m => $"Prefix_{m.Name}_Postfix");
             var writer = DelimitedTypeMapper.GetAutoMappedWriter<Person>(stringWriter, null, nameResolver);
             var expected = new[]
             {
@@ -76,7 +76,7 @@ namespace FlatFiles.Test
                 new Person { Id = 3, Name = "Susan", CreatedOn = new DateTime(2018, 07, 03), IsActive = false, VisitCount = 10 }
             };
             writer.WriteAll(expected);
-            string output = stringWriter.ToString();
+            var output = stringWriter.ToString();
 
             var stringReader = new StringReader(output);
             var reader = DelimitedTypeMapper.GetAutoMappedReader<Person>(stringReader, null, AutoMapMatcher.For(nameResolver));
@@ -91,11 +91,11 @@ namespace FlatFiles.Test
         [TestMethod]
         public void ShouldWriteHeadersWhenNoRecordsProvided_Writer()
         {
-            var mapper = DelimitedTypeMapper.Define(() => new Person());
-            mapper.Property(x => x.Id);
-            mapper.Property(x => x.Name);
-            mapper.Property(x => x.CreatedOn);
-            mapper.Property(x => x.IsActive);
+            var mapper = DelimitedTypeMapper.Define(static () => new Person());
+            mapper.Property(static x => x.Id);
+            mapper.Property(static x => x.Name);
+            mapper.Property(static x => x.CreatedOn);
+            mapper.Property(static x => x.IsActive);
             var stringWriter = new StringWriter();
             var options = new DelimitedOptions
                           {
@@ -113,18 +113,18 @@ namespace FlatFiles.Test
             var schema = reader.GetSchema();
             Assert.AreEqual(4, schema.ColumnDefinitions.Count, "The wrong number of headers were found.");
             var expected = new[] { "Id", "Name", "CreatedOn", "IsActive" };
-            var actual = schema.ColumnDefinitions.Select(c => c.ColumnName).ToArray();
+            var actual = schema.ColumnDefinitions.Select(static c => c.ColumnName).ToArray();
             CollectionAssert.AreEqual(expected, actual);
         }
 
         [TestMethod]
         public void ShouldWriteHeadersWhenNoRecordsProvided_Mapper()
         {
-            var mapper = DelimitedTypeMapper.Define(() => new Person());
-            mapper.Property(x => x.Id);
-            mapper.Property(x => x.Name);
-            mapper.Property(x => x.CreatedOn);
-            mapper.Property(x => x.IsActive);
+            var mapper = DelimitedTypeMapper.Define(static () => new Person());
+            mapper.Property(static x => x.Id);
+            mapper.Property(static x => x.Name);
+            mapper.Property(static x => x.CreatedOn);
+            mapper.Property(static x => x.IsActive);
             var stringWriter = new StringWriter();
             var options = new DelimitedOptions
                           {
@@ -140,18 +140,18 @@ namespace FlatFiles.Test
             var schema = reader.GetSchema();
             Assert.AreEqual(4, schema.ColumnDefinitions.Count, "The wrong number of headers were found.");
             var expected = new[] { "Id", "Name", "CreatedOn", "IsActive" };
-            var actual = schema.ColumnDefinitions.Select(c => c.ColumnName).ToArray();
+            var actual = schema.ColumnDefinitions.Select(static c => c.ColumnName).ToArray();
             CollectionAssert.AreEqual(expected, actual);
         }
 
         [TestMethod]
         public void ShouldNotWriteHeaderWhenHeaderNotConfigured()
         {
-            var mapper = DelimitedTypeMapper.Define(() => new Person());
-            mapper.Property(x => x.Id);
-            mapper.Property(x => x.Name);
-            mapper.Property(x => x.CreatedOn);
-            mapper.Property(x => x.IsActive);
+            var mapper = DelimitedTypeMapper.Define(static () => new Person());
+            mapper.Property(static x => x.Id);
+            mapper.Property(static x => x.Name);
+            mapper.Property(static x => x.CreatedOn);
+            mapper.Property(static x => x.IsActive);
             var stringWriter = new StringWriter();
             var options = new DelimitedOptions
                           {

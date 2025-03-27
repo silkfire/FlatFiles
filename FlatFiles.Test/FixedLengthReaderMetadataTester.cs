@@ -12,8 +12,8 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestReader_WithSchema_NoFilter_LogicalRecordsOnly()
         {
-            var mapper = FixedLengthTypeMapper.Define(() => new Person());
-            mapper.Property(x => x.Name, 10);
+            var mapper = FixedLengthTypeMapper.Define(static () => new Person());
+            mapper.Property(static x => x.Name, 10);
 
             var people = new[]
             {
@@ -22,14 +22,14 @@ namespace FlatFiles.Test
                 new Person { Name = "Jane" }
             };
 
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             mapper.Write(writer, people, new FixedLengthOptions { IsFirstRecordHeader = true });
-            string output = writer.ToString();
+            var output = writer.ToString();
 
             mapper.CustomMapping(new RecordNumberColumn("RecordNumber"), 10)
-                .WithReader((p, v) => p.RecordNumber = (int)v)
-                .WithWriter(p => p.RecordNumber);
-            StringReader reader = new StringReader(output);
+                .WithReader(static (p, v) => p.RecordNumber = (int)v)
+                .WithWriter(static p => p.RecordNumber);
+            var reader = new StringReader(output);
             var results = mapper.Read(reader, new FixedLengthOptions { IsFirstRecordHeader = true }).ToArray();
             Assert.AreEqual(3, results.Length);
             Assert.AreEqual("Bob", results[0].Name);
@@ -43,8 +43,8 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestReader_WithSchema_WithFilter_LogicalRecordsOnly()
         {
-            var mapper = FixedLengthTypeMapper.Define(() => new Person());
-            mapper.Property(x => x.Name, 10);
+            var mapper = FixedLengthTypeMapper.Define(static () => new Person());
+            mapper.Property(static x => x.Name, 10);
 
             var people = new[]
             {
@@ -53,17 +53,17 @@ namespace FlatFiles.Test
                 new Person { Name = "Jane" }
             };
 
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             mapper.Write(writer, people, new FixedLengthOptions { IsFirstRecordHeader = true });
-            string output = writer.ToString();
+            var output = writer.ToString();
 
             mapper.CustomMapping(new RecordNumberColumn("RecordNumber"), 10)
-                .WithReader((p, v) => p.RecordNumber = (int)v)
-                .WithWriter(p => p.RecordNumber);
-            StringReader stringReader = new StringReader(output);
+                .WithReader(static (p, v) => p.RecordNumber = (int)v)
+                .WithWriter(static p => p.RecordNumber);
+            var stringReader = new StringReader(output);
             var options = new FixedLengthOptions { IsFirstRecordHeader = true };
             var reader = mapper.GetReader(stringReader, options);
-            reader.RecordPartitioned += (sender, e) =>
+            reader.RecordPartitioned += static (_, e) =>
             {
                 e.IsSkipped = e.Values.Length == 1 && e.Values[0] == "Tom";
             };
@@ -78,8 +78,8 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestReader_WithSchema_WithFilter_LineCount()
         {
-            var mapper = FixedLengthTypeMapper.Define(() => new Person());
-            mapper.Property(x => x.Name, 10);
+            var mapper = FixedLengthTypeMapper.Define(static () => new Person());
+            mapper.Property(static x => x.Name, 10);
 
             var people = new[]
             {
@@ -88,17 +88,17 @@ namespace FlatFiles.Test
                 new Person { Name = "Jane" }
             };
 
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             mapper.Write(writer, people, new FixedLengthOptions { IsFirstRecordHeader = true });
-            string output = writer.ToString();
+            var output = writer.ToString();
 
             mapper.CustomMapping(new RecordNumberColumn("RecordNumber") { IncludeSchema = true, IncludeSkippedRecords = true }, 10)
-                .WithReader((p, v) => p.RecordNumber = (int)v)
-                .WithWriter(p => p.RecordNumber);
-            StringReader stringReader = new StringReader(output);
+                .WithReader(static (p, v) => p.RecordNumber = (int)v)
+                .WithWriter(static p => p.RecordNumber);
+            var stringReader = new StringReader(output);
             var options = new FixedLengthOptions { IsFirstRecordHeader = true };
             var reader = mapper.GetReader(stringReader, options);
-            reader.RecordPartitioned += (sender, e) =>
+            reader.RecordPartitioned += static (_, e) =>
             {
                 e.IsSkipped = e.Values.Length == 1 && e.Values[0] == "Tom";
             };
@@ -113,8 +113,8 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestReader_WithSchema_NoFilter_LineCount()
         {
-            var mapper = FixedLengthTypeMapper.Define(() => new Person());
-            mapper.Property(x => x.Name, 10);
+            var mapper = FixedLengthTypeMapper.Define(static () => new Person());
+            mapper.Property(static x => x.Name, 10);
 
             var people = new[]
             {
@@ -123,14 +123,14 @@ namespace FlatFiles.Test
                 new Person { Name = "Jane" }
             };
 
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             mapper.Write(writer, people, new FixedLengthOptions { IsFirstRecordHeader = true });
-            string output = writer.ToString();
+            var output = writer.ToString();
 
             mapper.CustomMapping(new RecordNumberColumn("RecordNumber") { IncludeSchema = true, IncludeSkippedRecords = true }, 10)
-                .WithReader((p, v) => p.RecordNumber = (int)v)
-                .WithWriter(p => p.RecordNumber);
-            StringReader reader = new StringReader(output);
+                .WithReader(static (p, v) => p.RecordNumber = (int)v)
+                .WithWriter(static p => p.RecordNumber);
+            var reader = new StringReader(output);
             var results = mapper.Read(reader, new FixedLengthOptions { IsFirstRecordHeader = true }).ToArray();
             Assert.AreEqual(3, results.Length);
             Assert.AreEqual("Bob", results[0].Name);
@@ -144,8 +144,8 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestReader_WithSchema_SchemaNotCounted_WithFilter_LineCount()
         {
-            var mapper = FixedLengthTypeMapper.Define(() => new Person());
-            mapper.Property(x => x.Name, 10);
+            var mapper = FixedLengthTypeMapper.Define(static () => new Person());
+            mapper.Property(static x => x.Name, 10);
 
             var people = new[]
             {
@@ -154,17 +154,17 @@ namespace FlatFiles.Test
                 new Person { Name = "Jane" }
             };
 
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             mapper.Write(writer, people, new FixedLengthOptions { IsFirstRecordHeader = true });
-            string output = writer.ToString();
+            var output = writer.ToString();
 
             mapper.CustomMapping(new RecordNumberColumn("RecordNumber") { IncludeSchema = false, IncludeSkippedRecords = true }, 10)
-                .WithReader((p, v) => p.RecordNumber = (int)v)
-                .WithWriter(p => p.RecordNumber);
-            StringReader stringReader = new StringReader(output);
+                .WithReader(static (p, v) => p.RecordNumber = (int)v)
+                .WithWriter(static p => p.RecordNumber);
+            var stringReader = new StringReader(output);
             var options = new FixedLengthOptions { IsFirstRecordHeader = true };
             var reader = mapper.GetReader(stringReader, options);
-            reader.RecordPartitioned += (sender, e) =>
+            reader.RecordPartitioned += static (_, e) =>
             {
                 e.IsSkipped = e.Values.Length == 1 && e.Values[0] == "Tom";
             };
@@ -179,8 +179,8 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestReader_WithSchema_SchemaNotCounted_NoFilter_LineCountMinusOne()
         {
-            var mapper = FixedLengthTypeMapper.Define(() => new Person());
-            mapper.Property(x => x.Name, 10);
+            var mapper = FixedLengthTypeMapper.Define(static () => new Person());
+            mapper.Property(static x => x.Name, 10);
 
             var people = new[]
             {
@@ -189,14 +189,14 @@ namespace FlatFiles.Test
                 new Person { Name = "Jane" }
             };
 
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             mapper.Write(writer, people, new FixedLengthOptions { IsFirstRecordHeader = true });
-            string output = writer.ToString();
+            var output = writer.ToString();
 
             mapper.CustomMapping(new RecordNumberColumn("RecordNumber") { IncludeSchema = false, IncludeSkippedRecords = true }, 10)
-                .WithReader((p, v) => p.RecordNumber = (int)v)
-                .WithWriter(p => p.RecordNumber);
-            StringReader reader = new StringReader(output);
+                .WithReader(static (p, v) => p.RecordNumber = (int)v)
+                .WithWriter(static p => p.RecordNumber);
+            var reader = new StringReader(output);
             var results = mapper.Read(reader, new FixedLengthOptions { IsFirstRecordHeader = true }).ToArray();
             Assert.AreEqual(3, results.Length);
             Assert.AreEqual("Bob", results[0].Name);
@@ -210,8 +210,8 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestReader_WithSchema_NoFilter_WithIgnoredColumn_LogicalRecordsOnly()
         {
-            var mapper = FixedLengthTypeMapper.Define(() => new Person());
-            mapper.Property(x => x.Name, 10);
+            var mapper = FixedLengthTypeMapper.Define(static () => new Person());
+            mapper.Property(static x => x.Name, 10);
             mapper.Ignored(1);
 
             var people = new[]
@@ -221,14 +221,14 @@ namespace FlatFiles.Test
                 new Person { Name = "Jane" }
             };
 
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             mapper.Write(writer, people, new FixedLengthOptions { IsFirstRecordHeader = true });
-            string output = writer.ToString();
+            var output = writer.ToString();
 
             mapper.CustomMapping(new RecordNumberColumn("RecordNumber"), 10)
-                .WithReader((p, v) => p.RecordNumber = (int)v)
-                .WithWriter(p => p.RecordNumber);
-            StringReader reader = new StringReader(output);
+                .WithReader(static (p, v) => p.RecordNumber = (int)v)
+                .WithWriter(static p => p.RecordNumber);
+            var reader = new StringReader(output);
             var results = mapper.Read(reader, new FixedLengthOptions { IsFirstRecordHeader = true }).ToArray();
             Assert.AreEqual(3, results.Length);
             Assert.AreEqual("Bob", results[0].Name);
@@ -242,8 +242,8 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestReader_WithSchema_WithIgnoredColumn_WithFilter_LogicalRecordsOnly()
         {
-            var mapper = FixedLengthTypeMapper.Define(() => new Person());
-            mapper.Property(x => x.Name, 10);
+            var mapper = FixedLengthTypeMapper.Define(static () => new Person());
+            mapper.Property(static x => x.Name, 10);
             mapper.Ignored(1);
 
             var people = new[]
@@ -253,17 +253,17 @@ namespace FlatFiles.Test
                 new Person { Name = "Jane" }
             };
 
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             mapper.Write(writer, people, new FixedLengthOptions { IsFirstRecordHeader = true });
-            string output = writer.ToString();
+            var output = writer.ToString();
 
             mapper.CustomMapping(new RecordNumberColumn("RecordNumber"), 10)
-                .WithReader((p, v) => p.RecordNumber = (int)v)
-                .WithWriter(p => p.RecordNumber);
-            StringReader stringReader = new StringReader(output);
+                .WithReader(static (p, v) => p.RecordNumber = (int)v)
+                .WithWriter(static p => p.RecordNumber);
+            var stringReader = new StringReader(output);
             var options = new FixedLengthOptions { IsFirstRecordHeader = true };
             var reader = mapper.GetReader(stringReader, options);
-            reader.RecordPartitioned += (sender, e) =>
+            reader.RecordPartitioned += static (_, e) =>
             {
                 e.IsSkipped = e.Values.Length >= 1 && e.Values[0] == "Tom";
             };
@@ -279,8 +279,8 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestReader_WithSchema_WithIgnoredColumn_NoRecordSeparator_WithFilter_LogicalRecordsOnly()
         {
-            var mapper = FixedLengthTypeMapper.Define(() => new Person());
-            mapper.Property(x => x.Name, 10);
+            var mapper = FixedLengthTypeMapper.Define(static () => new Person());
+            mapper.Property(static x => x.Name, 10);
             mapper.Ignored(1);
 
             var people = new[]
@@ -290,25 +290,25 @@ namespace FlatFiles.Test
                 new Person { Name = "Jane" }
             };
 
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             mapper.Write(writer, people, new FixedLengthOptions
                                          {
                 IsFirstRecordHeader = true,
                 HasRecordSeparator = false
             });
-            string output = writer.ToString();
+            var output = writer.ToString();
 
             mapper.CustomMapping(new RecordNumberColumn("RecordNumber"), 10)
-                .WithReader((p, v) => p.RecordNumber = (int)v)
-                .WithWriter(p => p.RecordNumber);
-            StringReader stringReader = new StringReader(output);
+                .WithReader(static (p, v) => p.RecordNumber = (int)v)
+                .WithWriter(static p => p.RecordNumber);
+            var stringReader = new StringReader(output);
             var options = new FixedLengthOptions
                           {
                 IsFirstRecordHeader = true,
                 HasRecordSeparator = false
             };
             var reader = mapper.GetReader(stringReader, options);
-            reader.RecordPartitioned += (sender, e) =>
+            reader.RecordPartitioned += static (_, e) =>
             {
                 e.IsSkipped = e.Values.Length >= 1 && e.Values[0] == "Tom";
             };
@@ -324,12 +324,12 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestReader_WrappedWithIgnoredColumns()
         {
-            var mapper = FixedLengthTypeMapper.Define(() => new ComplicatedPerson());
-            mapper.Property(x => x.PersonId, 10);
+            var mapper = FixedLengthTypeMapper.Define(static () => new ComplicatedPerson());
+            mapper.Property(static x => x.PersonId, 10);
             mapper.Ignored(1);
-            mapper.Property(x => x.Name, 10);
+            mapper.Property(static x => x.Name, 10);
             mapper.Ignored(1);
-            mapper.Property(x => x.CreatedOn, 10).OutputFormat("MM/dd/yyyy");
+            mapper.Property(static x => x.CreatedOn, 10).OutputFormat("MM/dd/yyyy");
 
             var people = new[]
             {
@@ -338,17 +338,17 @@ namespace FlatFiles.Test
                 new ComplicatedPerson { PersonId = 3, Name = "Jane", CreatedOn = new DateTime(2018, 04, 27) }
             };
 
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             mapper.Write(writer, people, new FixedLengthOptions { IsFirstRecordHeader = true });
-            string output = writer.ToString();
+            var output = writer.ToString();
 
             mapper.CustomMapping(new RecordNumberColumn("RecordNumber"), 10)
-                .WithReader((p, v) => p.RecordNumber = (int)v)
-                .WithWriter(p => p.RecordNumber);
-            StringReader stringReader = new StringReader(output);
+                .WithReader(static (p, v) => p.RecordNumber = (int)v)
+                .WithWriter(static p => p.RecordNumber);
+            var stringReader = new StringReader(output);
             var options = new FixedLengthOptions { IsFirstRecordHeader = true };
             var reader = mapper.GetReader(stringReader, options);
-            reader.RecordPartitioned += (sender, e) =>
+            reader.RecordPartitioned += static (_, e) =>
             {
                 e.IsSkipped = e.Values.Length >= 2 && e.Values[2] == "Tom";
             };
@@ -372,10 +372,12 @@ namespace FlatFiles.Test
               .AddColumn(new Int16Column("RecordType"), 2)
               .AddColumn(new StringColumn("Data"), 6);
 
-            const string output = @"30header
-31detail
-39footer
-";
+            const string output = """
+                                  30header
+                                  31detail
+                                  39footer
+
+                                  """;
             var stringReader = new StringReader(output);
             var reader = new FixedLengthReader(stringReader, schema);
 

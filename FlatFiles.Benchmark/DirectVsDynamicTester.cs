@@ -14,12 +14,12 @@ namespace FlatFiles.Benchmark
 
         public DirectVsDynamicTester()
         {
-            var directMapper = DelimitedTypeMapper.Define<Person>(() => new Person());
-            directMapper.Property(x => x.Name).ColumnName("Name");
-            directMapper.Property(x => x.IQ).ColumnName("IQ");
-            directMapper.Property(x => x.BirthDate).ColumnName("BirthDate");
-            directMapper.Property(x => x.TopSpeed).ColumnName("TopSpeed");
-            directMapper.Property(x => x.IsActive).ColumnName("IsActive");
+            var directMapper = DelimitedTypeMapper.Define(static () => new Person());
+            directMapper.Property(static x => x.Name).ColumnName("Name");
+            directMapper.Property(static x => x.IQ).ColumnName("IQ");
+            directMapper.Property(static x => x.BirthDate).ColumnName("BirthDate");
+            directMapper.Property(static x => x.TopSpeed).ColumnName("TopSpeed");
+            directMapper.Property(static x => x.IsActive).ColumnName("IsActive");
             this.directMapper = directMapper;
 
             var dynamicMapper = DelimitedTypeMapper.DefineDynamic(typeof(Person));
@@ -30,7 +30,7 @@ namespace FlatFiles.Benchmark
             dynamicMapper.BooleanProperty("IsActive").ColumnName("IsActive");
             this.dynamicMapper = dynamicMapper;
 
-            people = Enumerable.Range(0, 10000).Select(i => new Person
+            people = Enumerable.Range(0, 10000).Select(static _ => new Person
                                                             {
                 Name = "Susan",
                 IQ = 132,
@@ -42,22 +42,22 @@ namespace FlatFiles.Benchmark
         [Benchmark]
         public void Direct()
         {
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             directMapper.Write(writer, people);
-            string peopleData = writer.ToString();
+            var peopleData = writer.ToString();
 
-            StringReader reader = new StringReader(peopleData);
+            var reader = new StringReader(peopleData);
             directMapper.Read(reader).ToList();
         }
 
         [Benchmark]
         public void Dynamic()
         {
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             dynamicMapper.Write(writer, people);
-            string peopleData = writer.ToString();
+            var peopleData = writer.ToString();
             
-            StringReader reader = new StringReader(peopleData);
+            var reader = new StringReader(peopleData);
             dynamicMapper.Read(reader).ToList();
         }
 

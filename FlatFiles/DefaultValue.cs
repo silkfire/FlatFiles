@@ -22,7 +22,7 @@ namespace FlatFiles
         /// <returns>An instance of a <see cref="IDefaultValue"/> that returns the given value.</returns>
         public static IDefaultValue Use(object? value)
         {
-            return new DefaultValue(ctx => value);
+            return new DefaultValue(_ => value);
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace FlatFiles
         /// <returns>An instance of a <see cref="IDefaultValue"/> that throws an exception.</returns>
         public static IDefaultValue Disabled()
         {
-            return new DefaultValue(ctx => throw new InvalidCastException(Resources.AssignNullToNonNullable));
+            return new DefaultValue(static _ => throw new InvalidCastException(Resources.AssignNullToNonNullable));
         }
 
         /// <summary>

@@ -23,7 +23,7 @@
 
         public string Trim(string value)
         {
-            int length = value.Length;
+            var length = value.Length;
             if (length >= 1 && value[length - 1] == '\n')
             {
                 --length;

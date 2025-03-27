@@ -39,7 +39,7 @@ namespace FlatFiles.Test
         public void TestCtor_NullWriter_WithSchema_Throws()
         {
             TextReader reader = null;
-            DelimitedSchema schema = new DelimitedSchema();
+            var schema = new DelimitedSchema();
             Assert.ThrowsException<ArgumentNullException>(() => new DelimitedReader(reader, schema));
         }
 
@@ -61,12 +61,12 @@ namespace FlatFiles.Test
         public void TestRead_SingleRecord_ReturnsTrueOnce()
         {
             const string text = "a,b,c";
-            StringReader stringReader = new StringReader(text);
-            DelimitedReader parser = new DelimitedReader(stringReader);
-            bool canRead = parser.Read();
+            var stringReader = new StringReader(text);
+            var parser = new DelimitedReader(stringReader);
+            var canRead = parser.Read();
             Assert.IsTrue(canRead, "Could not read the record.");
-            object[] expected = new object[] { "a", "b", "c" };
-            object[] actual = parser.GetValues();
+            object[] expected = ["a", "b", "c"];
+            var actual = parser.GetValues();
             CollectionAssert.AreEqual(expected, actual);
             canRead = parser.Read();
             Assert.IsFalse(canRead, "No more records should have been read.");
@@ -76,10 +76,10 @@ namespace FlatFiles.Test
         public void TestRead_InvalidConversion_Throws()
         {
             const string text = "a";
-            StringReader stringReader = new StringReader(text);
-            DelimitedSchema schema = new DelimitedSchema();
+            var stringReader = new StringReader(text);
+            var schema = new DelimitedSchema();
             schema.AddColumn(new Int32Column("First"));
-            DelimitedReader parser = new DelimitedReader(stringReader, schema);
+            var parser = new DelimitedReader(stringReader, schema);
             Assert.ThrowsException<RecordProcessingException>(() => parser.Read());
         }
 
@@ -90,14 +90,14 @@ namespace FlatFiles.Test
         public void TestRead_SkipRecord_NoParsingError()
         {
             const string text = "a,b,c";
-            DelimitedSchema schema = new DelimitedSchema();
+            var schema = new DelimitedSchema();
             schema.AddColumn(new Int32Column("A"));
             schema.AddColumn(new DateTimeColumn("B"));
             schema.AddColumn(new GuidColumn("C"));
 
-            StringReader stringReader = new StringReader(text);
-            DelimitedReader parser = new DelimitedReader(stringReader, schema);
-            bool canRead = parser.Skip();
+            var stringReader = new StringReader(text);
+            var parser = new DelimitedReader(stringReader, schema);
+            var canRead = parser.Skip();
             Assert.IsTrue(canRead, "Could not skip the record.");
             canRead = parser.Read();
             Assert.IsFalse(canRead, "No more records should have been read.");
@@ -109,10 +109,10 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestRead_GetValuesWithoutReading_Throws()
         {
-            string text = "a,b,c";
-            StringReader stringReader = new StringReader(text);
-            DelimitedReader parser = new DelimitedReader(stringReader);
-            Assert.ThrowsException<InvalidOperationException>(() => parser.GetValues());
+            var text = "a,b,c";
+            var stringReader = new StringReader(text);
+            var parser = new DelimitedReader(stringReader);
+            Assert.ThrowsException<InvalidOperationException>(parser.GetValues);
         }
 
         /// <summary>
@@ -121,13 +121,13 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestRead_MultipleCallsToValues_ReturnsSameValues()
         {
-            string text = "a,b,c";
-            StringReader stringReader = new StringReader(text);
-            DelimitedReader parser = new DelimitedReader(stringReader);
-            bool canRead = parser.Read();
+            var text = "a,b,c";
+            var stringReader = new StringReader(text);
+            var parser = new DelimitedReader(stringReader);
+            var canRead = parser.Read();
             Assert.IsTrue(canRead, "Could not read the record.");
-            object[] expected = new object[] { "a", "b", "c" };
-            object[] actual = parser.GetValues();
+            object[] expected = ["a", "b", "c"];
+            var actual = parser.GetValues();
             CollectionAssert.AreEqual(expected, actual);
             actual = parser.GetValues();
             CollectionAssert.AreEqual(expected, actual);
@@ -139,14 +139,14 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestRead_ValuesAfterEndOfFile_Throws()
         {
-            string text = "a,b,c";
-            StringReader stringReader = new StringReader(text);
-            DelimitedReader parser = new DelimitedReader(stringReader);
-            bool canRead = parser.Read();
+            var text = "a,b,c";
+            var stringReader = new StringReader(text);
+            var parser = new DelimitedReader(stringReader);
+            var canRead = parser.Read();
             Assert.IsTrue(canRead, "Could not read the record.");
             canRead = parser.Read();
             Assert.IsFalse(canRead, "We should have reached the end of the file.");
-            Assert.ThrowsException<InvalidOperationException>(() => parser.GetValues());
+            Assert.ThrowsException<InvalidOperationException>(parser.GetValues);
         }
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestRead_EmbeddedQuote_ParsesCorrectly()
         {
-            var text = @"123;Todd's Bait Shop;1/17/2014";
+            var text = "123;Todd's Bait Shop;1/17/2014";
             var schema = new DelimitedSchema();
             schema.AddColumn(new Int32Column("id"));
             schema.AddColumn(new StringColumn("name"));
@@ -166,14 +166,14 @@ namespace FlatFiles.Test
                 Separator = ";"
             };
 
-            StringReader stringReader = new StringReader(text);
+            var stringReader = new StringReader(text);
             var reader = new DelimitedReader(stringReader, schema, options);
 
             var result = reader.Read();
 
             Assert.IsTrue(result, "Could not read the record.");
-            object[] expected = { 123, "Todd's Bait Shop", new DateTime(2014, 1, 17) };
-            object[] actual = reader.GetValues();
+            object[] expected = [123, "Todd's Bait Shop", new DateTime(2014, 1, 17)];
+            var actual = reader.GetValues();
             CollectionAssert.AreEqual(expected, actual);
         }
 
@@ -183,7 +183,7 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestGetSchema_NotExtracted_Throws()
         {
-            string text = "a,b,c";
+            var text = "a,b,c";
             var stringReader = new StringReader(text);
             var options = new DelimitedOptions { IsFirstRecordSchema = false };
             IReader parser = new DelimitedReader(stringReader, options);
@@ -197,14 +197,14 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestGetSchema_Extracted_ReturnsColumnNames()
         {
-            string text = "a,b,c";
-            StringReader stringReader = new StringReader(text);
-            DelimitedOptions options = new DelimitedOptions { IsFirstRecordSchema = true };
+            var text = "a,b,c";
+            var stringReader = new StringReader(text);
+            var options = new DelimitedOptions { IsFirstRecordSchema = true };
             IReader parser = new DelimitedReader(stringReader, options);
-            ISchema schema = parser.GetSchema();
-            Assert.IsTrue(schema.ColumnDefinitions.All(d => d is StringColumn), "Not all of the columns were treated as strings.");
-            string[] actual = schema.ColumnDefinitions.Select(d => d.ColumnName).ToArray();
-            string[] expected = new string[] { "a", "b", "c" };
+            var schema = parser.GetSchema();
+            Assert.IsTrue(schema.ColumnDefinitions.All(static d => d is StringColumn), "Not all of the columns were treated as strings.");
+            var actual = schema.ColumnDefinitions.Select(static d => d.ColumnName).ToArray();
+            string[] expected = ["a", "b", "c"];
             CollectionAssert.AreEqual(expected, actual);
         }
 
@@ -215,16 +215,16 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestGetSchema_SchemaProvided_FirstRecordSchema_SkipsFirstRecord()
         {
-            const string text = @"id,name,created";
-            DelimitedSchema schema = new DelimitedSchema();
+            const string text = "id,name,created";
+            var schema = new DelimitedSchema();
             schema.AddColumn(new Int32Column("id"))
                   .AddColumn(new StringColumn("name"))
                   .AddColumn(new DateTimeColumn("created"));
 
-            StringReader stringReader = new StringReader(text);
-            DelimitedOptions options = new DelimitedOptions { IsFirstRecordSchema = true };
+            var stringReader = new StringReader(text);
+            var options = new DelimitedOptions { IsFirstRecordSchema = true };
             IReader parser = new DelimitedReader(stringReader, schema, options);
-            ISchema actual = parser.GetSchema();
+            var actual = parser.GetSchema();
             Assert.AreSame(schema, actual);
             Assert.IsFalse(parser.Read(), "The schema record was not skipped.");
         }
@@ -235,27 +235,29 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestRead_WithSeparatedRecordFilter_SkipsRecordsMatchingCriteria()
         {
-            DelimitedSchema schema = new DelimitedSchema();
+            var schema = new DelimitedSchema();
             schema.AddColumn(new Int32Column("id"))
                   .AddColumn(new StringColumn("name"))
                   .AddColumn(new DateTimeColumn("created"));
 
-            const string text = @"123,Bob Smith,4/21/2017
-This is not a real record
-234,Jay Smith,5/21/2017";
-            StringReader stringReader = new StringReader(text);
+            const string text = """
+                                123,Bob Smith,4/21/2017
+                                This is not a real record
+                                234,Jay Smith,5/21/2017
+                                """;
+            var stringReader = new StringReader(text);
             var parser = new DelimitedReader(stringReader, schema);
-            parser.RecordRead += (sender, e) =>
+            parser.RecordRead += static (_, e) =>
             {
                 e.IsSkipped = e.Values.Length < 3;
             };
 
             Assert.IsTrue(parser.Read(), "Could not read the first record.");
-            object[] actual1 = parser.GetValues();
+            var actual1 = parser.GetValues();
             CollectionAssert.AreEqual(new object[] { 123, "Bob Smith", new DateTime(2017, 04, 21) }, actual1);
 
             Assert.IsTrue(parser.Read(), "Could not read the second record.");
-            object[] actual2 = parser.GetValues();
+            var actual2 = parser.GetValues();
             CollectionAssert.AreEqual(new object[] { 234, "Jay Smith", new DateTime(2017, 05, 21) }, actual2);
 
             Assert.IsFalse(parser.Read(), "There should not be any more records.");
@@ -267,20 +269,20 @@ This is not a real record
         [TestMethod]
         public void TestRead_InspectRawRecords()
         {
-            DelimitedSchema schema = new DelimitedSchema();
+            var schema = new DelimitedSchema();
             schema.AddColumn(new Int32Column("id"))
                   .AddColumn(new StringColumn("name"))
                   .AddColumn(new DateTimeColumn("created"));
 
-            const string text = @"123,""Bob Smith"",4/21/2017";
-            StringReader stringReader = new StringReader(text);
+            const string text = """123,"Bob Smith",4/21/2017""";
+            var stringReader = new StringReader(text);
             var reader = new DelimitedReader(stringReader, schema);
-            reader.RecordRead += (sender, e) => {
-                Assert.AreEqual(@"123,""Bob Smith"",4/21/2017", e.RecordContext.Record);
+            reader.RecordRead += static (_, e) => {
+                Assert.AreEqual("""123,"Bob Smith",4/21/2017""", e.RecordContext.Record);
                 CollectionAssert.AreEqual(new[] { "123", "Bob Smith", "4/21/2017" }, e.RecordContext.Values);
             };
-            reader.RecordParsed += (sender, e) => {
-                Assert.AreEqual(@"123,""Bob Smith"",4/21/2017", e.RecordContext.Record);
+            reader.RecordParsed += static (_, e) => {
+                Assert.AreEqual("""123,"Bob Smith",4/21/2017""", e.RecordContext.Record);
                 CollectionAssert.AreEqual(new[] { "123", "Bob Smith", "4/21/2017" }, e.RecordContext.Values);
             };
             Assert.IsTrue(reader.Read());
@@ -306,17 +308,17 @@ This is not a real record
         [TestMethod]
         public void TestGetSchema_SchemaProvided_ParsesValues()
         {
-            const string text = @"123,Bob,1/19/2013";
-            DelimitedSchema schema = new DelimitedSchema();
+            const string text = "123,Bob,1/19/2013";
+            var schema = new DelimitedSchema();
             schema.AddColumn(new Int32Column("id"))
                   .AddColumn(new StringColumn("name"))
                   .AddColumn(new DateTimeColumn("created"));
 
-            StringReader stringReader = new StringReader(text);
-            DelimitedReader parser = new DelimitedReader(stringReader, schema);
+            var stringReader = new StringReader(text);
+            var parser = new DelimitedReader(stringReader, schema);
             Assert.IsTrue(parser.Read(), "The first record was skipped.");
-            object[] actual = parser.GetValues();
-            object[] expected = new object[] { 123, "Bob", new DateTime(2013, 1, 19) };
+            var actual = parser.GetValues();
+            object[] expected = [123, "Bob", new DateTime(2013, 1, 19)];
             CollectionAssert.AreEqual(expected, actual);
         }
 
@@ -327,16 +329,16 @@ This is not a real record
         public void TestGetSchema_SchemaProvided_ParsesValues_Quoted()
         {
             const string text = "123,\"Bob\",1/19/2013";
-            DelimitedSchema schema = new DelimitedSchema();
+            var schema = new DelimitedSchema();
             schema.AddColumn(new Int32Column("id"))
                   .AddColumn(new StringColumn("name"))
                   .AddColumn(new DateTimeColumn("created"));
 
-            StringReader stringReader = new StringReader(text);
-            DelimitedReader parser = new DelimitedReader(stringReader, schema);
+            var stringReader = new StringReader(text);
+            var parser = new DelimitedReader(stringReader, schema);
             Assert.IsTrue(parser.Read(), "The first record was skipped.");
-            object[] actual = parser.GetValues();
-            object[] expected = new object[] { 123, "Bob", new DateTime(2013, 1, 19) };
+            var actual = parser.GetValues();
+            object[] expected = [123, "Bob", new DateTime(2013, 1, 19)];
             CollectionAssert.AreEqual(expected, actual);
         }
 
@@ -346,14 +348,14 @@ This is not a real record
         [TestMethod]
         public void TestGetSchema_SchemaProvided_WrongNumberOfColumns_Throws()
         {
-            const string text = @"123,Bob";
-            DelimitedSchema schema = new DelimitedSchema();
+            const string text = "123,Bob";
+            var schema = new DelimitedSchema();
             schema.AddColumn(new Int32Column("id"))
                   .AddColumn(new StringColumn("name"))
                   .AddColumn(new DateTimeColumn("created"));
 
-            StringReader stringReader = new StringReader(text);
-            DelimitedReader parser = new DelimitedReader(stringReader, schema);
+            var stringReader = new StringReader(text);
+            var parser = new DelimitedReader(stringReader, schema);
             Assert.ThrowsException<RecordProcessingException>(() => parser.Read());
         }
 
@@ -364,11 +366,13 @@ This is not a real record
         [TestMethod]
         public void TestGetSchema_FirstRecordSchema_TooFewColumns_Throws()
         {
-            const string text = @"id,name,created
-123,Bob";
-            StringReader stringReader = new StringReader(text);
-            DelimitedOptions options = new DelimitedOptions { IsFirstRecordSchema = true };
-            DelimitedReader parser = new DelimitedReader(stringReader, options);
+            const string text = """
+                                id,name,created
+                                123,Bob
+                                """;
+            var stringReader = new StringReader(text);
+            var options = new DelimitedOptions { IsFirstRecordSchema = true };
+            var parser = new DelimitedReader(stringReader, options);
             Assert.ThrowsException<RecordProcessingException>(() => parser.Read());
         }
 
@@ -378,11 +382,13 @@ This is not a real record
         [TestMethod]
         public void TestGetSchema_FirstRecordSchema_TooManyColumns_IgnoresTrailing()
         {
-            const string text = @"id,name,created
-123,Bob,1/19/2013,Hello";
-            StringReader stringReader = new StringReader(text);
-            DelimitedOptions options = new DelimitedOptions { IsFirstRecordSchema = true };
-            DelimitedReader parser = new DelimitedReader(stringReader, options);
+            const string text = """
+                                id,name,created
+                                123,Bob,1/19/2013,Hello
+                                """;
+            var stringReader = new StringReader(text);
+            var options = new DelimitedOptions { IsFirstRecordSchema = true };
+            var parser = new DelimitedReader(stringReader, options);
             Assert.IsTrue(parser.Read(), "The record could not be read.");
             Assert.AreEqual(parser.GetSchema().ColumnDefinitions.Count, parser.GetValues().Length);
         }
@@ -394,22 +400,22 @@ This is not a real record
         [TestMethod]
         public void TestGetValues_BlankTrailingSection_ReturnsNull()
         {
-            DelimitedOptions options = new DelimitedOptions { IsFirstRecordSchema = true };
-            DelimitedSchema schema = new DelimitedSchema();
+            var options = new DelimitedOptions { IsFirstRecordSchema = true };
+            var schema = new DelimitedSchema();
             schema.AddColumn(new Int32Column("id"))
                 .AddColumn(new StringColumn("name"))
                 .AddColumn(new DateTimeColumn("created") { InputFormat = "M/d/yyyy", OutputFormat = "M/d/yyyy" })
                 .AddColumn(new StringColumn("trailing"));
-            object[] sources = new object[] { 123, "Bob", new DateTime(2013, 1, 19), "" };
+            object[] sources = [123, "Bob", new DateTime(2013, 1, 19), ""];
 
-            StringWriter stringWriter = new StringWriter();
-            DelimitedWriter builder = new DelimitedWriter(stringWriter, schema, options);
+            var stringWriter = new StringWriter();
+            var builder = new DelimitedWriter(stringWriter, schema, options);
             builder.Write(sources);
 
-            StringReader stringReader = new StringReader(stringWriter.ToString());
-            DelimitedReader parser = new DelimitedReader(stringReader, schema, options);
+            var stringReader = new StringReader(stringWriter.ToString());
+            var parser = new DelimitedReader(stringReader, schema, options);
             Assert.IsTrue(parser.Read(), "No records were found.");
-            object[] values = parser.GetValues();
+            var values = parser.GetValues();
             Assert.AreEqual(schema.ColumnDefinitions.Count, values.Length);
             Assert.AreEqual(sources[0], values[0]);
             Assert.AreEqual(sources[1], values[1]);
@@ -425,24 +431,24 @@ This is not a real record
         [TestMethod]
         public void TestGetValues_BlankMiddleSection_ReturnsNull()
         {
-            using (MemoryStream stream = new MemoryStream())
+            using (var stream = new MemoryStream())
             {
-                DelimitedOptions options = new DelimitedOptions { IsFirstRecordSchema = true };
-                DelimitedSchema schema = new DelimitedSchema();
+                var options = new DelimitedOptions { IsFirstRecordSchema = true };
+                var schema = new DelimitedSchema();
                 schema.AddColumn(new Int32Column("id"))
                     .AddColumn(new StringColumn("name"))
                     .AddColumn(new StringColumn("middle"))
                     .AddColumn(new DateTimeColumn("created") { InputFormat = "M/d/yyyy", OutputFormat = "M/d/yyyy" });
-                object[] sources = new object[] { 123, "Bob", "", new DateTime(2013, 1, 19) };
+                object[] sources = [123, "Bob", "", new DateTime(2013, 1, 19)];
 
-                StringWriter stringWriter = new StringWriter();
-                DelimitedWriter builder = new DelimitedWriter(stringWriter, schema, options);
+                var stringWriter = new StringWriter();
+                var builder = new DelimitedWriter(stringWriter, schema, options);
                 builder.Write(sources);
 
-                StringReader stringReader = new StringReader(stringWriter.ToString());
-                DelimitedReader parser = new DelimitedReader(stringReader, schema, options);
+                var stringReader = new StringReader(stringWriter.ToString());
+                var parser = new DelimitedReader(stringReader, schema, options);
                 Assert.IsTrue(parser.Read(), "No records were found.");
-                object[] values = parser.GetValues();
+                var values = parser.GetValues();
                 Assert.AreEqual(schema.ColumnDefinitions.Count, values.Length);
                 Assert.AreEqual(sources[0], values[0]);
                 Assert.AreEqual(sources[1], values[1]);
@@ -459,24 +465,24 @@ This is not a real record
         [TestMethod]
         public void TestGetValues_BlankLeadingSection_ReturnsNull()
         {
-            using (MemoryStream stream = new MemoryStream())
+            using (var stream = new MemoryStream())
             {
-                DelimitedOptions options = new DelimitedOptions { IsFirstRecordSchema = true };
-                DelimitedSchema schema = new DelimitedSchema();
+                var options = new DelimitedOptions { IsFirstRecordSchema = true };
+                var schema = new DelimitedSchema();
                 schema.AddColumn(new StringColumn("leading"))
                     .AddColumn(new Int32Column("id"))
                     .AddColumn(new StringColumn("name"))
                     .AddColumn(new DateTimeColumn("created") { InputFormat = "M/d/yyyy", OutputFormat = "M/d/yyyy" });
-                object[] sources = new object[] { "", 123, "Bob", new DateTime(2013, 1, 19) };
+                object[] sources = ["", 123, "Bob", new DateTime(2013, 1, 19)];
 
-                StringWriter stringWriter = new StringWriter();
-                DelimitedWriter builder = new DelimitedWriter(stringWriter, schema, options);
+                var stringWriter = new StringWriter();
+                var builder = new DelimitedWriter(stringWriter, schema, options);
                 builder.Write(sources);
 
-                StringReader stringReader = new StringReader(stringWriter.ToString());
-                DelimitedReader parser = new DelimitedReader(stringReader, schema, options);
+                var stringReader = new StringReader(stringWriter.ToString());
+                var parser = new DelimitedReader(stringReader, schema, options);
                 Assert.IsTrue(parser.Read(), "No records were found.");
-                object[] values = parser.GetValues();
+                var values = parser.GetValues();
                 Assert.AreEqual(schema.ColumnDefinitions.Count, values.Length);
                 Assert.IsNull(values[0]);
                 Assert.AreEqual(sources[1], values[1]);
@@ -507,7 +513,7 @@ This is not a real record
                 .AddColumn(new Int32Column("MunicipalityId"))
                 .AddColumn(new StringColumn("ValidFrom"));
 
-            StringReader stringReader = new StringReader(text);
+            var stringReader = new StringReader(text);
             var testee = new DelimitedReader(stringReader, options);
 
             //---- Act ---------------------------------------------------------
@@ -525,18 +531,18 @@ This is not a real record
         public void TestTypeMapper_Roundtrip()
         {
             var mapper = DelimitedTypeMapper.Define<Person>();
-            mapper.Property(p => p.Id).ColumnName("id");
-            mapper.Property(p => p.Name).ColumnName("name");
-            mapper.Property(p => p.Created).ColumnName("created").InputFormat("yyyyMMdd").OutputFormat("yyyyMMdd");
-            mapper.Property(p => p.ParentId).ColumnName("parent_id");
+            mapper.Property(static p => p.Id).ColumnName("id");
+            mapper.Property(static p => p.Name).ColumnName("name");
+            mapper.Property(static p => p.Created).ColumnName("created").InputFormat("yyyyMMdd").OutputFormat("yyyyMMdd");
+            mapper.Property(static p => p.ParentId).ColumnName("parent_id");
 
             var bob = new Person { Id = 123, Name = "Bob", Created = new DateTime(2013, 1, 19), ParentId = null };
             var options = new DelimitedOptions { IsFirstRecordSchema = true, Separator = "\t" };
 
-            StringWriter stringWriter = new StringWriter();
-            mapper.Write(stringWriter, new Person[] { bob }, options);
+            var stringWriter = new StringWriter();
+            mapper.Write(stringWriter, [bob], options);
 
-            StringReader stringReader = new StringReader(stringWriter.ToString());
+            var stringReader = new StringReader(stringWriter.ToString());
             var people = mapper.Read(stringReader, options).ToArray();
             Assert.AreEqual(1, people.Length);
             var person = people.SingleOrDefault();
@@ -554,17 +560,17 @@ This is not a real record
         public void TestTypeMapper_RoundtripWithNull()
         {
             var mapper = DelimitedTypeMapper.Define<Person>();
-            mapper.Property(p => p.Id).ColumnName("id");
-            mapper.Property(p => p.Name).ColumnName("name");
-            mapper.Property(p => p.Created).ColumnName("created").InputFormat("yyyyMMdd").OutputFormat("yyyyMMdd");
+            mapper.Property(static p => p.Id).ColumnName("id");
+            mapper.Property(static p => p.Name).ColumnName("name");
+            mapper.Property(static p => p.Created).ColumnName("created").InputFormat("yyyyMMdd").OutputFormat("yyyyMMdd");
 
             var bob = new Person { Id = 123, Name = null, Created = new DateTime(2013, 1, 19) };
             var options = new DelimitedOptions { IsFirstRecordSchema = true, Separator = "\t" };
 
-            StringWriter stringWriter = new StringWriter();
-            mapper.Write(stringWriter, new Person[] { bob }, options);
+            var stringWriter = new StringWriter();
+            mapper.Write(stringWriter, [bob], options);
 
-            StringReader stringReader = new StringReader(stringWriter.ToString());
+            var stringReader = new StringReader(stringWriter.ToString());
             var people = mapper.Read(stringReader, options).ToArray();
             Assert.AreEqual(1, people.Length);
             var person = people.SingleOrDefault();
@@ -581,19 +587,19 @@ This is not a real record
         public void TestTypeMapper_IgnoredColumns_RoundTrips()
         {
             var mapper = DelimitedTypeMapper.Define<Person>();
-            mapper.Property(p => p.Id).ColumnName("id");
+            mapper.Property(static p => p.Id).ColumnName("id");
             mapper.Ignored();
             mapper.Ignored();
-            mapper.Property(p => p.Name).ColumnName("name");
+            mapper.Property(static p => p.Name).ColumnName("name");
             mapper.Ignored();
-            mapper.Property(p => p.Created).ColumnName("created").InputFormat("yyyyMMdd").OutputFormat("yyyyMMdd");
+            mapper.Property(static p => p.Created).ColumnName("created").InputFormat("yyyyMMdd").OutputFormat("yyyyMMdd");
 
             var bob = new Person { Id = 123, Name = "Bob Smith", Created = new DateTime(2013, 1, 19) };
 
-            StringWriter stringWriter = new StringWriter();
-            mapper.Write(stringWriter, new Person[] { bob });
+            var stringWriter = new StringWriter();
+            mapper.Write(stringWriter, [bob]);
 
-            StringReader stringReader = new StringReader(stringWriter.ToString());
+            var stringReader = new StringReader(stringWriter.ToString());
             var people = mapper.Read(stringReader).ToArray();
             Assert.AreEqual(1, people.Length);
             var person = people.SingleOrDefault();
@@ -609,15 +615,17 @@ This is not a real record
         [TestMethod]
         public void TestReader_creativyst_example()
         {
-            const string text = @"John,Doe,120 jefferson st.,Riverside, NJ, 08075
-Jack,McGinnis,220 hobo Av.,Phila, PA,09119
-""John """"Da Man"""""",Repici,120 Jefferson St.,Riverside, NJ,08075
-Stephen,Tyler,""7452 Terrace """"At the Plaza"""" road"",SomeTown,SD, 91234
-,Blankman,,SomeTown, SD, 00298
-""Joan """"the bone"""", Anne"",Jet,""9th, at Terrace plc"",Desert City, CO,00123
-";
-            StringReader stringReader = new StringReader(text);
-            DelimitedReader reader = new DelimitedReader(stringReader);
+            const string text = """"
+                                John,Doe,120 jefferson st.,Riverside, NJ, 08075
+                                Jack,McGinnis,220 hobo Av.,Phila, PA,09119
+                                "John ""Da Man""",Repici,120 Jefferson St.,Riverside, NJ,08075
+                                Stephen,Tyler,"7452 Terrace ""At the Plaza"" road",SomeTown,SD, 91234
+                                ,Blankman,,SomeTown, SD, 00298
+                                "Joan ""the bone"", Anne",Jet,"9th, at Terrace plc",Desert City, CO,00123
+
+                                """";
+            var stringReader = new StringReader(text);
+            var reader = new DelimitedReader(stringReader);
             Assert.IsTrue(reader.Read(), "Could not read the first record.");
             AssertValues(reader, "John", "Doe", "120 jefferson st.", "Riverside", "NJ", "08075");
             Assert.IsTrue(reader.Read(), "Could not read the second record.");
@@ -635,7 +643,7 @@ Stephen,Tyler,""7452 Terrace """"At the Plaza"""" road"",SomeTown,SD, 91234
 
         private static void AssertValues(DelimitedReader reader, string firstName, string lastName, string street, string city, string state, string zip)
         {
-            object[] values = reader.GetValues();
+            var values = reader.GetValues();
             Assert.AreEqual(6, values.Length);
             Assert.AreEqual(firstName, values[0]);
             Assert.AreEqual(lastName, values[1]);
@@ -649,14 +657,14 @@ Stephen,Tyler,""7452 Terrace """"At the Plaza"""" road"",SomeTown,SD, 91234
         public void TestTypeMapper_NullableBoolean_RoundTripsNull()
         {
             var mapper = DelimitedTypeMapper.Define<Person>();
-            mapper.Property(x => x.IsActive).ColumnName("is_active");
+            mapper.Property(static x => x.IsActive).ColumnName("is_active");
 
-            Person person = new Person { IsActive = null };
+            var person = new Person { IsActive = null };
 
-            StringWriter stringWriter = new StringWriter();
-            mapper.Write(stringWriter, new Person[] { person });
+            var stringWriter = new StringWriter();
+            mapper.Write(stringWriter, [person]);
 
-            StringReader stringReader = new StringReader(stringWriter.ToString());
+            var stringReader = new StringReader(stringWriter.ToString());
             var people = mapper.Read(stringReader).ToArray();
             Assert.AreEqual(1, people.Length);
             var first = people.SingleOrDefault();
@@ -668,14 +676,14 @@ Stephen,Tyler,""7452 Terrace """"At the Plaza"""" road"",SomeTown,SD, 91234
         public void TestTypeMapper_NullableBoolean_RoundTripsFalse()
         {
             var mapper = DelimitedTypeMapper.Define<Person>();
-            mapper.Property(x => x.IsActive).ColumnName("is_active");
+            mapper.Property(static x => x.IsActive).ColumnName("is_active");
 
-            Person person = new Person { IsActive = false };
+            var person = new Person { IsActive = false };
 
-            StringWriter stringWriter = new StringWriter();
-            mapper.Write(stringWriter, new Person[] { person });
+            var stringWriter = new StringWriter();
+            mapper.Write(stringWriter, [person]);
 
-            StringReader stringReader = new StringReader(stringWriter.ToString());
+            var stringReader = new StringReader(stringWriter.ToString());
             var people = mapper.Read(stringReader).ToArray();
             Assert.AreEqual(1, people.Length);
             var first = people.SingleOrDefault();
@@ -687,14 +695,14 @@ Stephen,Tyler,""7452 Terrace """"At the Plaza"""" road"",SomeTown,SD, 91234
         public void TestTypeMapper_NullableBoolean_RoundTripsTrue()
         {
             var mapper = DelimitedTypeMapper.Define<Person>();
-            mapper.Property(x => x.IsActive).ColumnName("is_active");
+            mapper.Property(static x => x.IsActive).ColumnName("is_active");
 
-            Person person = new Person { IsActive = true };
+            var person = new Person { IsActive = true };
 
-            StringWriter stringWriter = new StringWriter();
-            mapper.Write(stringWriter, new Person[] { person });
+            var stringWriter = new StringWriter();
+            mapper.Write(stringWriter, [person]);
 
-            StringReader stringReader = new StringReader(stringWriter.ToString());
+            var stringReader = new StringReader(stringWriter.ToString());
             var people = mapper.Read(stringReader).ToArray();
             Assert.AreEqual(1, people.Length);
             var first = people.SingleOrDefault();
@@ -705,18 +713,20 @@ Stephen,Tyler,""7452 Terrace """"At the Plaza"""" road"",SomeTown,SD, 91234
         [TestMethod]
         public void TestTypeMapper_BadRecordColumn_SkipError()
         {
-            const string data = @"1,2017-06-11,John Smith
-2,2017-12-32,Tom Stallon
-3,2017-08-13,Walter Kay";
+            const string data = """
+                                1,2017-06-11,John Smith
+                                2,2017-12-32,Tom Stallon
+                                3,2017-08-13,Walter Kay
+                                """;
             var mapper = DelimitedTypeMapper.Define<Person>();
             mapper.Property(x => x.Id);
             mapper.Property(x => x.Created);
             mapper.Property(x => x.Name);
 
-            StringReader stringReader = new StringReader(data);
-            List<int> errorRecords = new List<int>();
+            var stringReader = new StringReader(data);
+            List<int> errorRecords = [];
             var reader = mapper.GetReader(stringReader);
-            reader.RecordError += (sender, e) =>
+            reader.RecordError += (_, e) =>
             {
                 errorRecords.Add(e.RecordContext.PhysicalRecordNumber);
                 e.IsHandled = true;
@@ -735,7 +745,7 @@ Stephen,Tyler,""7452 Terrace """"At the Plaza"""" road"",SomeTown,SD, 91234
 
             var mapper = DelimitedTypeMapper.Define<ClassWithDate>();
             mapper.Ignored();
-            mapper.Property(x => x.DateTime);
+            mapper.Property(static x => x.DateTime);
             mapper.Ignored();
 
             try

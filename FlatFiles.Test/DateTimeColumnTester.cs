@@ -22,7 +22,7 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestCtor_NameBlank_Throws()
         {
-            Assert.ThrowsException<ArgumentException>(() => new DateTimeColumn("    "));
+            Assert.ThrowsException<ArgumentException>(static () => new DateTimeColumn("    "));
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestCtor_SetsName_Trimmed()
         {
-            DateTimeColumn column = new DateTimeColumn(" Name   ");
+            var column = new DateTimeColumn(" Name   ");
             Assert.AreEqual("Name", column.ColumnName);
         }
 
@@ -42,9 +42,9 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestParse_NoFormatString_ParsesGenerically()
         {
-            DateTimeColumn column = new DateTimeColumn("created");
-            DateTime actual = (DateTime)column.Parse(null, "1/19/2013");
-            DateTime expected = new DateTime(2013, 1, 19);
+            var column = new DateTimeColumn("created");
+            var actual = (DateTime)column.Parse(null, "1/19/2013");
+            var expected = new DateTime(2013, 1, 19);
             Assert.AreEqual(expected, actual);
         }
 
@@ -54,12 +54,12 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestParse_FormatProvider_NoFormatString_ParsesGenerically()
         {
-            DateTimeColumn column = new DateTimeColumn("created")
-            {
-                FormatProvider = CultureInfo.CurrentCulture
-            };
-            DateTime actual = (DateTime)column.Parse(null, "1/19/2013");
-            DateTime expected = new DateTime(2013, 1, 19);
+            var column = new DateTimeColumn("created")
+                         {
+                             FormatProvider = CultureInfo.CurrentCulture
+                         };
+            var actual = (DateTime)column.Parse(null, "1/19/2013");
+            var expected = new DateTime(2013, 1, 19);
             Assert.AreEqual(expected, actual);
         }
 
@@ -69,12 +69,12 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestParse_FormatString_ParsesExactly()
         {
-            DateTimeColumn column = new DateTimeColumn("created")
-            {
-                InputFormat = "d"
-            };
-            DateTime actual = (DateTime)column.Parse(null, "1/19/2013");
-            DateTime expected = new DateTime(2013, 1, 19);
+            var column = new DateTimeColumn("created")
+                         {
+                             InputFormat = "d"
+                         };
+            var actual = (DateTime)column.Parse(null, "1/19/2013");
+            var expected = new DateTime(2013, 1, 19);
             Assert.AreEqual(expected, actual);
         }
 
@@ -84,13 +84,13 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestParse_FormatProvider_FormatString_ParsesExactly()
         {
-            DateTimeColumn column = new DateTimeColumn("created")
-            {
-                InputFormat = "d",
-                FormatProvider = CultureInfo.InvariantCulture
-            };
-            DateTime actual = (DateTime)column.Parse(null, "01/19/2013");
-            DateTime expected = new DateTime(2013, 1, 19);
+            var column = new DateTimeColumn("created")
+                         {
+                             InputFormat = "d",
+                             FormatProvider = CultureInfo.InvariantCulture
+                         };
+            var actual = (DateTime)column.Parse(null, "01/19/2013");
+            var expected = new DateTime(2013, 1, 19);
             Assert.AreEqual(expected, actual);
         }
 
@@ -100,8 +100,8 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestParse_ValueBlank_NullReturned()
         {
-            DateTimeColumn column = new DateTimeColumn("created");
-            DateTime? actual = (DateTime?)column.Parse(null, "    ");
+            var column = new DateTimeColumn("created");
+            var actual = (DateTime?)column.Parse(null, "    ");
             DateTime? expected = null;
             Assert.AreEqual(expected, actual);
         }

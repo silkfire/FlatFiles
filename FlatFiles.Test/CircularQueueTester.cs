@@ -9,14 +9,14 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestInitialCount()
         {
-            CircularQueue<int> queue = new CircularQueue<int>(10);
+            var queue = new CircularQueue<int>(10);
             Assert.AreEqual(0, queue.Count);
         }
 
         [TestMethod]
         public void TestReserve_Uninitialized_CreatesNewArray()
         {
-            CircularQueue<int> queue = new CircularQueue<int>(10);
+            var queue = new CircularQueue<int>(10);
             var segment = queue.PrepareBlock();
 
             Assert.AreEqual(0, queue.Count);
@@ -27,7 +27,7 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestReserve_HasRoom_RoomAtBeginning_ReturnsFront()
         {
-            CircularQueue<int> queue = new CircularQueue<int>(10);
+            var queue = new CircularQueue<int>(10);
             var segment = queue.PrepareBlock();
             fill(segment);
             queue.RecordGrowth(10);
@@ -42,7 +42,7 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestReserve_HasRoom_RoomAtEnd_ReturnsEnd()
         {
-            CircularQueue<int> queue = new CircularQueue<int>(10);
+            var queue = new CircularQueue<int>(10);
             var segment = queue.PrepareBlock();
             fill(segment);
             queue.RecordGrowth(5);  // Claim we only added 5 items
@@ -55,7 +55,7 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestReserve_EnoughRoom_SpaceInMiddle_CopyAndShift()
         {
-            CircularQueue<int> queue = new CircularQueue<int>(10);
+            var queue = new CircularQueue<int>(10);
             var segment = queue.PrepareBlock();
             fill(segment);
             queue.RecordGrowth(10);
@@ -71,7 +71,7 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestReserve_EnoughRoom_SpaceWrapsAround_CopyAndShift()
         {
-            CircularQueue<int> queue = new CircularQueue<int>(10);
+            var queue = new CircularQueue<int>(10);
             var segment = queue.PrepareBlock();
             fill(segment);
             queue.RecordGrowth(8);
@@ -85,7 +85,7 @@ namespace FlatFiles.Test
 
         private static void fill(ArraySegment<int> segment)
         {
-            for (int i = 0; i != segment.Count; ++i)
+            for (var i = 0; i != segment.Count; ++i)
             {
                 segment.Array[i + segment.Offset] = i;
             }

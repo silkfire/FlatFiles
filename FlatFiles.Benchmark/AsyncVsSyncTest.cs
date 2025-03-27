@@ -12,43 +12,43 @@ namespace FlatFiles.Benchmark
         [Benchmark]
         public async Task<string> SyncTest()
         {
-            var mapper = DelimitedTypeMapper.Define(() => new SampleData());
-            mapper.Property(x => x.YearStart).ColumnName("YearStart");
-            mapper.Property(x => x.YearEnd).ColumnName("YearEnd");
-            mapper.Property(x => x.LocationAbbreviation).ColumnName("LocationAbbr");
-            mapper.Property(x => x.LocationDescription).ColumnName("LocationDesc");
-            mapper.Property(x => x.DataSource).ColumnName("DataSource");
-            mapper.Property(x => x.Topic).ColumnName("Topic");
-            mapper.Property(x => x.Question).ColumnName("Question");
-            mapper.Property(x => x.Response).ColumnName("Response");
-            mapper.Property(x => x.DataValueUnit).ColumnName("DataValueUnit");
-            mapper.Property(x => x.DataValueType).ColumnName("DataValueType");
-            mapper.Property(x => x.DataValue).ColumnName("DataValue");
-            mapper.Property(x => x.AlternativeDataValue).ColumnName("DataValueAlt");
-            mapper.Property(x => x.DataValueFootnoteSymbol).ColumnName("DataValueFootnoteSymbol");
-            mapper.Property(x => x.DataValueFootnote).ColumnName("DatavalueFootnote");
-            mapper.Property(x => x.LowConfidenceLimit).ColumnName("LowConfidenceLimit");
-            mapper.Property(x => x.HighConfidenceLimit).ColumnName("HighConfidenceLimit");
-            mapper.Property(x => x.StratificationCategory1).ColumnName("StratificationCategory1");
-            mapper.Property(x => x.Stratification1).ColumnName("Stratification1");
-            mapper.Property(x => x.StratificationCategory2).ColumnName("StratificationCategory2");
-            mapper.Property(x => x.Stratification2).ColumnName("Stratification2");
-            mapper.Property(x => x.StratificationCategory3).ColumnName("StratificationCategory3");
-            mapper.Property(x => x.Stratification3).ColumnName("Stratification3");
+            var mapper = DelimitedTypeMapper.Define(static () => new SampleData());
+            mapper.Property(static x => x.YearStart).ColumnName("YearStart");
+            mapper.Property(static x => x.YearEnd).ColumnName("YearEnd");
+            mapper.Property(static x => x.LocationAbbreviation).ColumnName("LocationAbbr");
+            mapper.Property(static x => x.LocationDescription).ColumnName("LocationDesc");
+            mapper.Property(static x => x.DataSource).ColumnName("DataSource");
+            mapper.Property(static x => x.Topic).ColumnName("Topic");
+            mapper.Property(static x => x.Question).ColumnName("Question");
+            mapper.Property(static x => x.Response).ColumnName("Response");
+            mapper.Property(static x => x.DataValueUnit).ColumnName("DataValueUnit");
+            mapper.Property(static x => x.DataValueType).ColumnName("DataValueType");
+            mapper.Property(static x => x.DataValue).ColumnName("DataValue");
+            mapper.Property(static x => x.AlternativeDataValue).ColumnName("DataValueAlt");
+            mapper.Property(static x => x.DataValueFootnoteSymbol).ColumnName("DataValueFootnoteSymbol");
+            mapper.Property(static x => x.DataValueFootnote).ColumnName("DatavalueFootnote");
+            mapper.Property(static x => x.LowConfidenceLimit).ColumnName("LowConfidenceLimit");
+            mapper.Property(static x => x.HighConfidenceLimit).ColumnName("HighConfidenceLimit");
+            mapper.Property(static x => x.StratificationCategory1).ColumnName("StratificationCategory1");
+            mapper.Property(static x => x.Stratification1).ColumnName("Stratification1");
+            mapper.Property(static x => x.StratificationCategory2).ColumnName("StratificationCategory2");
+            mapper.Property(static x => x.Stratification2).ColumnName("Stratification2");
+            mapper.Property(static x => x.StratificationCategory3).ColumnName("StratificationCategory3");
+            mapper.Property(static x => x.Stratification3).ColumnName("Stratification3");
             mapper.CustomMapping(new GeoLocationColumn("GeoLocation"))
-                .WithReader((d, v) => d.GeoLocation = (GeoLocation)v)
-                .WithWriter(d => d.GeoLocation);
-            mapper.Property(x => x.ResponseId).ColumnName("ResponseID");
-            mapper.Property(x => x.LocationId).ColumnName("LocationID");
-            mapper.Property(x => x.TopicId).ColumnName("TopicID");
-            mapper.Property(x => x.QuestionId).ColumnName("QuestionID");
-            mapper.Property(x => x.DataValueTypeId).ColumnName("DataValueTypeID");
-            mapper.Property(x => x.StratificationCategoryId1).ColumnName("StratificationCategoryID1");
-            mapper.Property(x => x.StratificationId1).ColumnName("StratificationID1");
-            mapper.Property(x => x.StratificationCategoryId2).ColumnName("StratificationCategoryID2");
-            mapper.Property(x => x.StratificationId2).ColumnName("StratificationID2");
-            mapper.Property(x => x.StratificationCategoryId3).ColumnName("StratificationCategoryID3");
-            mapper.Property(x => x.StratificationId3).ColumnName("StratificationID3");
+                .WithReader(static (d, v) => d.GeoLocation = (GeoLocation)v)
+                .WithWriter(static d => d.GeoLocation);
+            mapper.Property(static x => x.ResponseId).ColumnName("ResponseID");
+            mapper.Property(static x => x.LocationId).ColumnName("LocationID");
+            mapper.Property(static x => x.TopicId).ColumnName("TopicID");
+            mapper.Property(static x => x.QuestionId).ColumnName("QuestionID");
+            mapper.Property(static x => x.DataValueTypeId).ColumnName("DataValueTypeID");
+            mapper.Property(static x => x.StratificationCategoryId1).ColumnName("StratificationCategoryID1");
+            mapper.Property(static x => x.StratificationId1).ColumnName("StratificationID1");
+            mapper.Property(static x => x.StratificationCategoryId2).ColumnName("StratificationCategoryID2");
+            mapper.Property(static x => x.StratificationId2).ColumnName("StratificationID2");
+            mapper.Property(static x => x.StratificationCategoryId3).ColumnName("StratificationCategoryID3");
+            mapper.Property(static x => x.StratificationId3).ColumnName("StratificationID3");
 
             var textWriter = new StringWriter();
 
@@ -67,43 +67,43 @@ namespace FlatFiles.Benchmark
         [Benchmark]
         public async Task<string> AsyncTest()
         {
-            var mapper = DelimitedTypeMapper.Define(() => new SampleData());
-            mapper.Property(x => x.YearStart).ColumnName("YearStart");
-            mapper.Property(x => x.YearEnd).ColumnName("YearEnd");
-            mapper.Property(x => x.LocationAbbreviation).ColumnName("LocationAbbr");
-            mapper.Property(x => x.LocationDescription).ColumnName("LocationDesc");
-            mapper.Property(x => x.DataSource).ColumnName("DataSource");
-            mapper.Property(x => x.Topic).ColumnName("Topic");
-            mapper.Property(x => x.Question).ColumnName("Question");
-            mapper.Property(x => x.Response).ColumnName("Response");
-            mapper.Property(x => x.DataValueUnit).ColumnName("DataValueUnit");
-            mapper.Property(x => x.DataValueType).ColumnName("DataValueType");
-            mapper.Property(x => x.DataValue).ColumnName("DataValue");
-            mapper.Property(x => x.AlternativeDataValue).ColumnName("DataValueAlt");
-            mapper.Property(x => x.DataValueFootnoteSymbol).ColumnName("DataValueFootnoteSymbol");
-            mapper.Property(x => x.DataValueFootnote).ColumnName("DatavalueFootnote");
-            mapper.Property(x => x.LowConfidenceLimit).ColumnName("LowConfidenceLimit");
-            mapper.Property(x => x.HighConfidenceLimit).ColumnName("HighConfidenceLimit");
-            mapper.Property(x => x.StratificationCategory1).ColumnName("StratificationCategory1");
-            mapper.Property(x => x.Stratification1).ColumnName("Stratification1");
-            mapper.Property(x => x.StratificationCategory2).ColumnName("StratificationCategory2");
-            mapper.Property(x => x.Stratification2).ColumnName("Stratification2");
-            mapper.Property(x => x.StratificationCategory3).ColumnName("StratificationCategory3");
-            mapper.Property(x => x.Stratification3).ColumnName("Stratification3");
+            var mapper = DelimitedTypeMapper.Define(static () => new SampleData());
+            mapper.Property(static x => x.YearStart).ColumnName("YearStart");
+            mapper.Property(static x => x.YearEnd).ColumnName("YearEnd");
+            mapper.Property(static x => x.LocationAbbreviation).ColumnName("LocationAbbr");
+            mapper.Property(static x => x.LocationDescription).ColumnName("LocationDesc");
+            mapper.Property(static x => x.DataSource).ColumnName("DataSource");
+            mapper.Property(static x => x.Topic).ColumnName("Topic");
+            mapper.Property(static x => x.Question).ColumnName("Question");
+            mapper.Property(static x => x.Response).ColumnName("Response");
+            mapper.Property(static x => x.DataValueUnit).ColumnName("DataValueUnit");
+            mapper.Property(static x => x.DataValueType).ColumnName("DataValueType");
+            mapper.Property(static x => x.DataValue).ColumnName("DataValue");
+            mapper.Property(static x => x.AlternativeDataValue).ColumnName("DataValueAlt");
+            mapper.Property(static x => x.DataValueFootnoteSymbol).ColumnName("DataValueFootnoteSymbol");
+            mapper.Property(static x => x.DataValueFootnote).ColumnName("DatavalueFootnote");
+            mapper.Property(static x => x.LowConfidenceLimit).ColumnName("LowConfidenceLimit");
+            mapper.Property(static x => x.HighConfidenceLimit).ColumnName("HighConfidenceLimit");
+            mapper.Property(static x => x.StratificationCategory1).ColumnName("StratificationCategory1");
+            mapper.Property(static x => x.Stratification1).ColumnName("Stratification1");
+            mapper.Property(static x => x.StratificationCategory2).ColumnName("StratificationCategory2");
+            mapper.Property(static x => x.Stratification2).ColumnName("Stratification2");
+            mapper.Property(static x => x.StratificationCategory3).ColumnName("StratificationCategory3");
+            mapper.Property(static x => x.Stratification3).ColumnName("Stratification3");
             mapper.CustomMapping(new GeoLocationColumn("GeoLocation"))
-                .WithReader((d, v) => d.GeoLocation = (GeoLocation)v)
-                .WithWriter(d => d.GeoLocation);
-            mapper.Property(x => x.ResponseId).ColumnName("ResponseID");
-            mapper.Property(x => x.LocationId).ColumnName("LocationID");
-            mapper.Property(x => x.TopicId).ColumnName("TopicID");
-            mapper.Property(x => x.QuestionId).ColumnName("QuestionID");
-            mapper.Property(x => x.DataValueTypeId).ColumnName("DataValueTypeID");
-            mapper.Property(x => x.StratificationCategoryId1).ColumnName("StratificationCategoryID1");
-            mapper.Property(x => x.StratificationId1).ColumnName("StratificationID1");
-            mapper.Property(x => x.StratificationCategoryId2).ColumnName("StratificationCategoryID2");
-            mapper.Property(x => x.StratificationId2).ColumnName("StratificationID2");
-            mapper.Property(x => x.StratificationCategoryId3).ColumnName("StratificationCategoryID3");
-            mapper.Property(x => x.StratificationId3).ColumnName("StratificationID3");
+                .WithReader(static (d, v) => d.GeoLocation = (GeoLocation)v)
+                .WithWriter(static d => d.GeoLocation);
+            mapper.Property(static x => x.ResponseId).ColumnName("ResponseID");
+            mapper.Property(static x => x.LocationId).ColumnName("LocationID");
+            mapper.Property(static x => x.TopicId).ColumnName("TopicID");
+            mapper.Property(static x => x.QuestionId).ColumnName("QuestionID");
+            mapper.Property(static x => x.DataValueTypeId).ColumnName("DataValueTypeID");
+            mapper.Property(static x => x.StratificationCategoryId1).ColumnName("StratificationCategoryID1");
+            mapper.Property(static x => x.StratificationId1).ColumnName("StratificationID1");
+            mapper.Property(static x => x.StratificationCategoryId2).ColumnName("StratificationCategoryID2");
+            mapper.Property(static x => x.StratificationId2).ColumnName("StratificationID2");
+            mapper.Property(static x => x.StratificationCategoryId3).ColumnName("StratificationCategoryID3");
+            mapper.Property(static x => x.StratificationId3).ColumnName("StratificationID3");
 
             var textWriter = new StringWriter();
 

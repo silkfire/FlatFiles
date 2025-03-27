@@ -26,7 +26,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] { "Hello" }
+                ["Hello"]
             };
             AssertRecords(expected, reader);
         }
@@ -40,7 +40,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] { "Hello", "World" }
+                ["Hello", "World"]
             };
             AssertRecords(expected, reader);
         }
@@ -54,8 +54,8 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] { "Hello" },
-                new object[] { "World" }
+                ["Hello"],
+                ["World"]
             };
             AssertRecords(expected, reader);
         }
@@ -69,8 +69,8 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] { "Hello" },
-                new object[] { "World" }
+                ["Hello"],
+                ["World"]
             };
             AssertRecords(expected, reader);
         }
@@ -89,7 +89,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] { "a", "b" },
+                ["a", "b"],
             };
             AssertRecords(expected, reader);
         }
@@ -108,8 +108,8 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] { "a" },
-                new object[] { "b" }
+                ["a"],
+                ["b"]
             };
             AssertRecords(expected, reader);
         }
@@ -128,7 +128,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] { "a", "b" },
+                ["a", "b"],
             };
             AssertRecords(expected, reader);
         }
@@ -147,8 +147,8 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] { "a" },
-                new object[] { "b" }
+                ["a"],
+                ["b"]
             };
             AssertRecords(expected, reader);
         }
@@ -162,7 +162,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] { null, null },
+                [null, null],
             };
             AssertRecords(expected, reader);
         }
@@ -176,8 +176,8 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] { null, null, null },
-                new object[] { null, null, null },
+                [null, null, null],
+                [null, null, null],
             };
             AssertRecords(expected, reader);
         }
@@ -191,7 +191,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] { null },
+                [null],
             };
             AssertRecords(expected, reader);
         }
@@ -205,8 +205,8 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] { null },
-                new object[] { null },
+                [null],
+                [null],
             };
             AssertRecords(expected, reader);
         }
@@ -220,7 +220,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] { "a" }
+                ["a"]
             };
             AssertRecords(expected, reader);
         }
@@ -240,7 +240,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, schema, options);
             var expected = new object[][]
             {
-                new object[] { " a" }
+                [" a"]
             };
             AssertRecords(expected, reader);
         }
@@ -258,7 +258,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] { "a", "b" }
+                ["a", "b"]
             };
             AssertRecords(expected, reader);
         }
@@ -280,7 +280,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, /*schema,*/ options);
             var expected = new object[][]
             {
-                new object[] { "  a", " \t\n  b" }
+                ["  a", " \t\n  b"]
             };
             AssertRecords(expected, reader);
         }
@@ -294,7 +294,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] { "a" }
+                ["a"]
             };
             AssertRecords(expected, reader);
         }
@@ -314,7 +314,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, schema, options);
             var expected = new object[][]
             {
-                new object[] { "a " }
+                ["a "]
             };
             AssertRecords(expected, reader);
         }
@@ -332,7 +332,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] { "a", "b" }
+                ["a", "b"]
             };
             AssertRecords(expected, reader);
         }
@@ -349,7 +349,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, schema, options);
             var expected = new object[][]
             {
-                new object[] { "a  ", "b \t\n  " }
+                ["a  ", "b \t\n  "]
             };
             AssertRecords(expected, reader);
         }
@@ -363,7 +363,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] { "a" }
+                ["a"]
             };
             AssertRecords(expected, reader);
         }
@@ -379,7 +379,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, schema, options);
             var expected = new object[][]
             {
-                new object[] { " a " }
+                [" a "]
             };
             AssertRecords(expected, reader);
         }
@@ -393,7 +393,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] { "a", "b" }
+                ["a", "b"]
             };
             AssertRecords(expected, reader);
         }
@@ -415,7 +415,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, schema, options);
             var expected = new object[][]
             {
-                new object[] { "  a  ", " \t\n  b \t\n  " }
+                ["  a  ", " \t\n  b \t\n  "]
             };
             AssertRecords(expected, reader);
         }
@@ -429,7 +429,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] { null }
+                [null]
             };
             AssertRecords(expected, reader);
         }
@@ -450,7 +450,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, schema, options);
             var expected = new object[][]
             {
-                new object[] { " \t\n\r " }
+                [" \t\n\r "]
             };
             AssertRecords(expected, reader);
         }
@@ -464,7 +464,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] { "a b" }
+                ["a b"]
             };
             AssertRecords(expected, reader);
         }
@@ -480,7 +480,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, schema, options);
             var expected = new object[][]
             {
-                new object[] { " a b " }
+                [" a b "]
             };
             AssertRecords(expected, reader);
         }
@@ -494,7 +494,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] { "a", "b" }
+                ["a", "b"]
             };
             AssertRecords(expected, reader);
         }
@@ -513,7 +513,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] { "axxcb" }
+                ["axxcb"]
             };
             AssertRecords(expected, reader);
         }
@@ -527,7 +527,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] { "axxxb" }
+                ["axxxb"]
             };
             AssertRecords(expected, reader);
         }
@@ -545,7 +545,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] { "a" }
+                ["a"]
             };
             AssertRecords(expected, reader);
         }
@@ -565,7 +565,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, schema, options);
             var expected = new object[][]
             {
-                new object[] { " a  " }
+                [" a  "]
             };
             AssertRecords(expected, reader);
         }
@@ -583,7 +583,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] { "a,b" }
+                ["a,b"]
             };
             AssertRecords(expected, reader);
         }
@@ -601,7 +601,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] { "a'b" }
+                ["a'b"]
             };
             AssertRecords(expected, reader);
         }
@@ -619,7 +619,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] { "a" }
+                ["a"]
             };
             AssertRecords(expected, reader);
         }
@@ -637,7 +637,7 @@ namespace FlatFiles.Test
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] { "a" }
+                ["a"]
             };
             AssertRecords(expected, reader);
         }
@@ -673,10 +673,12 @@ namespace FlatFiles.Test
         [TestMethod]
         public void ShouldIgnoreRecordSeparatorsWithinQuotes()
         {
-            var source = @"'John','Smith','123 Playtown Place', 'Grangewood','CA' ,12345,'John likes to travel to far away places.
-His favorite travel spots are Tannis, Venice and Chicago.
-When he''s not traveling, he''s at home with his lovely wife, children and leather armchair.'
-Mary,Smith,'1821 Grover''s Village',West Chattingham,WA,43221,'Likes cats.'";
+            var source = """
+                         'John','Smith','123 Playtown Place', 'Grangewood','CA' ,12345,'John likes to travel to far away places.
+                         His favorite travel spots are Tannis, Venice and Chicago.
+                         When he''s not traveling, he''s at home with his lovely wife, children and leather armchair.'
+                         Mary,Smith,'1821 Grover''s Village',West Chattingham,WA,43221,'Likes cats.'
+                         """;
             var stringReader = new StringReader(source);
             var options = new DelimitedOptions
                           {
@@ -686,12 +688,14 @@ Mary,Smith,'1821 Grover''s Village',West Chattingham,WA,43221,'Likes cats.'";
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] 
-                { "John", "Smith", "123 Playtown Place", "Grangewood", "CA", "12345", @"John likes to travel to far away places.
-His favorite travel spots are Tannis, Venice and Chicago.
-When he's not traveling, he's at home with his lovely wife, children and leather armchair."
-                },
-                new object[] { "Mary", "Smith", "1821 Grover's Village", "West Chattingham", "WA", "43221", "Likes cats." }
+                [
+                    "John", "Smith", "123 Playtown Place", "Grangewood", "CA", "12345", """
+                        John likes to travel to far away places.
+                        His favorite travel spots are Tannis, Venice and Chicago.
+                        When he's not traveling, he's at home with his lovely wife, children and leather armchair.
+                        """
+                ],
+                ["Mary", "Smith", "1821 Grover's Village", "West Chattingham", "WA", "43221", "Likes cats."]
             };
             AssertRecords(expected, reader);
         }
@@ -709,8 +713,7 @@ When he's not traveling, he's at home with his lovely wife, children and leather
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] 
-                { 
+                [
                     "26087",
                     "C Country C",
                     null,
@@ -736,8 +739,8 @@ When he's not traveling, he's at home with his lovely wife, children and leather
                     "40",
                     "79527",
                     null,
-                    "False" 
-                }
+                    "False"
+                ]
             };
             AssertRecords(expected, reader);
         }
@@ -755,7 +758,7 @@ When he's not traveling, he's at home with his lovely wife, children and leather
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] { "x", "y", "abc\"def", "z" }
+                ["x", "y", "abc\"def", "z"]
             };
             AssertRecords(expected, reader);
         }
@@ -777,8 +780,7 @@ When he's not traveling, he's at home with his lovely wife, children and leather
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] 
-                { 
+                [
                     "DebtConversionConvertedInstrumentAmount1",
                     "us-gaap/2019", 
                     "0", 
@@ -788,7 +790,7 @@ When he's not traveling, he's at home with his lovely wife, children and leather
                     "C",
                     "Debt Conversion, Converted Instrument, Amount",
                     "The value of the financial instrument(s) that the original debt is being converted into in a noncash (or part noncash) transaction. \"Part noncash refers to that portion of the transaction not resulting in cash receipts or cash payments in the period."
-                }
+                ]
             };
             AssertRecords(expected, reader);
         }
@@ -808,10 +810,9 @@ When he's not traveling, he's at home with his lovely wife, children and leather
             var reader = new DelimitedReader(stringReader, options);
             var expected = new object[][]
             {
-                new object[] 
-                { 
+                [
                     "This", "is", "not\"the\tend", "of", "the", "message"
-                }
+                ]
             };
             AssertRecords(expected, reader);
         }

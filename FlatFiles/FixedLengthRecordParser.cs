@@ -103,7 +103,7 @@ namespace FlatFiles
                         reader.LoadBuffer();
                     }
                 }
-                string record = matcher.Trim(reader.GetRecord());
+                var record = matcher.Trim(reader.GetRecord());
                 return record;
             }
 
@@ -120,7 +120,7 @@ namespace FlatFiles
                         await reader.LoadBufferAsync().ConfigureAwait(false);
                     }
                 }
-                string record = matcher.Trim(reader.GetRecord());
+                var record = matcher.Trim(reader.GetRecord());
                 return record;
             }
         }
@@ -170,12 +170,12 @@ namespace FlatFiles
 
             public string ReadRecord()
             {
-                return new String(buffer, 0, length);
+                return new string(buffer, 0, length);
             }
 
             public Task<string> ReadRecordAsync()
             {
-                return Task.FromResult(new String(buffer, 0, length));
+                return Task.FromResult(new string(buffer, 0, length));
             }
         }
     }

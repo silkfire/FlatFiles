@@ -10,7 +10,7 @@ namespace FlatFiles.TypeMapping
     /// </summary>
     public sealed class DelimitedTypeMapperInjector : ITypeMapperInjector
     {
-        private readonly List<TypeMapperMatcher> matchers = new();
+        private readonly List<TypeMapperMatcher> matchers = [];
         private TypeMapperMatcher? defaultMatcher = null;
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace FlatFiles.TypeMapping
         /// <param name="typeMapper">The default schema to use.</param>
         public void WithDefault(IDynamicDelimitedTypeMapper? typeMapper)
         {
-            defaultMatcher = typeMapper == null ? null : new TypeMapperMatcher(typeMapper, o => true);
+            defaultMatcher = typeMapper == null ? null : new TypeMapperMatcher(typeMapper, static _ => true);
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace FlatFiles.TypeMapping
             foreach (var matcher in matchers)
             {
                 var schema = matcher.Reset();
-                injector.When(values => matcher.IsMatch).Use(schema);
+                injector.When(_ => matcher.IsMatch).Use(schema);
             }
             if (defaultMatcher != null)
             {
@@ -189,7 +189,7 @@ namespace FlatFiles.TypeMapping
 
         private sealed class DelimitedTypeMapperInjectorWhenBuilder<TEntity> : IDelimitedTypeMapperInjectorWhenBuilder<TEntity>
         {
-            private static readonly Func<object, bool> typeCheck = o => o is TEntity;
+            private static readonly Func<object, bool> typeCheck = static o => o is TEntity;
             private readonly DelimitedTypeMapperInjector selector;
             private readonly Func<object, bool> predicate;
 

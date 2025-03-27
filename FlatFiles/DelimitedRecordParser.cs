@@ -8,7 +8,7 @@ namespace FlatFiles
 {
     internal sealed class DelimitedRecordParser
     {
-        private readonly List<string> tokens = new();
+        private readonly List<string> tokens = [];
         private readonly StringBuilder token = new();
         private readonly RetryReader reader;
         private readonly IRecordSeparatorMatcher separatorMatcher;
@@ -26,7 +26,7 @@ namespace FlatFiles
             recordSeparatorMatcher = RecordSeparatorMatcher.GetMatcher(reader, recordSeparator);
             if (recordSeparator != null && recordSeparator.StartsWith(separator))
             {
-                string postfix = recordSeparator.Substring(separator.Length);
+                var postfix = recordSeparator.Substring(separator.Length);
                 postfixMatcher = RecordSeparatorMatcher.GetMatcher(reader, postfix);
             }
             separatorLength = Math.Max(recordSeparatorMatcher.Size, separator.Length);

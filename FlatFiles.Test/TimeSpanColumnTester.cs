@@ -22,7 +22,7 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestCtor_NameBlank_Throws()
         {
-            Assert.ThrowsException<ArgumentException>(() => new TimeSpanColumn("    "));
+            Assert.ThrowsException<ArgumentException>(static () => new TimeSpanColumn("    "));
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestParse_Preprocessor_ShouldBeCalledOnce()
         {
-            int preprocessorCallCount = 0;
+            var preprocessorCallCount = 0;
 
             var column = new TimeSpanColumn("created");
 #pragma warning disable CS0618 // Type or member is obsolete
@@ -115,7 +115,7 @@ namespace FlatFiles.Test
             var daysColumn = new DoubleColumn("Duration");
             var durationColumn = TimeSpanColumn.FromDays(daysColumn);
             
-            var actual = (TimeSpan?)durationColumn.Parse(null, String.Empty);
+            var actual = (TimeSpan?)durationColumn.Parse(null, string.Empty);
             Assert.IsNull(actual);
         }
 
@@ -126,7 +126,7 @@ namespace FlatFiles.Test
             var durationColumn = TimeSpanColumn.FromDays(daysColumn);
 
             var actual = durationColumn.Format(null, null);
-            Assert.AreEqual(String.Empty, actual);
+            Assert.AreEqual(string.Empty, actual);
         }
 
         [TestMethod]

@@ -9,7 +9,7 @@ namespace FlatFiles.TypeMapping
     /// </summary>
     public sealed class DelimitedTypeMapperSelector
     {
-        private readonly List<TypeMapperMatcher> matchers = new();
+        private readonly List<TypeMapperMatcher> matchers = [];
         private IDynamicDelimitedTypeMapper? defaultMapper;
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace FlatFiles.TypeMapping
         {
             var source = (IMapperSource)defaultMapper;
             var reader = source.GetMapper();
-            return () => reader.GetReader();
+            return reader.GetReader;
         }
 
         internal void Add(IDynamicDelimitedTypeMapper typeMapper, Func<string[], bool> predicate)

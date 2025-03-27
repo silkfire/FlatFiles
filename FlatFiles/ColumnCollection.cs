@@ -10,7 +10,7 @@ namespace FlatFiles
     /// </summary>
     public sealed class ColumnCollection : IEnumerable<IColumnDefinition>
     {
-        private readonly List<IColumnDefinition> definitions = new();
+        private readonly List<IColumnDefinition> definitions = [];
         private readonly Dictionary<string, int> ordinals = new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace FlatFiles
         {
             get 
             {
-                int index = GetOrdinal(columnName);
+                var index = GetOrdinal(columnName);
                 return this[index];
             }
         }
@@ -79,7 +79,7 @@ namespace FlatFiles
             {
                 throw new ArgumentNullException(nameof(definition));
             }
-            if (!String.IsNullOrEmpty(definition.ColumnName) && ordinals.ContainsKey(definition.ColumnName!))
+            if (!string.IsNullOrEmpty(definition.ColumnName) && ordinals.ContainsKey(definition.ColumnName!))
             {
                 throw new ArgumentException(Resources.DuplicateColumnName, nameof(definition));
             }
@@ -97,7 +97,7 @@ namespace FlatFiles
             {
                 ++IgnoredCount;
             }
-            if (!String.IsNullOrEmpty(definition.ColumnName))
+            if (!string.IsNullOrEmpty(definition.ColumnName))
             {
                 ordinals.Add(definition.ColumnName!, definitions.Count - 1);
             }
@@ -110,7 +110,7 @@ namespace FlatFiles
         /// <returns>The index of the column with the given name -or- -1 if the column is not found.</returns>
         public int GetOrdinal(string columnName)
         {
-            if (ordinals.TryGetValue(columnName, out int ordinal))
+            if (ordinals.TryGetValue(columnName, out var ordinal))
             {
                 return ordinal;
             }

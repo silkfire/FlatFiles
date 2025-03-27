@@ -13,7 +13,7 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestNullableExtensions_AllNull()
         {
-            string data = String.Join(",", typeof(NullableValues).GetProperties().Select(x => (string)null));
+            var data = string.Join(",", typeof(NullableValues).GetProperties().Select(static _ => (string)null));
             var schema = GetSchema();
             var stringReader = new StringReader(data);
             var csvReader = new DelimitedReader(stringReader, schema);
@@ -36,20 +36,7 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestNullableExtensions_AllNotNull()
         {
-            string data = String.Join(",", new object[] 
-            {
-                (byte)0,  // Byte
-                (short)1,  // Short
-                2,  // Int
-                3L,  // Long
-                4f,  // Float
-                5.0,  // Double
-                6m,  // Decimal
-                "abc",  // String
-                new DateTime(2018, 07, 08),  // DateTime
-                new Guid("{2E13CDEB-6A06-4A79-A446-B057F2881406}"),  // Guid
-                DayOfWeek.Sunday  // Enum
-            });
+            var data = string.Join(",", (byte)0, (short)1, 2, 3L, 4f, 5.0, 6m, "abc", new DateTime(2018, 07, 08), new Guid("{2E13CDEB-6A06-4A79-A446-B057F2881406}"), DayOfWeek.Sunday);
             var schema = GetSchema();
             var stringReader = new StringReader(data);
             var csvReader = new DelimitedReader(stringReader, schema);
@@ -71,18 +58,18 @@ namespace FlatFiles.Test
 
         private static DelimitedSchema GetSchema()
         {
-            var mapper = DelimitedTypeMapper.Define(() => new NullableValues());
-            mapper.Property(x => x.ByteValue);
-            mapper.Property(x => x.ShortValue);
-            mapper.Property(x => x.IntValue);
-            mapper.Property(x => x.LongValue);
-            mapper.Property(x => x.FloatValue);
-            mapper.Property(x => x.DoubleValue);
-            mapper.Property(x => x.DecimalValue);
-            mapper.Property(x => x.StringValue);
-            mapper.Property(x => x.DateTimeValue);
-            mapper.Property(x => x.GuidValue);
-            mapper.EnumProperty(x => x.EnumValue);
+            var mapper = DelimitedTypeMapper.Define(static () => new NullableValues());
+            mapper.Property(static x => x.ByteValue);
+            mapper.Property(static x => x.ShortValue);
+            mapper.Property(static x => x.IntValue);
+            mapper.Property(static x => x.LongValue);
+            mapper.Property(static x => x.FloatValue);
+            mapper.Property(static x => x.DoubleValue);
+            mapper.Property(static x => x.DecimalValue);
+            mapper.Property(static x => x.StringValue);
+            mapper.Property(static x => x.DateTimeValue);
+            mapper.Property(static x => x.GuidValue);
+            mapper.EnumProperty(static x => x.EnumValue);
 
             var schema = mapper.GetSchema();
             return schema;
@@ -116,10 +103,9 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestGetValues_DBNullToNull()
         {
-            var record = new FakeDataRecord(new object[]
-            {
+            var record = new FakeDataRecord([
                 0, DateTime.UnixEpoch, DBNull.Value, 3.14159, 3.14159m, "A String"
-            });
+            ]);
             var values = record.GetValues(replaceDBNulls: true);
             Assert.AreEqual(6, values.Length);
             Assert.AreEqual(null, values[2]);
@@ -128,12 +114,11 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestGetValues_LargerArray()
         {
-            var record = new FakeDataRecord(new object[]
-            {
+            var record = new FakeDataRecord([
                 0, DateTime.UnixEpoch, DBNull.Value, 3.14159, 3.14159m, "A String"
-            });
+            ]);
             var values = new object[10];
-            int length = record.GetValues(values);
+            var length = record.GetValues(values);
             Assert.AreEqual(6, length);
             var expected = new object[]
             {
@@ -145,12 +130,11 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestGetValues_LargerArray_DBNullToNull()
         {
-            var record = new FakeDataRecord(new object[]
-            {
+            var record = new FakeDataRecord([
                 0, DateTime.UnixEpoch, DBNull.Value, 3.14159, 3.14159m, "A String"
-            });
+            ]);
             var values = new object[10];
-            int length = record.GetValues(values, replaceDBNulls: true);
+            var length = record.GetValues(values, replaceDBNulls: true);
             Assert.AreEqual(6, length);
             var expected = new object[]
             {
@@ -270,7 +254,7 @@ namespace FlatFiles.Test
 
             public int GetValues(object[] values)
             {
-                int length = Math.Min(values.Length, Values.Length);
+                var length = Math.Min(values.Length, Values.Length);
                 Array.Copy(Values, values, length);
                 return length;
             }

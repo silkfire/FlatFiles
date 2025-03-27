@@ -370,13 +370,13 @@ namespace FlatFiles
             }
             var windows = schema.Windows;
             var values = new string[schema.ColumnDefinitions.Count - schema.ColumnDefinitions.MetadataCount];
-            int offset = 0;
+            var offset = 0;
             for (int valueIndex = 0, columnIndex = 0; valueIndex != values.Length; ++columnIndex)
             {
                 var definition = schema.ColumnDefinitions[columnIndex];
                 if (!(definition is IMetadataColumn))
                 {
-                    Window? window = columnIndex < windows.Count ? windows[columnIndex] : null;
+                    var window = columnIndex < windows.Count ? windows[columnIndex] : null;
                     string value;
                     if (window == null)
                     {
@@ -407,7 +407,7 @@ namespace FlatFiles
             {
                 return this.schema;
             }
-            FixedLengthSchema? schema = schemaSelector.GetSchema(record);
+            var schema = schemaSelector.GetSchema(record);
             if (schema != null)
             {
                 return schema;

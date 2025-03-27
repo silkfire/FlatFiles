@@ -14,15 +14,17 @@ namespace FlatFiles.Test
         {
             CultureInfo.CurrentCulture = new CultureInfo("en-US");
 
-            const string input = @"=""12345.67"",=""$123""";
+            const string input = """
+                                 ="12345.67",="$123"
+                                 """;
 
             var mapper = DelimitedTypeMapper.Define<Numbers>();
 #pragma warning disable CS0618 // Type or member is obsolete
-            mapper.Property(x => x.Value).ColumnName("value").Preprocessor(x => x.Trim('"', '=')).NumberStyles(NumberStyles.AllowDecimalPoint);
-            mapper.Property(x => x.Money).ColumnName("money").Preprocessor(x => x.Trim('"', '=')).NumberStyles(NumberStyles.Currency);
+            mapper.Property(static x => x.Value).ColumnName("value").Preprocessor(static x => x.Trim('"', '=')).NumberStyles(NumberStyles.AllowDecimalPoint);
+            mapper.Property(static x => x.Money).ColumnName("money").Preprocessor(static x => x.Trim('"', '=')).NumberStyles(NumberStyles.Currency);
 #pragma warning restore CS0618 // Type or member is obsolete
 
-            StringReader reader = new StringReader(input);
+            var reader = new StringReader(input);
             var results = mapper.Read(reader).ToArray();
 
             Assert.AreEqual(1, results.Length);
@@ -36,13 +38,15 @@ namespace FlatFiles.Test
         {
             CultureInfo.CurrentCulture = new CultureInfo("en-US");
 
-            const string input = @"=""12345.67"",=""$123""";
+            const string input = """
+                                 ="12345.67",="$123"
+                                 """;
 
             var mapper = DelimitedTypeMapper.Define<Numbers>();
-            mapper.Property(x => x.Value).ColumnName("value").OnParsing((ctx, x) => x.Trim('"', '=')).NumberStyles(NumberStyles.AllowDecimalPoint);
-            mapper.Property(x => x.Money).ColumnName("money").OnParsing((ctx, x) => x.Trim('"', '=')).NumberStyles(NumberStyles.Currency);
+            mapper.Property(static x => x.Value).ColumnName("value").OnParsing(static (_, x) => x.Trim('"', '=')).NumberStyles(NumberStyles.AllowDecimalPoint);
+            mapper.Property(static x => x.Money).ColumnName("money").OnParsing(static (_, x) => x.Trim('"', '=')).NumberStyles(NumberStyles.Currency);
 
-            StringReader reader = new StringReader(input);
+            var reader = new StringReader(input);
             var results = mapper.Read(reader).ToArray();
 
             Assert.AreEqual(1, results.Length);

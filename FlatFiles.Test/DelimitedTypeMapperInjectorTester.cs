@@ -16,7 +16,7 @@ namespace FlatFiles.Test
             var mapper = DelimitedTypeMapper.Define<Data>();
             mapper
                 .CustomMapping(new Int64Column("amount"))
-                .WithWriter((p, v) =>
+                .WithWriter(static (_, v) =>
                 {
                     return (long)Math.Floor(Math.Abs(v.Amount) * 100M);
                 });

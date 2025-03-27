@@ -14,14 +14,14 @@ namespace FlatFiles.Test
         {
             var mapper = DelimitedTypeMapper.Define<InternalClass>();
 
-            mapper.Property(x => x.Identifier);
-            mapper.Property(x => x.Status);
-            mapper.Property(x => x.EffectiveDate).InputFormat("yyyyMMdd");
-            mapper.Property(x => x.ModificationDate).InputFormat("yyyyMMddHHmmss");
-            mapper.Property(x => x.IsInternal);
+            mapper.Property(static x => x.Identifier);
+            mapper.Property(static x => x.Status);
+            mapper.Property(static x => x.EffectiveDate).InputFormat("yyyyMMdd");
+            mapper.Property(static x => x.ModificationDate).InputFormat("yyyyMMddHHmmss");
+            mapper.Property(static x => x.IsInternal);
 
-            string rawData = @"ABC123,Doing Fine,20180115,20180115145100,true";
-            StringReader reader = new StringReader(rawData);
+            var rawData = "ABC123,Doing Fine,20180115,20180115145100,true";
+            var reader = new StringReader(rawData);
             var data = mapper.Read(reader, new DelimitedOptions
                                            {
                 IsFirstRecordSchema = false,
@@ -50,8 +50,8 @@ namespace FlatFiles.Test
             mapper.DateTimeProperty("ModificationDate").InputFormat("yyyyMMddHHmmss");
             mapper.BooleanProperty("IsInternal");
 
-            string rawData = @"ABC123,Doing Fine,20180115,20180115145100,true";
-            StringReader reader = new StringReader(rawData);
+            var rawData = "ABC123,Doing Fine,20180115,20180115145100,true";
+            var reader = new StringReader(rawData);
             var data = mapper.Read(reader, new DelimitedOptions
                                            {
                 IsFirstRecordSchema = false,

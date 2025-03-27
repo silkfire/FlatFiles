@@ -10,18 +10,19 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestReadWrite_Comments()
         {
-            StringWriter output = new StringWriter();
-            DelimitedWriter writer = new DelimitedWriter(output);
-            writer.Write(new[] { "a", "b", "c" });
+            var output = new StringWriter();
+            var writer = new DelimitedWriter(output);
+            writer.Write(["a", "b", "c"]);
             writer.WriteRaw("# Hello, world!!!", true);
-            writer.Write(new[] { "d", "e", "f" });
+            writer.Write(["d", "e", "f"]);
 
-            StringReader input = new StringReader(output.ToString());
-            DelimitedReader reader = new DelimitedReader(input);
-            reader.RecordRead += (sender, e) =>
+            var input = new StringReader(output.ToString());
+            var reader = new DelimitedReader(input);
+            reader.RecordRead += static (_, e) =>
             {
-                e.IsSkipped = e.Values.Length > 0 && e.Values[0].StartsWith("#");
+                e.IsSkipped = e.Values.Length > 0 && e.Values[0].StartsWith('#');
             };
+
             Assert.IsTrue(reader.Read());
             CollectionAssert.AreEqual(new[] { "a", "b", "c" }, reader.GetValues());
             Assert.IsTrue(reader.Read());
@@ -32,17 +33,17 @@ namespace FlatFiles.Test
         [TestMethod]
         public async Task TestReadWriteAsync_Comments()
         {
-            StringWriter output = new StringWriter();
-            DelimitedWriter writer = new DelimitedWriter(output);
-            await writer.WriteAsync(new[] { "a", "b", "c" });
+            var output = new StringWriter();
+            var writer = new DelimitedWriter(output);
+            await writer.WriteAsync(["a", "b", "c"]);
             await writer.WriteRawAsync("# Hello, world!!!", true);
-            await writer.WriteAsync(new[] { "d", "e", "f" });
+            await writer.WriteAsync(["d", "e", "f"]);
 
-            StringReader input = new StringReader(output.ToString());
-            DelimitedReader reader = new DelimitedReader(input);
-            reader.RecordRead += (sender, e) =>
+            var input = new StringReader(output.ToString());
+            var reader = new DelimitedReader(input);
+            reader.RecordRead += static (_, e) =>
             {
-                e.IsSkipped = e.Values.Length > 0 && e.Values[0].StartsWith("#");
+                e.IsSkipped = e.Values.Length > 0 && e.Values[0].StartsWith('#');
             };
             Assert.IsTrue(await reader.ReadAsync());
             CollectionAssert.AreEqual(new[] { "a", "b", "c" }, reader.GetValues());

@@ -13,18 +13,17 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestAnonymousTypeDefinition()
         {
-            var mapper = DelimitedTypeMapper.Define(() => new
+            var mapper = DelimitedTypeMapper.Define(static () => new
             {
                 Name = (string)null
             });
-            mapper.Property(x => x.Name).ColumnName("Name");
-            StringWriter writer = new StringWriter();
-            mapper.Write(writer, new[]
-            {
+            mapper.Property(static x => x.Name).ColumnName("Name");
+            var writer = new StringWriter();
+            mapper.Write(writer, [
                 new { Name = "John" }, new { Name = "Sam" }
-            });
-            string result = writer.ToString();
-            string expected = $"John{Environment.NewLine}Sam{Environment.NewLine}";
+            ]);
+            var result = writer.ToString();
+            var expected = $"John{Environment.NewLine}Sam{Environment.NewLine}";
             Assert.AreEqual(expected, result);
         }
 
@@ -43,11 +42,11 @@ namespace FlatFiles.Test
                 new Person { Name = "Susan", IQ = 132, BirthDate = new DateTime(1984, 3, 15), TopSpeed = 10.1m }
             };
 
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             mapper.Write(writer, people);
-            string result = writer.ToString();
+            var result = writer.ToString();
 
-            StringReader reader = new StringReader(result);
+            var reader = new StringReader(result);
             var parsed = mapper.Read(reader).ToArray();
             Assert.AreEqual(2, parsed.Length);
             Assert.IsInstanceOfType(parsed[0], typeof(Person));
@@ -71,15 +70,15 @@ namespace FlatFiles.Test
                 new Person { Name = "Susan", IQ = 132, BirthDate = new DateTime(1984, 3, 15), TopSpeed = 10.1m }
             };
 
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             var entityWriter = mapper.GetWriter(writer);
             foreach (var person in people)
             {
                 entityWriter.Write(person);
             }
-            string result = writer.ToString();
+            var result = writer.ToString();
 
-            StringReader reader = new StringReader(result);
+            var reader = new StringReader(result);
             var entityReader = mapper.GetReader(reader);
             var parsed = new List<object>();
             while (entityReader.Read())
@@ -107,18 +106,18 @@ namespace FlatFiles.Test
             var mapper = DelimitedTypeMapper.DefineDynamic(typeof(InternalPerson));
             mapper.StringProperty("Name").ColumnName("Name");
 
-            string expected = $"John{Environment.NewLine}Susan{Environment.NewLine}";
+            var expected = $"John{Environment.NewLine}Susan{Environment.NewLine}";
 
-            StringReader reader = new StringReader(expected);
+            var reader = new StringReader(expected);
             var people = mapper.Read(reader).ToArray();
             Assert.AreEqual(2, people.Length);
             Assert.IsInstanceOfType(people[0], typeof(InternalPerson));
             Assert.IsInstanceOfType(people[1], typeof(InternalPerson));
 
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             mapper.Write(writer, people);
 
-            string actual = writer.ToString();
+            var actual = writer.ToString();
             Assert.AreEqual(expected, actual);
         }
 
@@ -129,18 +128,18 @@ namespace FlatFiles.Test
             mapper.StringProperty("Name").ColumnName("Name");
             mapper.OptimizeMapping(false);
 
-            string expected = $"John{Environment.NewLine}Susan{Environment.NewLine}";
+            var expected = $"John{Environment.NewLine}Susan{Environment.NewLine}";
 
-            StringReader reader = new StringReader(expected);
+            var reader = new StringReader(expected);
             var people = mapper.Read(reader).ToArray();
             Assert.AreEqual(2, people.Length);
             Assert.IsInstanceOfType(people[0], typeof(InternalPerson));
             Assert.IsInstanceOfType(people[1], typeof(InternalPerson));
 
-            StringWriter writer = new StringWriter();
+            var writer = new StringWriter();
             mapper.Write(writer, people);
 
-            string actual = writer.ToString();
+            var actual = writer.ToString();
             Assert.AreEqual(expected, actual);
         }
 

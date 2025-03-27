@@ -19,10 +19,10 @@ namespace FlatFiles
 
         internal static DelimitedSchema BuildDynamicSchema(DelimitedOptions options, int length)
         {
-            return dynamicSchemas.GetOrAdd((length, options.PreserveWhiteSpace), (pair) =>
+            return dynamicSchemas.GetOrAdd((length, options.PreserveWhiteSpace), static (pair) =>
             {
                 var schema = new DelimitedSchema();
-                for (int columnIndex = 0; columnIndex != pair.Item1; ++columnIndex)
+                for (var columnIndex = 0; columnIndex != pair.Item1; ++columnIndex)
                 {
                     var column = new StringColumn($"Column{columnIndex}")
                     {

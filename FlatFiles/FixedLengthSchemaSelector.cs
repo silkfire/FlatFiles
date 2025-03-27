@@ -8,7 +8,7 @@ namespace FlatFiles
     /// </summary>
     public sealed class FixedLengthSchemaSelector
     {
-        private readonly List<SchemaMatcher> matchers = new();
+        private readonly List<SchemaMatcher> matchers = [];
         private SchemaMatcher? defaultMatcher;
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace FlatFiles
             }
             else
             {
-                defaultMatcher = new SchemaMatcher(schema, values => true);
+                defaultMatcher = new SchemaMatcher(schema, static _ => true);
             }
             return new FixedLengthSchemaSelectorUseBuilder(defaultMatcher);
         }

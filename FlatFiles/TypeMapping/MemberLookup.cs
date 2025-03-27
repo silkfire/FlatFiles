@@ -20,7 +20,7 @@ namespace FlatFiles.TypeMapping
 
         public CustomMapping<TEntity> GetOrAddCustomMapping<TEntity>(string name, Func<int, int, CustomMapping<TEntity>> factory)
         {
-            string key = $"@Custom_{name}";
+            var key = $"@Custom_{name}";
             return GetOrAddMember(key, factory);
         }
 
@@ -32,8 +32,8 @@ namespace FlatFiles.TypeMapping
                 return (TMapping)mapping;
             }
 
-            int physicalIndex = lookup.Count;
-            int logicalIndex = physicalIndex - ignoredCount;
+            var physicalIndex = lookup.Count;
+            var logicalIndex = physicalIndex - ignoredCount;
             var newMapping = factory(physicalIndex, logicalIndex);
             lookup.Add(key, newMapping);
             return newMapping;
@@ -43,7 +43,7 @@ namespace FlatFiles.TypeMapping
         {
             var column = new IgnoredColumn();
             var mapping = new IgnoredMapping(column, lookup.Count);
-            string key = $"@Ignored_{mapping.PhysicalIndex}";
+            var key = $"@Ignored_{mapping.PhysicalIndex}";
             lookup.Add(key, mapping);
             ++ignoredCount;
             return mapping;
@@ -51,7 +51,7 @@ namespace FlatFiles.TypeMapping
 
         public IMemberMapping[] GetMappings()
         {
-            return lookup.Values.OrderBy(m => m.PhysicalIndex).ToArray();
+            return lookup.Values.OrderBy(static m => m.PhysicalIndex).ToArray();
         }
 
         public Func<TEntity>? GetFactory<TEntity>()

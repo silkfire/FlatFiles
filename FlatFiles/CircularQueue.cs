@@ -17,7 +17,7 @@ namespace FlatFiles
 
         public ArraySegment<T> PrepareBlock()
         {
-            int size = items.Length - Count;
+            var size = items.Length - Count;
             // The buffer is large enough to hold the new items.
             // Determine if we need to shift the items to create a contiguous block.
             if (back >= front && items.Length - back < size)
@@ -46,7 +46,7 @@ namespace FlatFiles
 
         public T Peek(int index)
         {
-            int position = front + index;
+            var position = front + index;
             if (position >= items.Length)
             {
                 position -= items.Length;

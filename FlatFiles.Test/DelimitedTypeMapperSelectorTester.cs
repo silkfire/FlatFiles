@@ -12,10 +12,10 @@ namespace FlatFiles.Test
         public void TestSimpleSelection()
         {
             var mapper = DelimitedTypeMapper.Define<Data>();
-            mapper.Property(x => x.Amount);
+            mapper.Property(static x => x.Amount);
 
             var selector = new DelimitedTypeMapperSelector();
-            selector.When(v => v.Length == 1).Use(mapper);
+            selector.When(static v => v.Length == 1).Use(mapper);
 
             var stringReader = new StringReader("100\r\n200\r\n");
             var reader = selector.GetReader(stringReader);

@@ -6,14 +6,14 @@ namespace FlatFiles.TypeMapping
     {
         public Func<TEntity> GetFactory<TEntity>()
         {
-            return () => (TEntity)Activator.CreateInstance(typeof(TEntity), true)!;
+            return static () => (TEntity)Activator.CreateInstance(typeof(TEntity), true)!;
         }
 
         public Action<IRecordContext, TEntity, object?[]> GetReader<TEntity>(IMemberMapping[] mappings)
         {
             void Reader(IRecordContext recordContext, TEntity entity, object?[] values)
             {
-                for (int index = 0; index != mappings.Length; ++index)
+                for (var index = 0; index != mappings.Length; ++index)
                 {
                     var mapping = mappings[index];
                     if (mapping.Member != null)
@@ -37,12 +37,12 @@ namespace FlatFiles.TypeMapping
         {
             void Writer(IRecordContext recordContext, TEntity entity, object?[] values)
             {
-                for (int index = 0; index != mappings.Length; ++index)
+                for (var index = 0; index != mappings.Length; ++index)
                 {
-                    IMemberMapping mapping = mappings[index];
+                    var mapping = mappings[index];
                     if (mapping.Member != null)
                     {
-                        object? value = mapping.Member.GetValue(entity!);
+                        var value = mapping.Member.GetValue(entity!);
                         values[mapping.LogicalIndex] = value;
                     }
                     else if (mapping.Writer != null)
