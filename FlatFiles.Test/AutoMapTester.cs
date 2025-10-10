@@ -180,7 +180,7 @@ namespace FlatFiles.Test
         [TestMethod]
         public void ShouldReturnEmptySchemaWhenFileEmpty()
         {
-            var stringReader = new StringReader(String.Empty);
+            var stringReader = new StringReader(string.Empty);
             var reader = DelimitedTypeMapper.GetAutoMappedReader<Person>(stringReader);
             var results = reader.ReadAll().ToArray();
 

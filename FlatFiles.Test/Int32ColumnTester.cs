@@ -16,7 +16,7 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestCtor_NameBlank_Throws()
         {
-            Assert.ThrowsException<ArgumentException>(static () => new Int32Column("    "));
+            Assert.ThrowsExactly<ArgumentException>(static () => new Int32Column("    "));
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace FlatFiles.Test
                              IsNullable = false,
                              DefaultValue = DefaultValue.Disabled()
                          };
-            Assert.ThrowsException<InvalidCastException>(() => column.Parse(null, string.Empty));
+            Assert.ThrowsExactly<InvalidCastException>(() => column.Parse(null, string.Empty));
         }
 
         /// <summary>

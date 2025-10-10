@@ -10,7 +10,7 @@ namespace FlatFiles.Test
         [TestMethod]
         public void ShouldNotFindRecordsInEmptyFile()
         {
-            var source = String.Empty;
+            var source = string.Empty;
             var stringReader = new StringReader(source);
             var options = new DelimitedOptions { IsFirstRecordSchema = false };
             var reader = new DelimitedReader(stringReader, options);
@@ -653,7 +653,7 @@ namespace FlatFiles.Test
                 Quote = '\''
             };
             var reader = new DelimitedReader(stringReader, options);
-            Assert.ThrowsException<RecordProcessingException>(() => reader.Read());
+            Assert.ThrowsExactly<RecordProcessingException>(() => reader.Read());
         }
 
         [TestMethod]
@@ -667,7 +667,7 @@ namespace FlatFiles.Test
                 Quote = '\''
             };
             var reader = new DelimitedReader(stringReader, options);
-            Assert.ThrowsException<RecordProcessingException>(() => reader.Read());
+            Assert.ThrowsExactly<RecordProcessingException>(() => reader.Read());
         }
 
         [TestMethod]
@@ -821,7 +821,7 @@ namespace FlatFiles.Test
         {
             for (var recordIndex = 0; recordIndex != expected.Length; ++recordIndex)
             {
-                Assert.IsTrue(reader.Read(), String.Format("The record could not be read (Record {0}).", recordIndex));
+                Assert.IsTrue(reader.Read(), string.Format("The record could not be read (Record {0}).", recordIndex));
                 var actualValues = reader.GetValues();
                 var expectedValues = expected[recordIndex];
                 AssertRecord(expectedValues, actualValues);

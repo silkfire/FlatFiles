@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -32,9 +29,9 @@ namespace FlatFiles.Test
         public void TestReadFlatFile_DataTableNull_Throws()
         {
             DataTable table = null;
-            var stringReader = new StringReader(String.Empty);
+            var stringReader = new StringReader(string.Empty);
             IReader parser = new DelimitedReader(stringReader);
-            Assert.ThrowsException<ArgumentNullException>(() => DataTableExtensions.ReadFlatFile(table, parser));
+            Assert.ThrowsExactly<ArgumentNullException>(() => table.ReadFlatFile(parser));
         }
 
         /// <summary>
@@ -44,8 +41,7 @@ namespace FlatFiles.Test
         public void TestReadFlatFile_ParserNull_Throws()
         {
             var table = new DataTable();
-            IReader parser = null;
-            Assert.ThrowsException<ArgumentNullException>(() => table.ReadFlatFile(parser));
+            Assert.ThrowsExactly<ArgumentNullException>(() => table.ReadFlatFile(null!));
         }
 
         /// <summary>

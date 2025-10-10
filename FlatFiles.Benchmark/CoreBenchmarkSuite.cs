@@ -25,16 +25,16 @@ namespace FlatFiles.Benchmark
             [
                 "John", "Smith", "29", "West Street Rd", "Apt 23", "Lexington", "DE", "001569", "Blue", "Cheese and Crackers", "Soccer", "2017-01-01", "true"
             ];
-            var header = String.Join(",", headers);
-            var record = String.Join(",", values);
-            data = String.Join(Environment.NewLine, (new[] { header }).Concat(Enumerable.Repeat(0, 10000).Select(_ => record)));
+            var header = string.Join(",", headers);
+            var record = string.Join(",", values);
+            data = string.Join(Environment.NewLine, (new[] { header }).Concat(Enumerable.Repeat(0, 10000).Select(_ => record)));
 
             string[] quotedValues =
             [
                 "Joe", "Smith", "29", "\"West Street Rd, Apt. 23\"", "ATTN: Will Smith", "Lexington", "DE", "001569", "Blue", "\"Cheese, and Crackers\"", "Soccer", "2017-01-01", "true"
             ];
-            var quotedRecord = String.Join(",", quotedValues);
-            quotedData = String.Join(Environment.NewLine, (new[] { header }).Concat(Enumerable.Repeat(0, 10000).Select(_ => record)));
+            var quotedRecord = string.Join(",", quotedValues);
+            quotedData = string.Join(Environment.NewLine, (new[] { header }).Concat(Enumerable.Repeat(0, 10000).Select(_ => record)));
         }
 
         [Benchmark]
@@ -403,7 +403,7 @@ namespace FlatFiles.Benchmark
                              {
                     FirstName = record[0],
                     LastName = record[1],
-                    Age = Int32.Parse(record[2]),
+                    Age = int.Parse(record[2]),
                     Street1 = record[3],
                     Street2 = record[4],
                     City = record[5],
@@ -413,7 +413,7 @@ namespace FlatFiles.Benchmark
                     FavoriteFood = record[9],
                     FavoriteSport = record[10],
                     CreatedOn = DateTime.Parse(record[11]),
-                    IsActive = Boolean.Parse(record[12])
+                    IsActive = bool.Parse(record[12])
                 };
                 people.Add(person);
             }

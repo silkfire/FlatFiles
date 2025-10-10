@@ -28,7 +28,7 @@ namespace FlatFiles.Test
             TextReader reader = null;
             var schema = new FixedLengthSchema();
             var options = new FixedLengthOptions();
-            Assert.ThrowsException<ArgumentNullException>(() => new FixedLengthReader(reader, schema, options));
+            Assert.ThrowsExactly<ArgumentNullException>(() => new FixedLengthReader(reader, schema, options));
         }
 
         /// <summary>
@@ -37,9 +37,9 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestCtor_SchemaNull_Throws()
         {
-            var reader = new StringReader(String.Empty);
+            var reader = new StringReader(string.Empty);
             FixedLengthSchema schema = null;
-            Assert.ThrowsException<ArgumentNullException>(() => new FixedLengthReader(reader, schema));
+            Assert.ThrowsExactly<ArgumentNullException>(() => new FixedLengthReader(reader, schema));
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace FlatFiles.Test
 
             var stringReader = new StringReader(text);
             var parser = new FixedLengthReader(stringReader, schema);
-            Assert.ThrowsException<InvalidOperationException>(parser.GetValues);
+            Assert.ThrowsExactly<InvalidOperationException>(parser.GetValues);
         }
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace FlatFiles.Test
             var parser = new FixedLengthReader(stringReader, schema);
             Assert.IsTrue(parser.Read(), "Could not read the record.");
             Assert.IsFalse(parser.Read(), "We should have reached the end of the file.");
-            Assert.ThrowsException<InvalidOperationException>(parser.GetValues);
+            Assert.ThrowsExactly<InvalidOperationException>(parser.GetValues);
         }
 
         /// <summary>
@@ -206,7 +206,7 @@ namespace FlatFiles.Test
 
             var stringReader = new StringReader(text);
             var parser = new FixedLengthReader(stringReader, schema);
-            Assert.ThrowsException<RecordProcessingException>(() => parser.Read());
+            Assert.ThrowsExactly<RecordProcessingException>(() => parser.Read());
         }
 
         /// <summary>
@@ -600,7 +600,7 @@ namespace FlatFiles.Test
             schema.AddColumn(new DecimalColumn("value"));
             
             var reader = new DelimitedReader(new StringReader(data), schema);
-            Assert.ThrowsException<RecordProcessingException>(() => reader.Read());
+            Assert.ThrowsExactly<RecordProcessingException>(() => reader.Read());
         }
 
         [TestMethod]
@@ -685,7 +685,7 @@ namespace FlatFiles.Test
             Assert.AreEqual(lines, formatted, "The records did not round-trip.");
         }
 
-        private static object[] AssertExtra(FixedLengthReader reader, String expected)
+        private static object[] AssertExtra(FixedLengthReader reader, string expected)
         {
             Assert.IsTrue(reader.Read(), "Could not read the next record.");
             var values = reader.GetValues();
@@ -733,7 +733,7 @@ namespace FlatFiles.Test
 
         internal class ExtraPerson : Person
         {
-            public String Extra { get; set; }
+            public string Extra { get; set; }
         }
 
         [TestMethod]
@@ -750,7 +750,7 @@ namespace FlatFiles.Test
                             "124Jor1233",
                             "123Bob1714"
                         };
-            var stringReader = new StringReader(String.Join(Environment.NewLine, lines));
+            var stringReader = new StringReader(string.Join(Environment.NewLine, lines));
             var reader = mapper.GetReader(stringReader);
             reader.RecordError += static (_, e) =>
             {

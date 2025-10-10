@@ -160,14 +160,13 @@ namespace FlatFiles.Test
         }
 
         [TestMethod]
-        [ExpectedException(typeof(RecordProcessingException))]
         public void TestReader_UnknownType()
         {
             var stringReader = new StringReader("What's this weird thing?");
             var selector = getSchemaSelector();
             var reader = new FixedLengthReader(stringReader, selector);
 
-            reader.Read();
+            Assert.ThrowsExactly<RecordProcessingException>(() => reader.Read());
         }
 
         [TestMethod]

@@ -88,7 +88,7 @@ namespace FlatFiles
                 null,  // BaseTableName
                 null,  // ColumnName
                 0,  // ColumnOrdinal
-                Int32.MaxValue,  // ColumnSize
+                int.MaxValue,  // ColumnSize
                 null, // DataType
                 null,  // DataTypeName
                 false,  // IsAliased

@@ -22,7 +22,7 @@ namespace FlatFiles.Test
         [TestMethod]
         public void TestCtor_NameBlank_Throws()
         {
-            Assert.ThrowsException<ArgumentException>(static () => new TimeSpanColumn("    "));
+            Assert.ThrowsExactly<ArgumentException>(static () => new TimeSpanColumn("    "));
         }
 
         /// <summary>

@@ -611,7 +611,7 @@ namespace FlatFiles.TypeMapping
         public ICustomMapping<TEntity> CustomMapping(IColumnDefinition column, Window window)
         {
             var columnName = column.ColumnName;
-            if (String.IsNullOrWhiteSpace(columnName))
+            if (string.IsNullOrWhiteSpace(columnName))
             {
                 throw new ArgumentException(Resources.BlankColumnName, nameof(column));
             }
